@@ -56,6 +56,48 @@ const MAX_RECORDS = 500;
  */
 const registry = new Map<string, OrderRecord>();
 
+/* -------------------------------------------------------------------------
+ * Persistência em disco (best-effort)
+ *
+ * Sem isso, todo reinício do serviço apaga as vendas do painel admin. Gravamos
+ * um JSON simples em DATA_DIR (default: ./.data). Qualquer falha de I/O é
+ * silenciada: o app continua funcionando apenas em memória.
+ * ---------------------------------------------------------------------- */
+
+const DATA_DIR = process.env.ORDERS_DATA_DIR ?? ".data";
+const DATA_FILE = `${DATA_DIR}/orders.json`;
+let loaded = false;
+
+function loadFromDisk(): void {
+  if (loaded) return;
+  loaded = true;
+  try {
+    // require síncrono evita await em todas as funções do contrato público.
+    const fs = require("node:fs") as typeof import("node:fs");
+    if (!fs.existsSync(DATA_FILE)) return;
+    const raw = fs.readFileSync(DATA_FILE, "utf8");
+    const parsed: unknown = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return;
+    for (const item of parsed as OrderRecord[]) {
+      if (item?.orderNsu) {
+        registry.set(item.orderNsu, { ...item, messages: item.messages ?? [] });
+      }
+    }
+  } catch {
+    /* disco indisponível: segue apenas em memória */
+  }
+}
+
+function persist(): void {
+  try {
+    const fs = require("node:fs") as typeof import("node:fs");
+    fs.mkdirSync(DATA_DIR, { recursive: true });
+    fs.writeFileSync(DATA_FILE, JSON.stringify([...registry.values()]), "utf8");
+  } catch {
+    /* disco indisponível: segue apenas em memória */
+  }
+}
+
 function prune(): void {
   if (registry.size <= MAX_RECORDS) return;
   const excess = registry.size - MAX_RECORDS;
