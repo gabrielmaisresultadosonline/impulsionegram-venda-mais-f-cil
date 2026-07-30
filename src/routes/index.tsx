@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useRef, useState } from "react";
 import { Hero } from "@/components/site/Hero";
 import { HowItWorks } from "@/components/site/HowItWorks";
-import { OrderForm } from "@/components/site/OrderForm";
+import { OrderWizard } from "@/components/site/OrderWizard";
 import { PlanCard } from "@/components/site/PlanCard";
 import { PLANS } from "@/lib/plans";
 
@@ -70,7 +70,7 @@ function Index() {
       </section>
 
       <HowItWorks />
-      <OrderForm selectedPlanId={selectedPlanId} />
+      <OrderWizard selectedPlanId={selectedPlanId} onSelectPlan={setSelectedPlanId} />
 
       <footer className="border-t border-border px-4 py-8">
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-3">

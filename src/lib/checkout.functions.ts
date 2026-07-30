@@ -30,11 +30,14 @@ const createCheckoutSchema = z.object({
   planId: z.string().trim().min(1).max(64),
   profileUrl: instagramField,
   region: z.string().trim().min(2, "Informe a região").max(120),
-  competitor: z.string().trim().max(200).optional().default(""),
-  posts: z.array(z.string().trim().max(300)).max(5).default([]),
+  competitor: instagramField,
+  posts: z
+    .array(z.string().trim().min(4).max(300))
+    .min(3, "Envie no mínimo 3 links de publicação")
+    .max(5),
   customerName: z.string().trim().min(2, "Informe seu nome").max(120),
   customerEmail: z.string().trim().email("E-mail inválido").max(160),
-  customerPhone: z.string().trim().max(30).optional().default(""),
+  customerPhone: z.string().trim().min(10, "Informe o WhatsApp").max(30),
   /** Origem do site, usada para montar redirect_url e webhook_url. */
   origin: z.string().trim().url().max(300),
 });
