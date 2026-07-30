@@ -73,9 +73,37 @@ export function Hero({ onCta, className, ...props }: HeroProps) {
           </div>
 
           <div className="relative mt-6">
-            <h1 className="text-4xl leading-[1.05] font-extrabold text-balance md:text-6xl">
-              Seja Popular e <span className="text-gradient-brand">Venda Mais</span>
-            </h1>
+            <div className="relative">
+              <h1 className="text-4xl leading-[1.05] font-extrabold text-balance md:text-6xl">
+                Seja Popular e <span className="text-gradient-brand">Venda Mais</span>
+              </h1>
+
+              {/* Efeito de ícones flutuando ao lado do título */}
+              <div
+                className="pointer-events-none absolute top-0 right-0 left-0 h-28"
+                aria-hidden="true"
+              >
+                {FLOATING_ICONS.map((item, index) => {
+                  const Icon = item.icon;
+                  return (
+                    <span
+                      key={`${index}`}
+                      className={cn(
+                        "absolute bottom-0 inline-block opacity-0",
+                        item.duration,
+                        item.color
+                      )}
+                      style={{
+                        left: item.x,
+                        animationDelay: item.delay,
+                      }}
+                    >
+                      <Icon className={item.size} aria-hidden={true} />
+                    </span>
+                  );
+                })}
+              </div>
+            </div>
 
             <p className="mt-3 text-xl leading-snug font-semibold text-balance text-foreground md:text-2xl">
               Público filtrado por CEP, região e pelo perfil do seu concorrente.
@@ -84,33 +112,8 @@ export function Hero({ onCta, className, ...props }: HeroProps) {
             <p className="mt-2 text-sm font-medium text-primary/90 md:text-base">
               SEJA Popular + VENDA MAIS NO AUTOMÁTICO!
             </p>
-
-            {/* Efeito de ícones flutuando ao lado do título */}
-            <div
-              className="pointer-events-none absolute top-0 right-0 left-0 h-32"
-              aria-hidden="true"
-            >
-              {FLOATING_ICONS.map((item, index) => {
-                const Icon = item.icon;
-                return (
-                  <span
-                    key={`${index}`}
-                    className={cn(
-                      "absolute bottom-0 inline-block opacity-0",
-                      item.duration,
-                      item.color
-                    )}
-                    style={{
-                      left: item.x,
-                      animationDelay: item.delay,
-                    }}
-                  >
-                    <Icon className={item.size} aria-hidden={true} />
-                  </span>
-                );
-              })}
-            </div>
           </div>
+
 
           <p className="mt-6 max-w-xl text-base text-pretty text-muted-foreground md:text-lg">
             Ganhe seguidores filtrados por cidade, região e comportamento do seu concorrente — sem
