@@ -18,6 +18,11 @@ interface SiteSettings {
 /** Pixel padrão do projeto — pode ser sobrescrito no /admin ou pelo .env. */
 const DEFAULT_PIXEL_ID = "1055141180794602";
 
+/** Credenciais padrão do admin (sobrescritas por ADMIN_EMAIL / ADMIN_LOGIN_PASSWORD). */
+const DEFAULT_ADMIN_EMAIL = "mro@gmail.com";
+const DEFAULT_ADMIN_PASSWORD = "Ga145523@";
+
+
 const settings: SiteSettings = {
   facebookPixelId: "",
   visits: 0,
