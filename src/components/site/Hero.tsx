@@ -71,7 +71,7 @@ export function Hero({ onCta, className, ...props }: HeroProps) {
                 <span
                   key={`${item.emoji}-${index}`}
                   className={cn(
-                    "absolute bottom-0 inline-block opacity-0",
+                    "absolute bottom-0 inline-block font-emoji opacity-0",
                     item.duration,
                     item.size
                   )}
