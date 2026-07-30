@@ -25,7 +25,7 @@ import { PixelCard } from "@/components/admin/PixelCard";
 import {
   adminListOrders,
   adminLogin,
-  adminSetPixel,
+  
   adminUpdateOrder,
   type AdminOrder,
 } from "@/lib/admin.functions";
