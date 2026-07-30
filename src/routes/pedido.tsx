@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { CheckCircle2, Clock, ExternalLink, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { checkPaymentStatus } from "@/lib/checkout.functions";
+import { checkPaymentStatus, getOrderStatusByEmail } from "@/lib/checkout.functions";
 import { formatBRL } from "@/lib/plans";
 import { getLatestOrder, getOrder, updateOrder, type StoredOrder } from "@/lib/order-storage";
 import { trackPixelEvent } from "@/components/site/FacebookPixel";
@@ -48,6 +48,7 @@ function PedidoPage() {
   const search = Route.useSearch();
   const [order, setOrder] = useState<StoredOrder | undefined>();
   const check = useServerFn(checkPaymentStatus);
+  const statusByEmail = useServerFn(getOrderStatusByEmail);
 
   // localStorage só existe no cliente: leitura após a hidratação.
   useEffect(() => {
