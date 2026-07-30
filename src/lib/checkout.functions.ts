@@ -116,7 +116,25 @@ export const createCheckoutLink = createServerFn({ method: "POST" })
       throw new Error("Resposta inesperada do provedor de pagamento.");
     }
 
+    // Registra a tentativa de compra para o painel administrativo.
+    const { recordAttempt } = await import("./orders-repo.server");
+    recordAttempt({
+      orderNsu,
+      planId: plan.id,
+      planName: plan.name,
+      priceCents: plan.priceCents,
+      customerName: data.customerName,
+      customerEmail: data.customerEmail,
+      customerPhone: data.customerPhone ?? "",
+      profileUrl: data.profileUrl,
+      region: data.region,
+      competitor: data.competitor ?? "",
+      posts: data.posts ?? [],
+      paymentUrl,
+    });
+
     return { orderNsu, paymentUrl };
+
   });
 
 const paymentCheckSchema = z.object({
