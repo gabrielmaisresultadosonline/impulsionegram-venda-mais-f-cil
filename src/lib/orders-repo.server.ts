@@ -13,6 +13,14 @@
 
 export type OrderStatus = "tentativa" | "pago" | "entregue";
 
+export interface TicketMessage {
+  id: string;
+  author: "customer" | "admin";
+  text: string;
+  createdAt: string;
+  readByAdmin: boolean;
+}
+
 export interface OrderRecord {
   orderNsu: string;
   status: OrderStatus;
@@ -33,7 +41,9 @@ export interface OrderRecord {
   receiptUrl?: string;
   captureMethod?: string;
   transactionNsu?: string;
+  messages: TicketMessage[];
 }
+
 
 /** Limite defensivo para evitar crescimento ilimitado de memória. */
 const MAX_RECORDS = 500;
