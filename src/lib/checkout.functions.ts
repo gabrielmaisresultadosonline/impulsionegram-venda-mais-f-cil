@@ -78,7 +78,7 @@ export const createCheckoutLink = createServerFn({ method: "POST" })
         {
           quantity: 1,
           price: plan.priceCents,
-          description: `POPULAR - ${plan.name}`,
+          description: `POPULAR - ${plan.name} | ${orderNsu} | ${data.customerEmail}`,
         },
       ],
       customer: {
