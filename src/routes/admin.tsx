@@ -1,0 +1,426 @@
+import { useMemo, useState, type FormEvent } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import {
+  BadgeCheck,
+  Banknote,
+  CheckCircle2,
+  Clock,
+  Loader2,
+  LockKeyhole,
+  PackageCheck,
+  RefreshCw,
+  ShoppingCart,
+  Undo2,
+} from "lucide-react";
+import { toast } from "sonner";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import { formatBRL } from "@/lib/plans";
+import { adminListOrders, adminLogin, adminUpdateOrder, type AdminOrder } from "@/lib/admin.functions";
+
+type TabKey = "todos" | "pago" | "tentativa" | "entregue";
+
+const TABS: ReadonlyArray<{ key: TabKey; label: string }> = [
+  { key: "pago", label: "A entregar" },
+  { key: "tentativa", label: "Tentativas" },
+  { key: "entregue", label: "Entregues" },
+  { key: "todos", label: "Todos" },
+];
+
+export const Route = createFileRoute("/admin")({
+  head: () => ({
+    meta: [
+      { title: "Administração — Impulsionegram" },
+      {
+        name: "description",
+        content:
+          "Painel interno do Impulsionegram para acompanhar vendas pagas, tentativas de compra e pedidos a entregar.",
+      },
+      { property: "og:title", content: "Administração — Impulsionegram" },
+      {
+        property: "og:description",
+        content: "Gestão de vendas, cadastros e entregas do Impulsionegram.",
+      },
+      { name: "robots", content: "noindex, nofollow" },
+    ],
+  }),
+  component: AdminPage,
+});
+
+function AdminPage() {
+  const [password, setPassword] = useState("");
+  const [session, setSession] = useState<string | null>(null);
+  const login = useServerFn(adminLogin);
+
+  const loginMutation = useMutation({
+    mutationFn: (value: string) => login({ data: { password: value } }),
+    onSuccess: (_result, value) => {
+      setSession(value);
+      setPassword("");
+    },
+    onError: (error: Error) => toast.error(error.message || "Falha ao entrar."),
+  });
+
+  const handleLogin = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!password.trim()) return;
+    loginMutation.mutate(password.trim());
+  };
+
+  if (!session) {
+    return (
+      <main className="bg-aurora flex min-h-screen items-center justify-center px-4 py-16">
+        <form
+          onSubmit={handleLogin}
+          className="glass-panel w-full max-w-sm space-y-5 rounded-3xl p-8"
+        >
+          <div className="bg-gradient-brand flex size-12 items-center justify-center rounded-2xl">
+            <LockKeyhole className="size-6 text-white" aria-hidden="true" />
+          </div>
+          <div>
+            <h1 className="text-xl font-extrabold">Área administrativa</h1>
+            <p className="text-muted-foreground mt-1 text-sm">
+              Acesso restrito à equipe Impulsionegram.
+            </p>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="admin-password">Senha de acesso</Label>
+            <Input
+              id="admin-password"
+              type="password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              autoComplete="current-password"
+              maxLength={200}
+              required
+            />
+          </div>
+          <Button
+            type="submit"
+            className="bg-gradient-brand shadow-glow h-11 w-full"
+            disabled={loginMutation.isPending}
+          >
+            {loginMutation.isPending ? (
+              <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+            ) : null}
+            Entrar
+          </Button>
+          <Link to="/" className="text-muted-foreground hover:text-foreground block text-center text-xs">
+            ← Voltar para o site
+          </Link>
+        </form>
+      </main>
+    );
+  }
+
+  return <AdminDashboard password={session} onLogout={() => setSession(null)} />;
+}
+
+interface AdminDashboardProps {
+  password: string;
+  onLogout: () => void;
+}
+
+function AdminDashboard({ password, onLogout }: AdminDashboardProps) {
+  const [tab, setTab] = useState<TabKey>("pago");
+  const listOrders = useServerFn(adminListOrders);
+  const updateOrder = useServerFn(adminUpdateOrder);
+  const queryClient = useQueryClient();
+
+  const ordersQuery = useQuery({
+    queryKey: ["admin-orders"],
+    queryFn: () => listOrders({ data: { password } }),
+    refetchInterval: 15000,
+  });
+
+  const mutation = useMutation({
+    mutationFn: (input: { orderNsu: string; action: "entregue" | "reabrir" }) =>
+      updateOrder({ data: { ...input, password } }),
+    onSuccess: (orders, input) => {
+      queryClient.setQueryData(["admin-orders"], orders);
+      toast.success(
+        input.action === "entregue" ? "Pedido marcado como entregue." : "Pedido reaberto.",
+      );
+    },
+    onError: (error: Error) => toast.error(error.message || "Não foi possível atualizar."),
+  });
+
+  const orders = useMemo<AdminOrder[]>(() => ordersQuery.data ?? [], [ordersQuery.data]);
+
+  const stats = useMemo(() => {
+    const paid = orders.filter((order) => order.status !== "tentativa");
+    return {
+      attempts: orders.length,
+      paidCount: paid.length,
+      pendingDelivery: orders.filter((order) => order.status === "pago").length,
+      delivered: orders.filter((order) => order.status === "entregue").length,
+      revenueCents: paid.reduce((total, order) => total + order.priceCents, 0),
+    };
+  }, [orders]);
+
+  const filtered = useMemo(
+    () => (tab === "todos" ? orders : orders.filter((order) => order.status === tab)),
+    [orders, tab],
+  );
+
+  return (
+    <main className="bg-aurora min-h-screen px-4 py-10">
+      <div className="mx-auto max-w-6xl">
+        <header className="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-extrabold md:text-3xl">Painel administrativo</h1>
+            <p className="text-muted-foreground mt-1 text-sm">
+              Vendas, tentativas de compra e fila de entrega.
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => ordersQuery.refetch()}
+              disabled={ordersQuery.isFetching}
+            >
+              <RefreshCw
+                className={cn("size-4", ordersQuery.isFetching && "animate-spin")}
+                aria-hidden="true"
+              />
+              Atualizar
+            </Button>
+            <Button variant="ghost" size="sm" onClick={onLogout}>
+              Sair
+            </Button>
+          </div>
+        </header>
+
+        <section className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <StatCard
+            icon={<ShoppingCart className="size-5" aria-hidden="true" />}
+            label="Cadastros / tentativas"
+            value={String(stats.attempts)}
+          />
+          <StatCard
+            icon={<BadgeCheck className="size-5" aria-hidden="true" />}
+            label="Vendas pagas"
+            value={String(stats.paidCount)}
+          />
+          <StatCard
+            icon={<Banknote className="size-5" aria-hidden="true" />}
+            label="Faturamento confirmado"
+            value={formatBRL(stats.revenueCents)}
+          />
+          <StatCard
+            icon={<PackageCheck className="size-5" aria-hidden="true" />}
+            label="Aguardando entrega"
+            value={String(stats.pendingDelivery)}
+            highlight={stats.pendingDelivery > 0}
+          />
+        </section>
+
+        <nav className="mt-8 flex flex-wrap gap-2" aria-label="Filtrar pedidos">
+          {TABS.map((item) => (
+            <button
+              key={item.key}
+              type="button"
+              onClick={() => setTab(item.key)}
+              className={cn(
+                "focus-visible:ring-ring rounded-full border px-4 py-2 text-sm font-semibold transition focus-visible:ring-2 focus-visible:outline-none",
+                tab === item.key
+                  ? "bg-gradient-brand border-transparent text-white"
+                  : "border-border text-muted-foreground hover:text-foreground",
+              )}
+              aria-pressed={tab === item.key}
+            >
+              {item.label}
+            </button>
+          ))}
+        </nav>
+
+        <section className="mt-6 space-y-4">
+          {ordersQuery.isLoading ? (
+            <div className="glass-panel text-muted-foreground flex items-center gap-3 rounded-2xl p-6 text-sm">
+              <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+              Carregando pedidos...
+            </div>
+          ) : filtered.length === 0 ? (
+            <div className="glass-panel text-muted-foreground rounded-2xl p-8 text-center text-sm">
+              Nenhum pedido nesta aba por enquanto.
+            </div>
+          ) : (
+            filtered.map((order) => (
+              <OrderCard
+                key={order.orderNsu}
+                order={order}
+                busy={mutation.isPending && mutation.variables?.orderNsu === order.orderNsu}
+                onDeliver={() => mutation.mutate({ orderNsu: order.orderNsu, action: "entregue" })}
+                onReopen={() => mutation.mutate({ orderNsu: order.orderNsu, action: "reabrir" })}
+              />
+            ))
+          )}
+        </section>
+      </div>
+    </main>
+  );
+}
+
+interface StatCardProps {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+  highlight?: boolean;
+}
+
+function StatCard({ icon, label, value, highlight }: StatCardProps) {
+  return (
+    <div
+      className={cn(
+        "glass-panel rounded-2xl p-5",
+        highlight && "ring-primary/50 shadow-glow ring-1",
+      )}
+    >
+      <div className="text-primary flex items-center gap-2">{icon}</div>
+      <p className="text-muted-foreground mt-3 text-xs tracking-wide uppercase">{label}</p>
+      <p className="mt-1 text-2xl font-extrabold">{value}</p>
+    </div>
+  );
+}
+
+interface OrderCardProps {
+  order: AdminOrder;
+  busy: boolean;
+  onDeliver: () => void;
+  onReopen: () => void;
+}
+
+function OrderCard({ order, busy, onDeliver, onReopen }: OrderCardProps) {
+  return (
+    <article className="glass-panel rounded-2xl p-5">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <div className="flex flex-wrap items-center gap-2">
+            <h2 className="text-base font-bold">{order.planName}</h2>
+            <StatusBadge status={order.status} />
+          </div>
+          <p className="text-muted-foreground mt-1 font-mono text-xs">{order.orderNsu}</p>
+        </div>
+        <p className="text-lg font-extrabold">{formatBRL(order.priceCents)}</p>
+      </div>
+
+      <dl className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <Field label="Cliente" value={order.customerName || "—"} />
+        <Field label="E-mail" value={order.customerEmail || "—"} />
+        <Field label="WhatsApp" value={order.customerPhone || "—"} />
+        <Field label="Perfil" value={order.profileUrl || "—"} />
+        <Field label="Região" value={order.region || "—"} />
+        <Field label="Concorrente" value={order.competitor || "—"} />
+        <Field label="Criado em" value={formatDate(order.createdAt)} />
+        <Field label="Pago em" value={order.paidAt ? formatDate(order.paidAt) : "—"} />
+        <Field
+          label="Entregue em"
+          value={order.deliveredAt ? formatDate(order.deliveredAt) : "—"}
+        />
+      </dl>
+
+      {order.posts.length > 0 ? (
+        <div className="border-border mt-4 rounded-xl border p-4">
+          <p className="text-muted-foreground text-xs tracking-wide uppercase">
+            Publicações ({order.posts.length}/5)
+          </p>
+          <ul className="mt-2 space-y-1 text-sm break-all">
+            {order.posts.map((post) => (
+              <li key={post}>
+                <a
+                  href={normalizeUrl(post)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary hover:underline"
+                >
+                  {post}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+
+      <div className="mt-5 flex flex-wrap gap-2">
+        {order.status === "pago" ? (
+          <Button onClick={onDeliver} disabled={busy} className="bg-gradient-brand">
+            {busy ? (
+              <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+            ) : (
+              <CheckCircle2 className="size-4" aria-hidden="true" />
+            )}
+            Marcar como entregue
+          </Button>
+        ) : null}
+        {order.status === "entregue" ? (
+          <Button variant="outline" onClick={onReopen} disabled={busy}>
+            <Undo2 className="size-4" aria-hidden="true" />
+            Reabrir pedido
+          </Button>
+        ) : null}
+        {order.receiptUrl ? (
+          <Button asChild variant="outline">
+            <a href={order.receiptUrl} target="_blank" rel="noopener noreferrer">
+              Comprovante
+            </a>
+          </Button>
+        ) : null}
+      </div>
+    </article>
+  );
+}
+
+function StatusBadge({ status }: { status: AdminOrder["status"] }) {
+  if (status === "entregue") {
+    return (
+      <Badge className="bg-success/15 text-success border-success/30 border">
+        <PackageCheck className="size-3.5" aria-hidden="true" />
+        Entregue
+      </Badge>
+    );
+  }
+  if (status === "pago") {
+    return (
+      <Badge className="bg-primary/15 text-primary border-primary/30 border">
+        <BadgeCheck className="size-3.5" aria-hidden="true" />
+        Pago — entregar
+      </Badge>
+    );
+  }
+  return (
+    <Badge variant="outline" className="text-muted-foreground">
+      <Clock className="size-3.5" aria-hidden="true" />
+      Tentativa
+    </Badge>
+  );
+}
+
+function Field({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="border-border rounded-xl border p-3">
+      <dt className="text-muted-foreground text-[11px] tracking-wide uppercase">{label}</dt>
+      <dd className="mt-0.5 text-sm break-all">{value}</dd>
+    </div>
+  );
+}
+
+function formatDate(iso: string): string {
+  try {
+    return new Intl.DateTimeFormat("pt-BR", {
+      dateStyle: "short",
+      timeStyle: "short",
+    }).format(new Date(iso));
+  } catch {
+    return iso;
+  }
+}
+
+function normalizeUrl(value: string): string {
+  return /^https?:\/\//i.test(value) ? value : `https://${value}`;
+}
