@@ -101,7 +101,7 @@ function PedidoPage() {
       contentName: order.planName,
       orderId: order.orderNsu,
       email: order.customerEmail,
-      phone: order.whatsapp,
+      phone: order.customerPhone,
     });
 
   }, [paid, order]);
