@@ -6,46 +6,50 @@ import { cn } from "@/lib/utils";
 import { createCheckoutLink } from "@/lib/checkout.functions";
 import { getPlanById } from "@/lib/plans";
 import { saveOrder } from "@/lib/order-storage";
-import { getAccount, type LocalAccount } from "@/lib/account-storage";
+import type { LocalAccount } from "@/lib/account-storage";
 import { StepIndicator } from "./wizard/StepIndicator";
-import { AccountStep } from "./wizard/AccountStep";
 import { PlanStep } from "./wizard/PlanStep";
 import { CampaignStep } from "./wizard/CampaignStep";
 import { PostsStep } from "./wizard/PostsStep";
 import { EMPTY_CAMPAIGN, MAX_POSTS, formatRegion, type CampaignData } from "./wizard/types";
 
-const STEPS = ["Cadastro", "Plano", "Dados", "Publicações"] as const;
+const STEPS = ["Plano", "Dados", "Publicações"] as const;
 
-export interface OrderWizardProps extends ComponentProps<"section"> {
+export interface PainelWizardProps extends ComponentProps<"section"> {
+  account: LocalAccount;
   selectedPlanId: string;
   onSelectPlan: (planId: string) => void;
 }
 
-export function OrderWizard({
+/**
+ * Funil do painel do usuário cadastrado: plano → dados → publicações → pagamento.
+ * O pagamento é gerado na InfinitePay e confirmado em tempo real em /pedido.
+ */
+export function PainelWizard({
+  account,
   selectedPlanId,
   onSelectPlan,
   className,
   ...props
-}: OrderWizardProps) {
+}: PainelWizardProps) {
   const [step, setStep] = useState(0);
-  const [account, setAccount] = useState<LocalAccount | null>(null);
-  const [campaign, setCampaign] = useState<CampaignData>(EMPTY_CAMPAIGN);
+  const [campaign, setCampaign] = useState<CampaignData>({
+    ...EMPTY_CAMPAIGN,
+    customerName: account.name,
+    customerEmail: account.email,
+  });
   const [posts, setPosts] = useState<string[]>(Array.from({ length: MAX_POSTS }, () => ""));
 
   const plan = getPlanById(selectedPlanId);
   const createLink = useServerFn(createCheckoutLink);
 
   useEffect(() => {
-    const existing = getAccount();
-    if (existing) {
-      setAccount(existing);
-      setCampaign((current) => ({
-        ...current,
-        customerName: current.customerName || existing.name,
-        customerEmail: current.customerEmail || existing.email,
-      }));
-    }
-  }, []);
+    setCampaign((current) => ({
+      ...current,
+      customerName: current.customerName || account.name,
+      customerEmail: current.customerEmail || account.email,
+    }));
+  }, [account.email, account.name]);
 
   const patchCampaign = useCallback((patch: Partial<CampaignData>) => {
     setCampaign((current) => ({ ...current, ...patch }));
@@ -92,42 +96,29 @@ export function OrderWizard({
   });
 
   return (
-    <section id="pedido" className={cn("px-4 pb-24", className)} {...props}>
+    <section className={cn("px-4 pb-24", className)} {...props}>
       <div className="glass-panel mx-auto max-w-3xl rounded-3xl p-6 md:p-10">
-        <h2 className="text-2xl font-extrabold md:text-3xl">Faça seu pedido em 4 etapas</h2>
-        <StepIndicator steps={STEPS} current={step} className="mt-5" />
+        <StepIndicator steps={STEPS} current={step} />
 
         <div className="mt-8">
           {step === 0 ? (
-            <AccountStep
-              account={account}
-              onDone={(created) => {
-                setAccount(created);
-                patchCampaign({ customerName: created.name, customerEmail: created.email });
-                setStep(1);
-              }}
+            <PlanStep
+              selectedPlanId={selectedPlanId}
+              onSelect={onSelectPlan}
+              onNext={() => setStep(1)}
             />
           ) : null}
 
           {step === 1 ? (
-            <PlanStep
-              selectedPlanId={selectedPlanId}
-              onSelect={onSelectPlan}
+            <CampaignStep
+              data={campaign}
+              onChange={patchCampaign}
               onBack={() => setStep(0)}
               onNext={() => setStep(2)}
             />
           ) : null}
 
           {step === 2 ? (
-            <CampaignStep
-              data={campaign}
-              onChange={patchCampaign}
-              onBack={() => setStep(1)}
-              onNext={() => setStep(3)}
-            />
-          ) : null}
-
-          {step === 3 ? (
             <PostsStep
               posts={posts}
               onChange={(index, value) =>
@@ -135,7 +126,7 @@ export function OrderWizard({
               }
               plan={plan}
               pending={mutation.isPending}
-              onBack={() => setStep(2)}
+              onBack={() => setStep(1)}
               onSubmit={() => mutation.mutate()}
             />
           ) : null}

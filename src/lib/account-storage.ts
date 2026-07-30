@@ -51,3 +51,24 @@ export function clearAccount(): void {
   if (typeof window === "undefined") return;
   window.localStorage.removeItem(STORAGE_KEY);
 }
+
+const PLAN_KEY = "impulsionegram.plan.v1";
+
+/** Guarda o plano escolhido na home para pré-selecionar no painel. */
+export function savePlanSelection(planId: string): void {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(PLAN_KEY, planId);
+  } catch {
+    // Armazenamento indisponível: o painel usa o plano padrão.
+  }
+}
+
+export function getPlanSelection(): string | null {
+  if (typeof window === "undefined") return null;
+  try {
+    return window.localStorage.getItem(PLAN_KEY);
+  } catch {
+    return null;
+  }
+}

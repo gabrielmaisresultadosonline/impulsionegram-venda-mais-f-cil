@@ -6,7 +6,7 @@ import { PLANS, formatBRL, getPlanById } from "@/lib/plans";
 export interface PlanStepProps {
   selectedPlanId: string;
   onSelect: (planId: string) => void;
-  onBack: () => void;
+  onBack?: () => void;
   onNext: () => void;
 }
 
@@ -34,9 +34,11 @@ export function PlanStep({ selectedPlanId, onSelect, onBack, onNext }: PlanStepP
       </div>
 
       <div className="flex flex-col gap-3 sm:flex-row">
-        <Button type="button" variant="outline" size="lg" onClick={onBack} className="h-12">
-          Voltar
-        </Button>
+        {onBack ? (
+          <Button type="button" variant="outline" size="lg" onClick={onBack} className="h-12">
+            Voltar
+          </Button>
+        ) : null}
         <Button
           type="button"
           size="lg"

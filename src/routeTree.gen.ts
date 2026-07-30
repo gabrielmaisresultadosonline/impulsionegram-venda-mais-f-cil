@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as PainelRouteImport } from './routes/painel'
 import { Route as PedidoRouteImport } from './routes/pedido'
 import { Route as ApiPublicInfinitepayWebhookRouteImport } from './routes/api/public/infinitepay/webhook'
 
@@ -22,6 +23,11 @@ const IndexRoute = IndexRouteImport.update({
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PainelRoute = PainelRouteImport.update({
+  id: '/painel',
+  path: '/painel',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PedidoRoute = PedidoRouteImport.update({
@@ -39,12 +45,14 @@ const ApiPublicInfinitepayWebhookRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/painel': typeof PainelRoute
   '/pedido': typeof PedidoRoute
   '/api/public/infinitepay/webhook': typeof ApiPublicInfinitepayWebhookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/painel': typeof PainelRoute
   '/pedido': typeof PedidoRoute
   '/api/public/infinitepay/webhook': typeof ApiPublicInfinitepayWebhookRoute
 }
@@ -52,21 +60,29 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/painel': typeof PainelRoute
   '/pedido': typeof PedidoRoute
   '/api/public/infinitepay/webhook': typeof ApiPublicInfinitepayWebhookRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin' | '/pedido' | '/api/public/infinitepay/webhook'
+  fullPaths:
+    '/' | '/admin' | '/painel' | '/pedido' | '/api/public/infinitepay/webhook'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/pedido' | '/api/public/infinitepay/webhook'
+  to: '/' | '/admin' | '/painel' | '/pedido' | '/api/public/infinitepay/webhook'
   id:
-    '__root__' | '/' | '/admin' | '/pedido' | '/api/public/infinitepay/webhook'
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/painel'
+    | '/pedido'
+    | '/api/public/infinitepay/webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
+  PainelRoute: typeof PainelRoute
   PedidoRoute: typeof PedidoRoute
   ApiPublicInfinitepayWebhookRoute: typeof ApiPublicInfinitepayWebhookRoute
 }
@@ -85,6 +101,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/painel': {
+      id: '/painel'
+      path: '/painel'
+      fullPath: '/painel'
+      preLoaderRoute: typeof PainelRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pedido': {
@@ -107,6 +130,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
+  PainelRoute: PainelRoute,
   PedidoRoute: PedidoRoute,
   ApiPublicInfinitepayWebhookRoute: ApiPublicInfinitepayWebhookRoute,
 }
