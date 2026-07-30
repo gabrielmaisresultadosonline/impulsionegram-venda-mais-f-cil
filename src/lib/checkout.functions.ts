@@ -134,7 +134,9 @@ export const createCheckoutLink = createServerFn({ method: "POST" })
       competitor: data.competitor ?? "",
       posts: data.posts ?? [],
       paymentUrl,
+      messages: [],
     });
+
 
     return { orderNsu, paymentUrl };
 
