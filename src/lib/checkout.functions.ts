@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { getPlanById } from "./plans";
+import { buildProductName, getPlanById } from "./plans";
+import { safeOrigin } from "./checkout.server";
 
 /**
  * Integração InfinitePay (Checkout Integrado).
@@ -31,10 +32,6 @@ const createCheckoutSchema = z.object({
   profileUrl: instagramField,
   region: z.string().trim().min(2, "Informe a região").max(120),
   competitor: instagramField,
-  posts: z
-    .array(z.string().trim().min(4).max(300))
-    .min(3, "Envie no mínimo 3 links de publicação")
-    .max(5),
   customerName: z.string().trim().min(2, "Informe seu nome").max(120),
   customerEmail: z.string().trim().email("E-mail inválido").max(160),
   customerPhone: z.string().trim().min(10, "Informe o WhatsApp").max(30),
@@ -47,17 +44,8 @@ export type CreateCheckoutInput = z.input<typeof createCheckoutSchema>;
 export interface CreateCheckoutResult {
   orderNsu: string;
   paymentUrl: string;
-}
-
-/** Mantém apenas o origin (protocolo + host) de uma URL confiável em https. */
-function safeOrigin(rawOrigin: string): string | null {
-  try {
-    const url = new URL(rawOrigin);
-    if (url.protocol !== "https:") return null;
-    return url.origin;
-  } catch {
-    return null;
-  }
+  /** Nome do produto (planoslug + e-mail) usado para conciliação. */
+  productName: string;
 }
 
 export const createCheckoutLink = createServerFn({ method: "POST" })
@@ -70,6 +58,9 @@ export const createCheckoutLink = createServerFn({ method: "POST" })
 
     const orderNsu = `IMP-${Date.now()}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
     const origin = safeOrigin(data.origin);
+    // Nome do produto = prefixo do plano + e-mail. Serve de chave alternativa
+    // para reconhecer a venda no webhook mesmo sem o NSU.
+    const productName = buildProductName(plan, data.customerEmail);
 
     const payload: Record<string, unknown> = {
       handle: HANDLE,
@@ -78,7 +69,7 @@ export const createCheckoutLink = createServerFn({ method: "POST" })
         {
           quantity: 1,
           price: plan.priceCents,
-          description: `POPULAR - ${plan.name} | ${orderNsu} | ${data.customerEmail}`,
+          description: productName,
         },
       ],
       customer: {
@@ -132,13 +123,14 @@ export const createCheckoutLink = createServerFn({ method: "POST" })
       profileUrl: data.profileUrl,
       region: data.region,
       competitor: data.competitor ?? "",
-      posts: data.posts ?? [],
+      posts: [],
+      productName,
       paymentUrl,
       messages: [],
     });
 
 
-    return { orderNsu, paymentUrl };
+    return { orderNsu, paymentUrl, productName };
 
   });
 
@@ -204,3 +196,35 @@ export const checkPaymentStatus = createServerFn({ method: "POST" })
     };
   });
 
+
+const emailSchema = z.object({
+  customerEmail: z.string().trim().email().max(160),
+});
+
+export interface OrderStatusByEmail {
+  found: boolean;
+  paid: boolean;
+  orderNsu?: string;
+  planName?: string;
+  priceCents?: number;
+}
+
+/**
+ * Fallback de conciliação: quando o cliente perde o NSU (fechou a aba, voltou
+ * depois), consultamos pelo e-mail o pedido mais recente já confirmado pelo
+ * webhook. Não expõe dados de outros clientes além do próprio pedido.
+ */
+export const getOrderStatusByEmail = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) => emailSchema.parse(data))
+  .handler(async ({ data }): Promise<OrderStatusByEmail> => {
+    const { getLatestOrderByEmail } = await import("./orders-repo.server");
+    const order = getLatestOrderByEmail(data.customerEmail);
+    if (!order) return { found: false, paid: false };
+    return {
+      found: true,
+      paid: order.status !== "tentativa",
+      orderNsu: order.orderNsu,
+      planName: order.planName,
+      priceCents: order.priceCents,
+    };
+  });

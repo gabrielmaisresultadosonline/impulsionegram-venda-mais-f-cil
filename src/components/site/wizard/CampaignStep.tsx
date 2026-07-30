@@ -1,5 +1,5 @@
 import type { FormEvent } from "react";
-import { ArrowRight } from "lucide-react";
+import { Loader2, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,7 +11,10 @@ export interface CampaignStepProps {
   data: CampaignData;
   onChange: (patch: Partial<CampaignData>) => void;
   onBack: () => void;
-  onNext: () => void;
+  /** Dispara a criação do link de pagamento na InfinitePay. */
+  onSubmit: () => void;
+  pending: boolean;
+  priceLabel: string;
 }
 
 const MODES: readonly { value: RegionMode; label: string }[] = [
@@ -19,7 +22,14 @@ const MODES: readonly { value: RegionMode; label: string }[] = [
   { value: "cep", label: "CEP" },
 ];
 
-export function CampaignStep({ data, onChange, onBack, onNext }: CampaignStepProps) {
+export function CampaignStep({
+  data,
+  onChange,
+  onBack,
+  onSubmit,
+  pending,
+  priceLabel,
+}: CampaignStepProps) {
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (data.profileUrl.trim().length < 3) return toast.error("Informe o link do seu perfil.");
@@ -32,7 +42,7 @@ export function CampaignStep({ data, onChange, onBack, onNext }: CampaignStepPro
       return toast.error("E-mail inválido.");
     if (data.customerPhone.replace(/\D/g, "").length < 10)
       return toast.error("Informe um WhatsApp válido com DDD.");
-    onNext();
+    onSubmit();
   };
 
   return (
@@ -40,7 +50,8 @@ export function CampaignStep({ data, onChange, onBack, onNext }: CampaignStepPro
       <header>
         <h3 className="text-xl font-bold">Dados da campanha</h3>
         <p className="text-muted-foreground mt-1 text-sm">
-          Todos os campos desta etapa são obrigatórios.
+          Todos os campos são obrigatórios. Depois é só pagar — a confirmação
+          aparece no seu painel em tempo real.
         </p>
       </header>
 
@@ -129,14 +140,39 @@ export function CampaignStep({ data, onChange, onBack, onNext }: CampaignStepPro
       </div>
 
       <div className="flex flex-col gap-3 sm:flex-row">
-        <Button type="button" variant="outline" size="lg" onClick={onBack} className="h-12">
+        <Button
+          type="button"
+          variant="outline"
+          size="lg"
+          onClick={onBack}
+          disabled={pending}
+          className="h-12"
+        >
           Voltar
         </Button>
-        <Button type="submit" size="lg" className="bg-gradient-brand shadow-glow h-12 flex-1">
-          Continuar para publicações
-          <ArrowRight className="size-4" aria-hidden="true" />
+        <Button
+          type="submit"
+          size="lg"
+          disabled={pending}
+          className="bg-gradient-brand shadow-glow h-12 flex-1"
+        >
+          {pending ? (
+            <>
+              <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+              Gerando pagamento...
+            </>
+          ) : (
+            <>
+              <ShieldCheck className="size-4" aria-hidden="true" />
+              Pagar agora {priceLabel}
+            </>
+          )}
         </Button>
       </div>
+
+      <p className="text-muted-foreground text-center text-xs">
+        Pagamento seguro InfinitePay — Pix, cartão ou boleto.
+      </p>
     </form>
   );
 }

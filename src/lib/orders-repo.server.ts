@@ -34,6 +34,8 @@ export interface OrderRecord {
   region: string;
   competitor: string;
   posts: string[];
+  /** Nome do produto na InfinitePay: prefixo do plano + e-mail do cliente. */
+  productName?: string;
   createdAt: string;
   paidAt?: string;
   deliveredAt?: string;
@@ -172,6 +174,41 @@ export function markMessagesRead(
     ),
   });
   return true;
+}
+
+/**
+ * Marca como pago usando o nome do produto (ex.: "startcliente@gmail.com").
+ * Usado quando o webhook chega sem `order_nsu` — o cliente fechou a aba antes
+ * do redirect. Retorna o NSU conciliado, ou undefined quando não há match.
+ */
+export function markPaidByProductName(
+  productName: string,
+  patch: Partial<OrderRecord> = {},
+): string | undefined {
+  const target = productName.trim().toLowerCase();
+  if (!target) return undefined;
+
+  // Pega a tentativa mais recente ainda não paga com esse nome de produto.
+  const match = [...registry.values()]
+    .filter((order) => order.productName?.toLowerCase() === target)
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+    .find((order) => order.status === "tentativa") ??
+    [...registry.values()]
+      .filter((order) => order.productName?.toLowerCase() === target)
+      .sort((a, b) => b.createdAt.localeCompare(a.createdAt))[0];
+
+  if (!match) return undefined;
+  markPaid(match.orderNsu, patch);
+  return match.orderNsu;
+}
+
+/** Último pedido registrado para um e-mail (fallback do painel do cliente). */
+export function getLatestOrderByEmail(email: string): OrderRecord | undefined {
+  const target = email.trim().toLowerCase();
+  if (!target) return undefined;
+  return [...registry.values()]
+    .filter((order) => order.customerEmail.toLowerCase() === target)
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))[0];
 }
 
 /** Busca um pedido pelo NSU. */

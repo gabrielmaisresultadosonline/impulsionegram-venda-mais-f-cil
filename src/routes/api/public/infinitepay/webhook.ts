@@ -22,6 +22,12 @@ const webhookSchema = z.object({
   transaction_nsu: z.string().max(200).optional(),
   order_nsu: z.string().max(200).optional(),
   receipt_url: z.string().max(500).optional(),
+  /** Alguns eventos trazem os itens; usamos a descrição para conciliar. */
+  items: z
+    .array(z.object({ description: z.string().max(300).optional() }))
+    .max(20)
+    .optional(),
+  customer: z.object({ email: z.string().max(200).optional() }).optional(),
 });
 
 export const Route = createFileRoute("/api/public/infinitepay/webhook")({
@@ -33,22 +39,32 @@ export const Route = createFileRoute("/api/public/infinitepay/webhook")({
           if (!parsed.success) {
             return new Response("Invalid payload", { status: 400 });
           }
+          const event = parsed.data;
 
           // Log mínimo, sem dados pessoais do comprador.
           console.log(
-            `[infinitepay] pagamento aprovado order_nsu=${parsed.data.order_nsu ?? "?"} slug=${parsed.data.invoice_slug ?? "?"}`,
+            `[infinitepay] pagamento aprovado order_nsu=${event.order_nsu ?? "?"} slug=${event.invoice_slug ?? "?"}`,
           );
 
-          if (parsed.data.order_nsu) {
-            const { markPaid } = await import("@/lib/orders-repo.server");
-            markPaid(parsed.data.order_nsu, {
-              receiptUrl: parsed.data.receipt_url,
-              captureMethod: parsed.data.capture_method,
-              transactionNsu: parsed.data.transaction_nsu,
-              ...(parsed.data.paid_amount ? { priceCents: parsed.data.paid_amount } : {}),
-            });
-          }
+          const patch = {
+            receiptUrl: event.receipt_url,
+            captureMethod: event.capture_method,
+            transactionNsu: event.transaction_nsu,
+            ...(event.paid_amount ? { priceCents: event.paid_amount } : {}),
+          };
 
+          const { markPaid, markPaidByProductName } = await import(
+            "@/lib/orders-repo.server"
+          );
+
+          if (event.order_nsu) {
+            markPaid(event.order_nsu, patch);
+          } else {
+            // Sem NSU: concilia pelo nome do produto (planoslug + e-mail),
+            // cenário em que o cliente fechou a aba antes do redirect.
+            const productName = event.items?.find((item) => item.description)?.description;
+            if (productName) markPaidByProductName(productName, patch);
+          }
 
           return new Response("ok", { status: 200 });
         } catch {
@@ -58,3 +74,4 @@ export const Route = createFileRoute("/api/public/infinitepay/webhook")({
     },
   },
 });
+

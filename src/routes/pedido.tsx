@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { CheckCircle2, Clock, ExternalLink, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { checkPaymentStatus } from "@/lib/checkout.functions";
+import { checkPaymentStatus, getOrderStatusByEmail } from "@/lib/checkout.functions";
 import { formatBRL } from "@/lib/plans";
 import { getLatestOrder, getOrder, updateOrder, type StoredOrder } from "@/lib/order-storage";
 import { trackPixelEvent } from "@/components/site/FacebookPixel";
@@ -48,6 +48,7 @@ function PedidoPage() {
   const search = Route.useSearch();
   const [order, setOrder] = useState<StoredOrder | undefined>();
   const check = useServerFn(checkPaymentStatus);
+  const statusByEmail = useServerFn(getOrderStatusByEmail);
 
   // localStorage só existe no cliente: leitura após a hidratação.
   useEffect(() => {
@@ -79,9 +80,20 @@ function PedidoPage() {
       }),
   });
 
-  const paid = status.data?.paid === true;
+  // Fallback: se a consulta direta ainda não confirmou, verificamos pelo
+  // e-mail — é assim que o pagamento aparece quando o cliente fechou a aba do
+  // checkout e só o webhook (nome do produto) confirmou a venda.
+  const email = order?.customerEmail ?? "";
+  const byEmail = useQuery({
+    queryKey: ["payment-status-email", email],
+    enabled: Boolean(email) && status.data?.paid !== true,
+    refetchInterval: (query) => (query.state.data?.paid ? false : 7000),
+    queryFn: () => statusByEmail({ data: { customerEmail: email } }),
+  });
 
-  // Purchase é disparado uma única vez, quando a InfinitePay confirma o pagamento.
+  const paid = status.data?.paid === true || byEmail.data?.paid === true;
+
+  // Purchase é disparado uma única vez, quando o pagamento é confirmado.
   useEffect(() => {
     if (!paid || !order) return;
     trackPixelEvent("Purchase", {
@@ -91,6 +103,7 @@ function PedidoPage() {
       order_id: order.orderNsu,
     });
   }, [paid, order]);
+
 
   return (
     <main className="bg-aurora min-h-screen px-4 py-16">
@@ -140,36 +153,17 @@ function PedidoPage() {
                   <Info label="Perfil" value={order.profileUrl} />
                   <Info label="Região" value={order.region} />
                   <Info
-                    label="Publicações enviadas"
-                    value={`${order.posts.length} de 5`}
-                  />
-                  <Info
                     label="Prazo de entrega"
                     value="Até 6 horas após a aprovação"
                   />
                 </dl>
               ) : null}
 
-              {order && order.posts.length > 0 ? (
-                <div className="mt-6 rounded-xl border border-border p-4">
-                  <p className="text-xs tracking-wide text-muted-foreground uppercase">
-                    Publicações enviadas
-                  </p>
-                  <ul className="mt-2 space-y-1 text-sm break-all">
-                    {order.posts.map((post) => (
-                      <li key={post} className="text-muted-foreground">
-                        {post}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ) : null}
-
               <ol className="mt-8 space-y-4">
                 <Step
                   done
                   title="Pedido cadastrado"
-                  description="Recebemos os dados do seu perfil e das publicações."
+                  description="Recebemos os dados do seu perfil e da sua campanha."
                 />
                 <Step
                   done={paid}

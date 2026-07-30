@@ -4,16 +4,15 @@ import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { createCheckoutLink } from "@/lib/checkout.functions";
-import { getPlanById } from "@/lib/plans";
+import { formatBRL, getPlanById } from "@/lib/plans";
 import { saveOrder } from "@/lib/order-storage";
 import type { LocalAccount } from "@/lib/account-storage";
 import { StepIndicator } from "./wizard/StepIndicator";
 import { PlanStep } from "./wizard/PlanStep";
 import { CampaignStep } from "./wizard/CampaignStep";
-import { PostsStep } from "./wizard/PostsStep";
-import { EMPTY_CAMPAIGN, MAX_POSTS, formatRegion, type CampaignData } from "./wizard/types";
+import { EMPTY_CAMPAIGN, formatRegion, type CampaignData } from "./wizard/types";
 
-const STEPS = ["Plano", "Dados", "Publicações"] as const;
+const STEPS = ["Plano", "Dados e pagamento"] as const;
 
 export interface PainelWizardProps extends ComponentProps<"section"> {
   account: LocalAccount;
@@ -22,8 +21,11 @@ export interface PainelWizardProps extends ComponentProps<"section"> {
 }
 
 /**
- * Funil do painel do usuário cadastrado: plano → dados → publicações → pagamento.
- * O pagamento é gerado na InfinitePay e confirmado em tempo real em /pedido.
+ * Funil do painel do usuário cadastrado: plano → dados → pagamento.
+ *
+ * O link da InfinitePay abre em uma nova aba e a aba atual vai para /pedido,
+ * que acompanha a confirmação em tempo real. Se o cliente fechar a aba do
+ * pagamento, o webhook concilia a venda pelo nome do produto (plano + e-mail).
  */
 export function PainelWizard({
   account,
@@ -38,7 +40,6 @@ export function PainelWizard({
     customerName: account.name,
     customerEmail: account.email,
   });
-  const [posts, setPosts] = useState<string[]>(Array.from({ length: MAX_POSTS }, () => ""));
 
   const plan = getPlanById(selectedPlanId);
   const createLink = useServerFn(createCheckoutLink);
@@ -56,24 +57,22 @@ export function PainelWizard({
   }, []);
 
   const mutation = useMutation({
-    mutationFn: () => {
-      const cleanPosts = posts.map((post) => post.trim()).filter(Boolean);
-      return createLink({
+    mutationFn: () =>
+      createLink({
         data: {
           planId: selectedPlanId,
           profileUrl: campaign.profileUrl.trim(),
           region: formatRegion(campaign),
           competitor: campaign.competitor.trim(),
-          posts: cleanPosts,
           customerName: campaign.customerName.trim(),
           customerEmail: campaign.customerEmail.trim(),
           customerPhone: campaign.customerPhone.trim(),
           origin: window.location.origin,
         },
-      });
-    },
+      }),
     onSuccess: (result) => {
       if (!plan) return;
+
       saveOrder({
         orderNsu: result.orderNsu,
         planId: plan.id,
@@ -84,11 +83,13 @@ export function PainelWizard({
         customerPhone: campaign.customerPhone.trim(),
         profileUrl: campaign.profileUrl.trim(),
         region: formatRegion(campaign),
-        posts: posts.map((post) => post.trim()).filter(Boolean),
+        posts: [],
         createdAt: new Date().toISOString(),
       });
 
-      window.location.href = result.paymentUrl;
+      // Pagamento em nova aba; a aba atual acompanha o status em tempo real.
+      window.open(result.paymentUrl, "_blank", "noopener,noreferrer");
+      window.location.href = `/pedido?order_nsu=${encodeURIComponent(result.orderNsu)}`;
     },
     onError: (error: Error) => {
       toast.error(error.message || "Não foi possível iniciar o pagamento.");
@@ -107,29 +108,16 @@ export function PainelWizard({
               onSelect={onSelectPlan}
               onNext={() => setStep(1)}
             />
-          ) : null}
-
-          {step === 1 ? (
+          ) : (
             <CampaignStep
               data={campaign}
               onChange={patchCampaign}
               onBack={() => setStep(0)}
-              onNext={() => setStep(2)}
-            />
-          ) : null}
-
-          {step === 2 ? (
-            <PostsStep
-              posts={posts}
-              onChange={(index, value) =>
-                setPosts((current) => current.map((item, i) => (i === index ? value : item)))
-              }
-              plan={plan}
-              pending={mutation.isPending}
-              onBack={() => setStep(1)}
               onSubmit={() => mutation.mutate()}
+              pending={mutation.isPending}
+              priceLabel={plan ? formatBRL(plan.priceCents) : ""}
             />
-          ) : null}
+          )}
         </div>
       </div>
     </section>
