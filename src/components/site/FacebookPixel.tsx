@@ -115,13 +115,9 @@ async function mirrorToCapi(
  * Dispara um evento padrão do Pixel no navegador e o espelha na API de
  * Conversões com o mesmo eventID.
  */
-export function trackPixelEvent(
-  event: "Lead" | "Purchase",
-  details: PixelEventDetails = {},
-) {
+export function trackPixelEvent(event: "Lead" | "Purchase", details: PixelEventDetails = {}) {
   if (typeof window === "undefined") return;
   const eventId = createEventId();
-  const fbq = (window as unknown as { fbq?: FbqFunction }).fbq;
 
   const browserParams: Record<string, unknown> = {};
   if (details.contentName) browserParams.content_name = details.contentName;
@@ -131,6 +127,19 @@ export function trackPixelEvent(
   }
   if (details.orderId) browserParams.order_id = details.orderId;
 
-  fbq?.("track", event, browserParams, { eventID: eventId });
+  // O servidor (CAPI) dispara sempre — mesmo com AdBlock ou fbq ainda carregando.
   void mirrorToCapi(event, eventId, details);
+
+  // No navegador, tenta por alguns instantes até o snippet do Pixel existir.
+  let attempts = 0;
+  const fire = () => {
+    const fbq = (window as unknown as { fbq?: FbqFunction }).fbq;
+    if (fbq) {
+      fbq("track", event, browserParams, { eventID: eventId });
+      return;
+    }
+    if (attempts++ < 20) window.setTimeout(fire, 250);
+  };
+  fire();
 }
+
