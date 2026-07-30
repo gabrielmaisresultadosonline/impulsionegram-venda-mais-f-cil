@@ -18,6 +18,12 @@ const deliverSchema = passwordSchema.extend({
   action: z.enum(["entregue", "reabrir"]),
 });
 
+const adminTicketSchema = passwordSchema.extend({
+  orderNsu: z.string().trim().min(1).max(120),
+  text: z.string().trim().min(2, "Mensagem muito curta").max(2000),
+});
+
+
 export type AdminOrder = OrderRecord;
 
 export const adminLogin = createServerFn({ method: "POST" })
