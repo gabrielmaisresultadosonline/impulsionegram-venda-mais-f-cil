@@ -73,10 +73,20 @@ function Index() {
       <OrderForm selectedPlanId={selectedPlanId} />
 
       <footer className="border-t border-border px-4 py-8">
-        <p className="mx-auto max-w-6xl text-center text-xs text-muted-foreground">
-          Impulsionegram · Pagamentos processados pela InfinitePay · Resultados iniciam em até 6
-          horas após a aprovação.
-        </p>
+        <div className="mx-auto flex max-w-6xl flex-col items-center gap-3">
+          <p className="text-center text-xs text-muted-foreground">
+            Impulsionegram · Pagamentos processados pela InfinitePay · Resultados iniciam em até 6
+            horas após a aprovação.
+          </p>
+          <div className="flex items-center gap-4 text-xs">
+            <Link to="/pedido" className="text-muted-foreground hover:text-foreground">
+              Acompanhar meu pedido
+            </Link>
+            <Link to="/admin" className="text-muted-foreground hover:text-foreground">
+              Administração
+            </Link>
+          </div>
+        </div>
       </footer>
     </main>
   );
