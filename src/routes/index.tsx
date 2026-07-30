@@ -10,20 +10,24 @@ import { trackSiteEvent } from "@/lib/pixel.functions";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "POPULAR — Seja Popular + VENDA MAIS NO AUTOMÁTICO!" },
+      {
+        title:
+          "POPULAR — Mais Engajamento, mais clientes, mais público filtrado por região e CEP",
+      },
       {
         name: "description",
         content:
-          "Seja Popular com Público filtrado por Cep, região e até do perfil do seu concorrente. Tudo no automático com apenas 1 configuração. Planos a partir de R$14, entrega em até 6 horas.",
+          "Mais Engajamento, mais clientes, mais público filtrado por região e CEP no automático. Basta uma configuração. Faça tudo direto pelo seu celular. Planos a partir de R$29, entrega em até 6 horas.",
       },
       {
         property: "og:title",
-        content: "POPULAR — Seja Popular + VENDA MAIS NO AUTOMÁTICO!",
+        content:
+          "POPULAR — Mais Engajamento, mais clientes, mais público filtrado por região e CEP",
       },
       {
         property: "og:description",
         content:
-          "Escolha o plano, envie até 5 publicações, pague via InfinitePay e acompanhe a entrega no seu painel.",
+          "Escolha o plano, envie as publicações, pague via InfinitePay e acompanhe a entrega no seu painel.",
       },
     ],
   }),
