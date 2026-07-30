@@ -39,6 +39,17 @@ export const Route = createFileRoute("/api/public/infinitepay/webhook")({
             `[infinitepay] pagamento aprovado order_nsu=${parsed.data.order_nsu ?? "?"} slug=${parsed.data.invoice_slug ?? "?"}`,
           );
 
+          if (parsed.data.order_nsu) {
+            const { markPaid } = await import("@/lib/orders-repo.server");
+            markPaid(parsed.data.order_nsu, {
+              receiptUrl: parsed.data.receipt_url,
+              captureMethod: parsed.data.capture_method,
+              transactionNsu: parsed.data.transaction_nsu,
+              ...(parsed.data.paid_amount ? { priceCents: parsed.data.paid_amount } : {}),
+            });
+          }
+
+
           return new Response("ok", { status: 200 });
         } catch {
           return new Response("Bad Request", { status: 400 });
