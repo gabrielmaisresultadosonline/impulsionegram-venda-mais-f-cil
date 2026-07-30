@@ -36,7 +36,7 @@ function PainelPage() {
   const navigate = useNavigate();
   const [account, setAccount] = useState<LocalAccount | null>(null);
   const [ready, setReady] = useState(false);
-  const [selectedPlanId, setSelectedPlanId] = useState<string>(PLANS[2].id);
+  const [selectedPlanId, setSelectedPlanId] = useState<string>(PLANS[1].id);
 
   useEffect(() => {
     const stored = getAccount();
