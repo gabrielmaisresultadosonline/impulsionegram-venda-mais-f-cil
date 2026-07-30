@@ -25,6 +25,8 @@ DOMAIN="acessar.click"
 WWW_DOMAIN="www.acessar.click"
 REPO_URL=""
 LETSENCRYPT_EMAIL=""
+ADMIN_EMAIL="mro@gmail.com"
+ADMIN_PASSWORD=""
 NODE_MAJOR="22"
 
 # ----------------------------- Argumentos -----------------------------------
@@ -35,6 +37,8 @@ while [[ $# -gt 0 ]]; do
     --domain) DOMAIN="$2"; WWW_DOMAIN="www.$2"; shift 2 ;;
     --email)  LETSENCRYPT_EMAIL="$2"; shift 2 ;;
     --no-www) WWW_DOMAIN=""; shift ;;
+    --admin-email) ADMIN_EMAIL="$2"; shift 2 ;;
+    --admin-pass)  ADMIN_PASSWORD="$2"; shift 2 ;;
     *) echo "Argumento desconhecido: $1"; exit 1 ;;
   esac
 done
@@ -44,6 +48,9 @@ warn() { printf '\033[1;33m[aviso] %s\033[0m\n' "$*"; }
 die()  { printf '\033[1;31m[erro] %s\033[0m\n' "$*" >&2; exit 1; }
 
 [[ "$(id -u)" -eq 0 ]] || die "Execute como root:  sudo bash install.sh"
+
+# Senha do admin: usa a informada ou gera uma aleatória forte.
+[[ -n "${ADMIN_PASSWORD}" ]] || ADMIN_PASSWORD="$(openssl rand -base64 18 | tr -d '/+=' | cut -c1-20)"
 
 # --------------------- 1. Checagem de conflito de porta ----------------------
 log "Verificando se a porta ${APP_PORT} está livre"
@@ -74,7 +81,7 @@ if [[ -n "${REPO_URL}" ]]; then
   log "Clonando/atualizando código de ${REPO_URL}"
   if [[ -d "${APP_DIR}/.git" ]]; then
     git -C "${APP_DIR}" fetch --all --prune
-    git -C "${APP_DIR}" reset --hard origin/HEAD
+    git -C "${APP_DIR}" reset --hard "origin/$(git -C "${APP_DIR}" symbolic-ref --short HEAD 2>/dev/null || echo main)"
   else
     rm -rf "${APP_DIR:?}"/* 2>/dev/null || true
     git clone "${REPO_URL}" "${APP_DIR}"
@@ -222,7 +229,9 @@ cat <<EOF
  Serviço     : systemctl status ${APP_NAME}
  Logs        : journalctl -u ${APP_NAME} -f
  Porta local : 127.0.0.1:${APP_PORT}
- Env / senha : ${APP_DIR}/.env  (variável ADMIN_PASSWORD)
+ Admin       : https://${DOMAIN}/admin
+ Login admin : ${ADMIN_EMAIL} / ${ADMIN_PASSWORD}
+ Env / senha : ${APP_DIR}/.env
 
  Atualizar o site depois de mudar o código:
    bash ${APP_DIR}/deploy/update.sh
