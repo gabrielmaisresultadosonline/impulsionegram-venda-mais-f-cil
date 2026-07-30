@@ -103,7 +103,7 @@ export function Hero({ onCta, className, ...props }: HeroProps) {
                       animationDelay: item.delay,
                     }}
                   >
-                    <Icon className={item.size} aria-hidden="true" />
+                    <Icon className={item.size} aria-hidden={true} />
                   </span>
                 );
               })}
