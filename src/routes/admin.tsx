@@ -35,16 +35,16 @@ const TABS: ReadonlyArray<{ key: TabKey; label: string }> = [
 export const Route = createFileRoute("/admin")({
   head: () => ({
     meta: [
-      { title: "Administração — Impulsionegram" },
+      { title: "Administração — POPULAR" },
       {
         name: "description",
         content:
-          "Painel interno do Impulsionegram para acompanhar vendas pagas, tentativas de compra e pedidos a entregar.",
+          "Painel interno do POPULAR para acompanhar vendas pagas, tentativas de compra e pedidos a entregar.",
       },
-      { property: "og:title", content: "Administração — Impulsionegram" },
+      { property: "og:title", content: "Administração — POPULAR" },
       {
         property: "og:description",
-        content: "Gestão de vendas, cadastros e entregas do Impulsionegram.",
+        content: "Gestão de vendas, cadastros e entregas do POPULAR.",
       },
       { name: "robots", content: "noindex, nofollow" },
     ],
