@@ -93,9 +93,11 @@ export function markPaid(orderNsu: string, patch: Partial<OrderRecord> = {}): vo
       region: "",
       competitor: "",
       posts: [],
+      messages: [],
       createdAt: new Date().toISOString(),
       paidAt: new Date().toISOString(),
       ...patch,
+      messages: patch.messages ?? [],
     });
     prune();
     return;
@@ -105,9 +107,11 @@ export function markPaid(orderNsu: string, patch: Partial<OrderRecord> = {}): vo
     ...existing,
     ...patch,
     status: "pago",
+    messages: patch.messages ?? existing.messages ?? [],
     paidAt: existing.paidAt ?? new Date().toISOString(),
   });
 }
+
 
 /** Marca o pedido como entregue. Retorna false quando o pedido não existe. */
 export function markDelivered(orderNsu: string): boolean {
