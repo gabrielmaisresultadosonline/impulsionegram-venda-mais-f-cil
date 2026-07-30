@@ -51,3 +51,19 @@ export const customerSendMessage = createServerFn({ method: "POST" })
     });
     return repo.getOrderByNsu(data.orderNsu) ?? null;
   });
+
+/**
+ * Lista todos os pedidos de um e-mail para a seção "Meus pedidos" do painel.
+ * A posse é validada pelo e-mail salvo na conta local do navegador.
+ */
+export const customerListOrdersByEmail = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) =>
+    z.object({ customerEmail: z.string().trim().email().min(1).max(160) }).parse(data),
+  )
+  .handler(async ({ data }): Promise<CustomerOrder[]> => {
+    const repo = await import("./orders-repo.server");
+    const target = data.customerEmail.toLowerCase();
+    return repo
+      .listOrders()
+      .filter((order) => order.customerEmail.trim().toLowerCase() === target);
+  });

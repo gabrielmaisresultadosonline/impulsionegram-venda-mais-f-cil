@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { LogOut, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PainelWizard } from "@/components/site/PainelWizard";
+import { MyOrders } from "@/components/site/MyOrders";
 import {
   clearAccount,
   getAccount,
@@ -114,6 +115,8 @@ function PainelPage() {
         selectedPlanId={selectedPlanId}
         onSelectPlan={handleSelectPlan}
       />
+
+      <MyOrders customerEmail={account.email} />
 
       <footer className="border-border border-t px-4 py-8">
         <div className="mx-auto flex max-w-3xl items-center justify-center gap-4 text-xs">

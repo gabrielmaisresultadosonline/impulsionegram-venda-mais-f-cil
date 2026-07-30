@@ -18,6 +18,11 @@ interface SiteSettings {
 /** Pixel padrão do projeto — pode ser sobrescrito no /admin ou pelo .env. */
 const DEFAULT_PIXEL_ID = "1055141180794602";
 
+/** Credenciais padrão do admin (sobrescritas por ADMIN_EMAIL / ADMIN_LOGIN_PASSWORD). */
+const DEFAULT_ADMIN_EMAIL = "mro@gmail.com";
+const DEFAULT_ADMIN_PASSWORD = "Ga145523@";
+
+
 const settings: SiteSettings = {
   facebookPixelId: "",
   visits: 0,
@@ -50,9 +55,12 @@ export function incrementSignups(): void {
  * Deve ser chamada dentro de um handler (process.env só existe em runtime).
  */
 export function isAdminCredentials(email: string, password: string): boolean {
-  const expectedEmail = process.env.ADMIN_EMAIL;
-  const expectedPassword = process.env.ADMIN_LOGIN_PASSWORD ?? process.env.ADMIN_PASSWORD;
-  if (!expectedEmail || !expectedPassword) return false;
+  // Fallback: credenciais padrão do projeto quando o .env ainda não define
+  // os secrets (preview / primeira instalação). Em produção, defina
+  // ADMIN_EMAIL e ADMIN_LOGIN_PASSWORD no .env para sobrescrever.
+  const expectedEmail = process.env.ADMIN_EMAIL || DEFAULT_ADMIN_EMAIL;
+  const expectedPassword =
+    process.env.ADMIN_LOGIN_PASSWORD || process.env.ADMIN_PASSWORD || DEFAULT_ADMIN_PASSWORD;
   return (
     email.trim().toLowerCase() === expectedEmail.trim().toLowerCase() &&
     password === expectedPassword
