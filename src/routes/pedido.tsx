@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { checkPaymentStatus } from "@/lib/checkout.functions";
 import { formatBRL } from "@/lib/plans";
 import { getLatestOrder, getOrder, updateOrder, type StoredOrder } from "@/lib/order-storage";
+import { trackPixelEvent } from "@/components/site/FacebookPixel";
 
 interface PedidoSearch {
   order_nsu?: string;
@@ -79,6 +80,17 @@ function PedidoPage() {
   });
 
   const paid = status.data?.paid === true;
+
+  // Purchase é disparado uma única vez, quando a InfinitePay confirma o pagamento.
+  useEffect(() => {
+    if (!paid || !order) return;
+    trackPixelEvent("Purchase", {
+      value: order.priceCents / 100,
+      currency: "BRL",
+      content_name: order.planName,
+      order_id: order.orderNsu,
+    });
+  }, [paid, order]);
 
   return (
     <main className="bg-aurora min-h-screen px-4 py-16">
