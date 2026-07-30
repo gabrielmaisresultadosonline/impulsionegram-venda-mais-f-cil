@@ -9,15 +9,15 @@ import { PLANS } from "@/lib/plans";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Impulsionegram — Seguidores e engajamento filtrados por região" },
+      { title: "POPULAR — Seja Popular + VENDA MAIS NO AUTOMÁTICO!" },
       {
         name: "description",
         content:
-          "Ganhe popularidade para o seu negócio com seguidores brasileiros filtrados por região e pelo perfil do concorrente. Planos a partir de R$14, entrega em até 6 horas.",
+          "Seja Popular com Público filtrado por Cep, região e até do perfil do seu concorrente. Tudo no automático com apenas 1 configuração. Planos a partir de R$14, entrega em até 6 horas.",
       },
       {
         property: "og:title",
-        content: "Impulsionegram — Seguidores e engajamento filtrados por região",
+        content: "POPULAR — Seja Popular + VENDA MAIS NO AUTOMÁTICO!",
       },
       {
         property: "og:description",
