@@ -1,10 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Hero } from "@/components/site/Hero";
 import { HowItWorks } from "@/components/site/HowItWorks";
 import { SignupCard } from "@/components/site/SignupCard";
 import { PlanCard } from "@/components/site/PlanCard";
 import { PLANS } from "@/lib/plans";
+import { trackSiteEvent } from "@/lib/pixel.functions";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -32,6 +33,11 @@ export const Route = createFileRoute("/")({
 function Index() {
   const [selectedPlanId, setSelectedPlanId] = useState<string>(PLANS[2].id);
   const plansRef = useRef<HTMLDivElement>(null);
+
+  // Contabiliza a visita para o painel administrativo (uma vez por carregamento).
+  useEffect(() => {
+    void trackSiteEvent({ data: { type: "pageview" } });
+  }, []);
 
   const scrollToPlans = useCallback(() => {
     plansRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });

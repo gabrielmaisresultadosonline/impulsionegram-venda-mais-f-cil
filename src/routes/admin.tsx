@@ -21,7 +21,20 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { formatBRL } from "@/lib/plans";
-import { adminListOrders, adminLogin, adminUpdateOrder, type AdminOrder } from "@/lib/admin.functions";
+import { PixelCard } from "@/components/admin/PixelCard";
+import {
+  adminListOrders,
+  adminLogin,
+  
+  adminUpdateOrder,
+  type AdminOrder,
+} from "@/lib/admin.functions";
+
+/** Credenciais do admin mantidas apenas em memória durante a sessão. */
+export interface AdminCredentials {
+  email: string;
+  password: string;
+}
 
 type TabKey = "todos" | "pago" | "tentativa" | "entregue";
 
@@ -53,12 +66,13 @@ export const Route = createFileRoute("/admin")({
 });
 
 function AdminPage() {
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [session, setSession] = useState<string | null>(null);
+  const [session, setSession] = useState<AdminCredentials | null>(null);
   const login = useServerFn(adminLogin);
 
   const loginMutation = useMutation({
-    mutationFn: (value: string) => login({ data: { password: value } }),
+    mutationFn: (value: AdminCredentials) => login({ data: value }),
     onSuccess: (_result, value) => {
       setSession(value);
       setPassword("");
@@ -68,8 +82,8 @@ function AdminPage() {
 
   const handleLogin = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!password.trim()) return;
-    loginMutation.mutate(password.trim());
+    if (!email.trim() || !password.trim()) return;
+    loginMutation.mutate({ email: email.trim(), password: password.trim() });
   };
 
   if (!session) {
@@ -87,6 +101,18 @@ function AdminPage() {
             <p className="text-muted-foreground mt-1 text-sm">
               Acesso restrito à equipe POPULAR.
             </p>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="admin-email">E-mail</Label>
+            <Input
+              id="admin-email"
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              autoComplete="username"
+              maxLength={160}
+              required
+            />
           </div>
           <div className="space-y-2">
             <Label htmlFor="admin-password">Senha de acesso</Label>
@@ -118,15 +144,15 @@ function AdminPage() {
     );
   }
 
-  return <AdminDashboard password={session} onLogout={() => setSession(null)} />;
+  return <AdminDashboard credentials={session} onLogout={() => setSession(null)} />;
 }
 
 interface AdminDashboardProps {
-  password: string;
+  credentials: AdminCredentials;
   onLogout: () => void;
 }
 
-function AdminDashboard({ password, onLogout }: AdminDashboardProps) {
+function AdminDashboard({ credentials, onLogout }: AdminDashboardProps) {
   const [tab, setTab] = useState<TabKey>("pago");
   const listOrders = useServerFn(adminListOrders);
   const updateOrder = useServerFn(adminUpdateOrder);
@@ -134,13 +160,13 @@ function AdminDashboard({ password, onLogout }: AdminDashboardProps) {
 
   const ordersQuery = useQuery({
     queryKey: ["admin-orders"],
-    queryFn: () => listOrders({ data: { password } }),
+    queryFn: () => listOrders({ data: credentials }),
     refetchInterval: 15000,
   });
 
   const mutation = useMutation({
     mutationFn: (input: { orderNsu: string; action: "entregue" | "reabrir" }) =>
-      updateOrder({ data: { ...input, password } }),
+      updateOrder({ data: { ...input, ...credentials } }),
     onSuccess: (orders, input) => {
       queryClient.setQueryData(["admin-orders"], orders);
       toast.success(
@@ -220,6 +246,8 @@ function AdminDashboard({ password, onLogout }: AdminDashboardProps) {
             highlight={stats.pendingDelivery > 0}
           />
         </section>
+
+        <PixelCard credentials={credentials} className="mt-6" />
 
         <nav className="mt-8 flex flex-wrap gap-2" aria-label="Filtrar pedidos">
           {TABS.map((item) => (
