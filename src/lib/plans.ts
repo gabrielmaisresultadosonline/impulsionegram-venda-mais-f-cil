@@ -22,20 +22,6 @@ export interface Plan {
 
 export const PLANS: readonly Plan[] = [
   {
-    id: "seg-1000",
-    slug: "start",
-    name: "Start 1.000",
-    tagline: "Primeiro empurrão no perfil",
-    priceCents: 1400,
-    features: [
-      "1.000 seguidores brasileiros",
-      "Filtrados por região",
-      "Entrega em até 6 horas",
-      "Suporte por ticket no painel",
-    ],
-
-  },
-  {
     id: "seg-2000",
     slug: "impulso",
     name: "Impulso 2.000",
