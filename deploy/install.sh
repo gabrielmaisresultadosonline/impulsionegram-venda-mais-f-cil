@@ -88,20 +88,24 @@ fi
 # --------------------- 5. Variáveis de ambiente ------------------------------
 ENV_FILE="${APP_DIR}/.env"
 if [[ ! -f "${ENV_FILE}" ]]; then
-  log "Gerando ${ENV_FILE} com senha de admin aleatória"
-  ADMIN_PASSWORD="$(openssl rand -base64 18 | tr -d '/+=' | cut -c1-20)"
+  log "Gerando ${ENV_FILE}"
   cat > "${ENV_FILE}" <<EOF
 NODE_ENV=production
 PORT=${APP_PORT}
 HOST=127.0.0.1
-# Senha do painel /admin — troque quando quiser
+
+# ---- Acesso ao painel /admin (troque quando quiser) ----
+ADMIN_EMAIL=${ADMIN_EMAIL}
+ADMIN_LOGIN_PASSWORD=${ADMIN_PASSWORD}
+# Compatibilidade com a versão antiga (login só por senha)
 ADMIN_PASSWORD=${ADMIN_PASSWORD}
 EOF
-  echo "  >>> SENHA DO ADMIN GERADA: ${ADMIN_PASSWORD}"
+  echo "  >>> LOGIN ADMIN: ${ADMIN_EMAIL} / ${ADMIN_PASSWORD}"
 else
   log ".env já existe — mantido como está"
 fi
 chmod 600 "${ENV_FILE}"
+
 
 # --------------------- 6. Build de produção (Node) ---------------------------
 log "Instalando dependências e gerando build de produção"
