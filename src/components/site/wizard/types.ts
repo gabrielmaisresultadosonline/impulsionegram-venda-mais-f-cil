@@ -29,6 +29,3 @@ export function formatRegion(data: CampaignData): string {
     : data.regionValue;
 }
 
-/** Mínimo e máximo de publicações exigidos no pedido. */
-export const MIN_POSTS = 3;
-export const MAX_POSTS = 5;

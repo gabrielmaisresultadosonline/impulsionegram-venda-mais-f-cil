@@ -140,36 +140,17 @@ function PedidoPage() {
                   <Info label="Perfil" value={order.profileUrl} />
                   <Info label="Região" value={order.region} />
                   <Info
-                    label="Publicações enviadas"
-                    value={`${order.posts.length} de 5`}
-                  />
-                  <Info
                     label="Prazo de entrega"
                     value="Até 6 horas após a aprovação"
                   />
                 </dl>
               ) : null}
 
-              {order && order.posts.length > 0 ? (
-                <div className="mt-6 rounded-xl border border-border p-4">
-                  <p className="text-xs tracking-wide text-muted-foreground uppercase">
-                    Publicações enviadas
-                  </p>
-                  <ul className="mt-2 space-y-1 text-sm break-all">
-                    {order.posts.map((post) => (
-                      <li key={post} className="text-muted-foreground">
-                        {post}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ) : null}
-
               <ol className="mt-8 space-y-4">
                 <Step
                   done
                   title="Pedido cadastrado"
-                  description="Recebemos os dados do seu perfil e das publicações."
+                  description="Recebemos os dados do seu perfil e da sua campanha."
                 />
                 <Step
                   done={paid}
