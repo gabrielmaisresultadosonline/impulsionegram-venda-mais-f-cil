@@ -1,4 +1,16 @@
-import { ArrowRight, BadgeCheck, Instagram, ShieldCheck, Timer } from "lucide-react";
+import {
+  ArrowRight,
+  BadgeCheck,
+  Heart,
+  Instagram,
+  Plus,
+  Rocket,
+  ShieldCheck,
+  Timer,
+  TrendingUp,
+  User,
+  Users,
+} from "lucide-react";
 import type { ComponentProps } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -15,6 +27,32 @@ const TRUST_ITEMS = [
   { icon: Instagram, label: "Filtro por região" },
 ] as const;
 
+type FloatingIcon = {
+  icon: React.ComponentType<{ className?: string; "aria-hidden"?: boolean }>;
+  delay: string;
+  x: string;
+  size: string;
+  duration: string;
+  color: string;
+};
+
+const FLOATING_ICONS: FloatingIcon[] = [
+  { icon: Plus, delay: "0ms", x: "78%", size: "size-3", duration: "animate-float-up", color: "text-primary" },
+  { icon: User, delay: "600ms", x: "85%", size: "size-4", duration: "animate-float-up-slow", color: "text-brand-3" },
+  { icon: Users, delay: "1200ms", x: "92%", size: "size-3", duration: "animate-float-up", color: "text-primary" },
+  { icon: Rocket, delay: "400ms", x: "74%", size: "size-3", duration: "animate-float-up-slow", color: "text-brand-2" },
+  { icon: TrendingUp, delay: "900ms", x: "88%", size: "size-4", duration: "animate-float-up", color: "text-brand-3" },
+  { icon: User, delay: "150ms", x: "82%", size: "size-3", duration: "animate-float-up", color: "text-primary" },
+  { icon: Plus, delay: "750ms", x: "95%", size: "size-3", duration: "animate-float-up-slow", color: "text-brand-3" },
+  { icon: Users, delay: "1350ms", x: "76%", size: "size-4", duration: "animate-float-up", color: "text-primary" },
+  { icon: Rocket, delay: "300ms", x: "90%", size: "size-3", duration: "animate-float-up", color: "text-brand-2" },
+  { icon: Heart, delay: "1000ms", x: "86%", size: "size-3", duration: "animate-float-up-slow", color: "text-primary" },
+  { icon: TrendingUp, delay: "500ms", x: "80%", size: "size-4", duration: "animate-float-up", color: "text-brand-3" },
+  { icon: Plus, delay: "1100ms", x: "93%", size: "size-3", duration: "animate-float-up-slow", color: "text-primary" },
+];
+
+
+
 export function Hero({ onCta, className, ...props }: HeroProps) {
   return (
     <section
@@ -22,7 +60,7 @@ export function Hero({ onCta, className, ...props }: HeroProps) {
       {...props}
     >
       <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-2">
-        <div>
+        <div className="relative">
           <div className="flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary/60 px-4 py-1.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
               <Instagram className="size-3.5" aria-hidden="true" />
@@ -34,15 +72,53 @@ export function Hero({ onCta, className, ...props }: HeroProps) {
             </span>
           </div>
 
-          <h1 className="mt-6 text-4xl leading-[1.05] font-extrabold text-balance md:text-6xl">
-            Seja Popular com Público filtrado por Cep e região e até do seu concorrente!{" "}
-            <span className="text-gradient-brand">Tudo no automático</span> com apenas 1 configuração
-          </h1>
+          <div className="relative mt-6">
+            <div className="relative">
+              <h1 className="text-4xl leading-[1.05] font-extrabold text-balance md:text-6xl">
+                Seja Popular e <span className="text-gradient-brand">Venda Mais</span>
+              </h1>
+
+              {/* Efeito de ícones flutuando ao lado do título */}
+              <div
+                className="pointer-events-none absolute top-0 right-0 left-0 h-28"
+                aria-hidden="true"
+              >
+                {FLOATING_ICONS.map((item, index) => {
+                  const Icon = item.icon;
+                  return (
+                    <span
+                      key={`${index}`}
+                      className={cn(
+                        "absolute bottom-0 inline-block opacity-0",
+                        item.duration,
+                        item.color
+                      )}
+                      style={{
+                        left: item.x,
+                        animationDelay: item.delay,
+                      }}
+                    >
+                      <Icon className={item.size} aria-hidden={true} />
+                    </span>
+                  );
+                })}
+              </div>
+            </div>
+
+            <p className="mt-3 text-xl leading-snug font-semibold text-balance text-foreground md:text-2xl">
+              Público filtrado por CEP, região e pelo perfil do seu concorrente.
+            </p>
+
+            <p className="mt-2 text-sm font-medium text-primary/90 md:text-base">
+              SEJA Popular + VENDA MAIS NO AUTOMÁTICO!
+            </p>
+          </div>
+
 
           <p className="mt-6 max-w-xl text-base text-pretty text-muted-foreground md:text-lg">
-            SEJA Popular + VENDA MAIS NO AUTOMÁTICO! Ganhe seguidores filtrados por região, cidade e
-            perfil do seu concorrente sem precisar de muito esforço. Você escolhe o plano, envia as
-            publicações, paga e acompanha tudo no seu painel.
+            Ganhe seguidores filtrados por cidade, região e comportamento do seu concorrente — sem
+            esforço manual. Escolha o plano, envie as publicações, pague e acompanhe tudo no seu
+            painel.
           </p>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
