@@ -1,4 +1,16 @@
-import { ArrowRight, BadgeCheck, Instagram, ShieldCheck, Timer } from "lucide-react";
+import {
+  ArrowRight,
+  BadgeCheck,
+  Heart,
+  Instagram,
+  Plus,
+  Rocket,
+  ShieldCheck,
+  Timer,
+  TrendingUp,
+  User,
+  Users,
+} from "lucide-react";
 import type { ComponentProps } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -15,19 +27,28 @@ const TRUST_ITEMS = [
   { icon: Instagram, label: "Filtro por região" },
 ] as const;
 
-const FLOATING_EMOJIS = [
-  { emoji: "➕", delay: "0ms", x: "4%", size: "text-lg", duration: "animate-float-up" },
-  { emoji: "👤", delay: "600ms", x: "12%", size: "text-xl", duration: "animate-float-up-slow" },
-  { emoji: "👥", delay: "1200ms", x: "18%", size: "text-lg", duration: "animate-float-up" },
-  { emoji: "🚀", delay: "400ms", x: "28%", size: "text-base", duration: "animate-float-up-slow" },
-  { emoji: "📈", delay: "900ms", x: "34%", size: "text-xl", duration: "animate-float-up" },
-  { emoji: "👤", delay: "150ms", x: "44%", size: "text-lg", duration: "animate-float-up" },
-  { emoji: "➕", delay: "750ms", x: "50%", size: "text-base", duration: "animate-float-up-slow" },
-  { emoji: "👥", delay: "1350ms", x: "58%", size: "text-xl", duration: "animate-float-up" },
-  { emoji: "🚀", delay: "300ms", x: "66%", size: "text-lg", duration: "animate-float-up" },
-  { emoji: "👤", delay: "1000ms", x: "72%", size: "text-base", duration: "animate-float-up-slow" },
-  { emoji: "📈", delay: "500ms", x: "80%", size: "text-xl", duration: "animate-float-up" },
-  { emoji: "➕", delay: "1100ms", x: "88%", size: "text-lg", duration: "animate-float-up-slow" },
+type FloatingIcon = {
+  icon: React.ComponentType<{ className?: string; "aria-hidden"?: boolean }>;
+  delay: string;
+  x: string;
+  size: string;
+  duration: string;
+  color: string;
+};
+
+const FLOATING_ICONS: FloatingIcon[] = [
+  { icon: Plus, delay: "0ms", x: "4%", size: "size-4", duration: "animate-float-up", color: "text-primary" },
+  { icon: User, delay: "600ms", x: "12%", size: "size-5", duration: "animate-float-up-slow", color: "text-brand-3" },
+  { icon: Users, delay: "1200ms", x: "18%", size: "size-4", duration: "animate-float-up", color: "text-primary" },
+  { icon: Rocket, delay: "400ms", x: "28%", size: "size-3.5", duration: "animate-float-up-slow", color: "text-brand-2" },
+  { icon: TrendingUp, delay: "900ms", x: "34%", size: "size-5", duration: "animate-float-up", color: "text-brand-3" },
+  { icon: User, delay: "150ms", x: "44%", size: "size-4", duration: "animate-float-up", color: "text-primary" },
+  { icon: Plus, delay: "750ms", x: "50%", size: "size-3.5", duration: "animate-float-up-slow", color: "text-brand-3" },
+  { icon: Users, delay: "1350ms", x: "58%", size: "size-5", duration: "animate-float-up", color: "text-primary" },
+  { icon: Rocket, delay: "300ms", x: "66%", size: "size-4", duration: "animate-float-up", color: "text-brand-2" },
+  { icon: Heart, delay: "1000ms", x: "72%", size: "size-3.5", duration: "animate-float-up-slow", color: "text-primary" },
+  { icon: TrendingUp, delay: "500ms", x: "80%", size: "size-5", duration: "animate-float-up", color: "text-brand-3" },
+  { icon: Plus, delay: "1100ms", x: "88%", size: "size-4", duration: "animate-float-up-slow", color: "text-primary" },
 ];
 
 export function Hero({ onCta, className, ...props }: HeroProps) {
@@ -59,30 +80,33 @@ export function Hero({ onCta, className, ...props }: HeroProps) {
             </p>
 
             <p className="mt-2 text-sm font-medium text-primary/90 md:text-base">
-              SEJA Popular + VENDA MAIS NO AUTOMÁTICO! ✨
+              SEJA Popular + VENDA MAIS NO AUTOMÁTICO!
             </p>
 
-            {/* Efeito de emojis subindo ao lado do título */}
+            {/* Efeito de ícones flutuando ao lado do título */}
             <div
               className="pointer-events-none absolute -top-6 right-0 bottom-0 left-0"
               aria-hidden="true"
             >
-              {FLOATING_EMOJIS.map((item, index) => (
-                <span
-                  key={`${item.emoji}-${index}`}
-                  className={cn(
-                    "absolute bottom-0 inline-block font-emoji opacity-0",
-                    item.duration,
-                    item.size
-                  )}
-                  style={{
-                    left: item.x,
-                    animationDelay: item.delay,
-                  }}
-                >
-                  {item.emoji}
-                </span>
-              ))}
+              {FLOATING_ICONS.map((item, index) => {
+                const Icon = item.icon;
+                return (
+                  <span
+                    key={`${index}`}
+                    className={cn(
+                      "absolute bottom-0 inline-block opacity-0",
+                      item.duration,
+                      item.color
+                    )}
+                    style={{
+                      left: item.x,
+                      animationDelay: item.delay,
+                    }}
+                  >
+                    <Icon className={item.size} aria-hidden="true" />
+                  </span>
+                );
+              })}
             </div>
           </div>
 
