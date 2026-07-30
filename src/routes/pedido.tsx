@@ -138,6 +138,43 @@ function PedidoPage() {
                 </dl>
               ) : null}
 
+              {order && order.posts.length > 0 ? (
+                <div className="mt-6 rounded-xl border border-border p-4">
+                  <p className="text-xs tracking-wide text-muted-foreground uppercase">
+                    Publicações enviadas
+                  </p>
+                  <ul className="mt-2 space-y-1 text-sm break-all">
+                    {order.posts.map((post) => (
+                      <li key={post} className="text-muted-foreground">
+                        {post}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
+
+              <ol className="mt-8 space-y-4">
+                <Step
+                  done
+                  title="Pedido cadastrado"
+                  description="Recebemos os dados do seu perfil e das publicações."
+                />
+                <Step
+                  done={paid}
+                  title="Pagamento confirmado"
+                  description={
+                    paid
+                      ? "InfinitePay aprovou o pagamento."
+                      : "Aguardando aprovação da InfinitePay."
+                  }
+                />
+                <Step
+                  done={false}
+                  title="Entrega em andamento"
+                  description="Nossa equipe inicia a entrega e o resultado aparece no perfil em até 6 horas."
+                />
+              </ol>
+
               <p className="mt-8 flex items-center gap-2 text-xs text-muted-foreground">
                 <Clock className="size-3.5" aria-hidden="true" />
                 Verificação automática a cada 5 segundos.
@@ -165,5 +202,32 @@ function Info({ label, value }: { label: string; value: string }) {
       <dt className="text-xs tracking-wide text-muted-foreground uppercase">{label}</dt>
       <dd className="mt-1 text-sm break-all">{value}</dd>
     </div>
+  );
+}
+
+interface StepProps {
+  done: boolean;
+  title: string;
+  description: string;
+}
+
+function Step({ done, title, description }: StepProps) {
+  return (
+    <li className="flex items-start gap-3">
+      <span
+        className={
+          done
+            ? "mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-success/20 text-success"
+            : "mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full border border-border text-muted-foreground"
+        }
+        aria-hidden="true"
+      >
+        {done ? <CheckCircle2 className="size-4" /> : <Clock className="size-3.5" />}
+      </span>
+      <div>
+        <p className="text-sm font-semibold">{title}</p>
+        <p className="text-xs text-muted-foreground">{description}</p>
+      </div>
+    </li>
   );
 }
