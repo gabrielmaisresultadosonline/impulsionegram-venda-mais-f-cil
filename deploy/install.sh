@@ -111,12 +111,25 @@ ADMIN_EMAIL=${ADMIN_EMAIL}
 ADMIN_LOGIN_PASSWORD=${ADMIN_PASSWORD}
 # Compatibilidade com a versão antiga (login só por senha)
 ADMIN_PASSWORD=${ADMIN_PASSWORD}
+
+# ---- Meta / Facebook (Pixel + API de Conversões) ----
+FACEBOOK_PIXEL_ID=${FB_PIXEL_ID}
+FACEBOOK_CAPI_TOKEN=${FB_CAPI_TOKEN}
+# Preencha só durante testes no "Testar eventos" do Gerenciador:
+# FACEBOOK_TEST_EVENT_CODE=
 EOF
   echo "  >>> LOGIN ADMIN: ${ADMIN_EMAIL} / ${ADMIN_PASSWORD}"
 else
-  log ".env já existe — mantido como está"
+  log ".env já existe — atualizando apenas as chaves do Meta"
+  # Reescreve/insere as chaves do Meta sem tocar no resto do arquivo.
+  sed -i '/^FACEBOOK_PIXEL_ID=/d;/^FACEBOOK_CAPI_TOKEN=/d' "${ENV_FILE}"
+  {
+    echo "FACEBOOK_PIXEL_ID=${FB_PIXEL_ID}"
+    [[ -n "${FB_CAPI_TOKEN}" ]] && echo "FACEBOOK_CAPI_TOKEN=${FB_CAPI_TOKEN}"
+  } >> "${ENV_FILE}"
 fi
 chmod 600 "${ENV_FILE}"
+
 
 
 # --------------------- 6. Build de produção (Node) ---------------------------
