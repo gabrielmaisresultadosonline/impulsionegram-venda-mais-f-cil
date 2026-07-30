@@ -85,7 +85,7 @@ function AdminPage() {
           <div>
             <h1 className="text-xl font-extrabold">Área administrativa</h1>
             <p className="text-muted-foreground mt-1 text-sm">
-              Acesso restrito à equipe Impulsionegram.
+              Acesso restrito à equipe POPULAR.
             </p>
           </div>
           <div className="space-y-2">
