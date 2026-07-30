@@ -79,9 +79,20 @@ function PedidoPage() {
       }),
   });
 
-  const paid = status.data?.paid === true;
+  // Fallback: se a consulta direta ainda não confirmou, verificamos pelo
+  // e-mail — é assim que o pagamento aparece quando o cliente fechou a aba do
+  // checkout e só o webhook (nome do produto) confirmou a venda.
+  const email = order?.customerEmail ?? "";
+  const byEmail = useQuery({
+    queryKey: ["payment-status-email", email],
+    enabled: Boolean(email) && status.data?.paid !== true,
+    refetchInterval: (query) => (query.state.data?.paid ? false : 7000),
+    queryFn: () => statusByEmail({ data: { customerEmail: email } }),
+  });
 
-  // Purchase é disparado uma única vez, quando a InfinitePay confirma o pagamento.
+  const paid = status.data?.paid === true || byEmail.data?.paid === true;
+
+  // Purchase é disparado uma única vez, quando o pagamento é confirmado.
   useEffect(() => {
     if (!paid || !order) return;
     trackPixelEvent("Purchase", {
@@ -91,6 +102,7 @@ function PedidoPage() {
       order_id: order.orderNsu,
     });
   }, [paid, order]);
+
 
   return (
     <main className="bg-aurora min-h-screen px-4 py-16">
