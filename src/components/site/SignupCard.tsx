@@ -58,7 +58,7 @@ export function SignupCard({ selectedPlanId, className, ...props }: SignupCardPr
       };
       saveAccount(created);
       savePlanSelection(selectedPlanId);
-      trackPixelEvent("Lead", { content_name: plan?.name });
+      trackPixelEvent("Lead", { contentName: plan?.name, email });
       void trackSiteEvent({ data: { type: "signup" } });
       toast.success(`Conta criada! Bem-vindo(a), ${name.split(" ")[0]}.`);
       await navigate({ to: "/painel" });
