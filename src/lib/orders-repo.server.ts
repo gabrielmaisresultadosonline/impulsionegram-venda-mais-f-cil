@@ -1,3 +1,5 @@
+import fs from "node:fs";
+
 /**
  * Repositório de pedidos (lado servidor).
  *
@@ -72,8 +74,6 @@ function loadFromDisk(): void {
   if (loaded) return;
   loaded = true;
   try {
-    // require síncrono evita await em todas as funções do contrato público.
-    const fs = require("node:fs") as typeof import("node:fs");
     if (!fs.existsSync(DATA_FILE)) return;
     const raw = fs.readFileSync(DATA_FILE, "utf8");
     const parsed: unknown = JSON.parse(raw);
@@ -90,7 +90,6 @@ function loadFromDisk(): void {
 
 function persist(): void {
   try {
-    const fs = require("node:fs") as typeof import("node:fs");
     fs.mkdirSync(DATA_DIR, { recursive: true });
     fs.writeFileSync(DATA_FILE, JSON.stringify([...registry.values()]), "utf8");
   } catch {
