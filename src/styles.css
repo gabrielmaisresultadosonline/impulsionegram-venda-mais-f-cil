@@ -233,5 +233,71 @@
   font-family: "Noto Color Emoji", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
 }
 
+/* --------- Ícones 3D girando (hero) --------- */
+@keyframes spin3d {
+  0% {
+    transform: rotateY(0deg) rotateX(8deg);
+  }
+  100% {
+    transform: rotateY(360deg) rotateX(8deg);
+  }
+}
 
+@keyframes orbit-bob {
+  0%,
+  100% {
+    transform: translateY(-8px);
+  }
+  50% {
+    transform: translateY(8px);
+  }
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.95);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.06);
+  }
+}
+
+@keyframes shine-sweep {
+  0% {
+    transform: translateX(-120%) rotate(18deg);
+  }
+  100% {
+    transform: translateX(220%) rotate(18deg);
+  }
+}
+
+@utility scene-3d {
+  perspective: 900px;
+  transform-style: preserve-3d;
+}
+
+@utility animate-spin3d {
+  animation: spin3d 7s linear infinite;
+  transform-style: preserve-3d;
+}
+
+@utility animate-spin3d-rev {
+  animation: spin3d 9s linear infinite reverse;
+  transform-style: preserve-3d;
+}
+
+@utility animate-orbit-bob {
+  animation: orbit-bob 4.5s ease-in-out infinite;
+}
+
+@utility animate-pulse-glow {
+  animation: pulse-glow 3.5s ease-in-out infinite;
+}
+
+@utility animate-shine-sweep {
+  animation: shine-sweep 3.6s ease-in-out infinite;
+}
 
