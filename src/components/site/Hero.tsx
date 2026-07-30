@@ -15,6 +15,21 @@ const TRUST_ITEMS = [
   { icon: Instagram, label: "Filtro por região" },
 ] as const;
 
+const FLOATING_EMOJIS = [
+  { emoji: "➕", delay: "0ms", x: "4%", size: "text-lg", duration: "animate-float-up" },
+  { emoji: "👤", delay: "600ms", x: "12%", size: "text-xl", duration: "animate-float-up-slow" },
+  { emoji: "👥", delay: "1200ms", x: "18%", size: "text-lg", duration: "animate-float-up" },
+  { emoji: "🚀", delay: "400ms", x: "28%", size: "text-base", duration: "animate-float-up-slow" },
+  { emoji: "📈", delay: "900ms", x: "34%", size: "text-xl", duration: "animate-float-up" },
+  { emoji: "👤", delay: "150ms", x: "44%", size: "text-lg", duration: "animate-float-up" },
+  { emoji: "➕", delay: "750ms", x: "50%", size: "text-base", duration: "animate-float-up-slow" },
+  { emoji: "👥", delay: "1350ms", x: "58%", size: "text-xl", duration: "animate-float-up" },
+  { emoji: "🚀", delay: "300ms", x: "66%", size: "text-lg", duration: "animate-float-up" },
+  { emoji: "👤", delay: "1000ms", x: "72%", size: "text-base", duration: "animate-float-up-slow" },
+  { emoji: "📈", delay: "500ms", x: "80%", size: "text-xl", duration: "animate-float-up" },
+  { emoji: "➕", delay: "1100ms", x: "88%", size: "text-lg", duration: "animate-float-up-slow" },
+];
+
 export function Hero({ onCta, className, ...props }: HeroProps) {
   return (
     <section
@@ -22,7 +37,7 @@ export function Hero({ onCta, className, ...props }: HeroProps) {
       {...props}
     >
       <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-2">
-        <div>
+        <div className="relative">
           <div className="flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary/60 px-4 py-1.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
               <Instagram className="size-3.5" aria-hidden="true" />
@@ -34,15 +49,47 @@ export function Hero({ onCta, className, ...props }: HeroProps) {
             </span>
           </div>
 
-          <h1 className="mt-6 text-4xl leading-[1.05] font-extrabold text-balance md:text-6xl">
-            Seja Popular com Público filtrado por Cep e região e até do seu concorrente!{" "}
-            <span className="text-gradient-brand">Tudo no automático</span> com apenas 1 configuração
-          </h1>
+          <div className="relative mt-6">
+            <h1 className="text-4xl leading-[1.05] font-extrabold text-balance md:text-6xl">
+              Seja Popular e <span className="text-gradient-brand">Venda Mais</span>
+            </h1>
+
+            <p className="mt-3 text-xl leading-snug font-semibold text-balance text-foreground md:text-2xl">
+              Público filtrado por CEP, região e pelo perfil do seu concorrente.
+            </p>
+
+            <p className="mt-2 text-sm font-medium text-primary/90 md:text-base">
+              SEJA Popular + VENDA MAIS NO AUTOMÁTICO! ✨
+            </p>
+
+            {/* Efeito de emojis subindo ao lado do título */}
+            <div
+              className="pointer-events-none absolute -top-6 right-0 bottom-0 left-0"
+              aria-hidden="true"
+            >
+              {FLOATING_EMOJIS.map((item, index) => (
+                <span
+                  key={`${item.emoji}-${index}`}
+                  className={cn(
+                    "absolute bottom-0 inline-block opacity-0",
+                    item.duration,
+                    item.size
+                  )}
+                  style={{
+                    left: item.x,
+                    animationDelay: item.delay,
+                  }}
+                >
+                  {item.emoji}
+                </span>
+              ))}
+            </div>
+          </div>
 
           <p className="mt-6 max-w-xl text-base text-pretty text-muted-foreground md:text-lg">
-            SEJA Popular + VENDA MAIS NO AUTOMÁTICO! Ganhe seguidores filtrados por região, cidade e
-            perfil do seu concorrente sem precisar de muito esforço. Você escolhe o plano, envia as
-            publicações, paga e acompanha tudo no seu painel.
+            Ganhe seguidores filtrados por cidade, região e comportamento do seu concorrente — sem
+            esforço manual. Escolha o plano, envie as publicações, pague e acompanhe tudo no seu
+            painel.
           </p>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
