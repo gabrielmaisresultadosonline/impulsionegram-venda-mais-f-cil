@@ -86,7 +86,7 @@ export function Hero({ onCta, className, ...props }: HeroProps) {
 
             {/* Efeito de ícones flutuando ao lado do título */}
             <div
-              className="pointer-events-none absolute top-0 right-0 left-0 h-36"
+              className="pointer-events-none absolute top-0 right-0 left-0 h-32"
               aria-hidden="true"
             >
               {FLOATING_ICONS.map((item, index) => {
