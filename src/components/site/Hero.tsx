@@ -1,15 +1,9 @@
 import {
   ArrowRight,
   BadgeCheck,
-  Heart,
   Instagram,
-  Plus,
-  Rocket,
   ShieldCheck,
   Timer,
-  TrendingUp,
-  User,
-  Users,
 } from "lucide-react";
 import type { ComponentProps } from "react";
 import { cn } from "@/lib/utils";
@@ -26,30 +20,6 @@ const TRUST_ITEMS = [
   { icon: ShieldCheck, label: "Pagamento seguro" },
   { icon: Instagram, label: "Filtro por região" },
 ] as const;
-
-type FloatingIcon = {
-  icon: React.ComponentType<{ className?: string; "aria-hidden"?: boolean }>;
-  delay: string;
-  x: string;
-  size: string;
-  duration: string;
-  color: string;
-};
-
-const FLOATING_ICONS: FloatingIcon[] = [
-  { icon: Plus, delay: "0ms", x: "78%", size: "size-3", duration: "animate-float-up", color: "text-primary" },
-  { icon: User, delay: "600ms", x: "85%", size: "size-4", duration: "animate-float-up-slow", color: "text-brand-3" },
-  { icon: Users, delay: "1200ms", x: "92%", size: "size-3", duration: "animate-float-up", color: "text-primary" },
-  { icon: Rocket, delay: "400ms", x: "74%", size: "size-3", duration: "animate-float-up-slow", color: "text-brand-2" },
-  { icon: TrendingUp, delay: "900ms", x: "88%", size: "size-4", duration: "animate-float-up", color: "text-brand-3" },
-  { icon: User, delay: "150ms", x: "82%", size: "size-3", duration: "animate-float-up", color: "text-primary" },
-  { icon: Plus, delay: "750ms", x: "95%", size: "size-3", duration: "animate-float-up-slow", color: "text-brand-3" },
-  { icon: Users, delay: "1350ms", x: "76%", size: "size-4", duration: "animate-float-up", color: "text-primary" },
-  { icon: Rocket, delay: "300ms", x: "90%", size: "size-3", duration: "animate-float-up", color: "text-brand-2" },
-  { icon: Heart, delay: "1000ms", x: "86%", size: "size-3", duration: "animate-float-up-slow", color: "text-primary" },
-  { icon: TrendingUp, delay: "500ms", x: "80%", size: "size-4", duration: "animate-float-up", color: "text-brand-3" },
-  { icon: Plus, delay: "1100ms", x: "93%", size: "size-3", duration: "animate-float-up-slow", color: "text-primary" },
-];
 
 
 
