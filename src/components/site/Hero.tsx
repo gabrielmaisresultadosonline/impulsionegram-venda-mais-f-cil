@@ -37,19 +37,20 @@ type FloatingIcon = {
 };
 
 const FLOATING_ICONS: FloatingIcon[] = [
-  { icon: Plus, delay: "0ms", x: "4%", size: "size-4", duration: "animate-float-up", color: "text-primary" },
-  { icon: User, delay: "600ms", x: "12%", size: "size-5", duration: "animate-float-up-slow", color: "text-brand-3" },
-  { icon: Users, delay: "1200ms", x: "18%", size: "size-4", duration: "animate-float-up", color: "text-primary" },
-  { icon: Rocket, delay: "400ms", x: "28%", size: "size-3.5", duration: "animate-float-up-slow", color: "text-brand-2" },
-  { icon: TrendingUp, delay: "900ms", x: "34%", size: "size-5", duration: "animate-float-up", color: "text-brand-3" },
-  { icon: User, delay: "150ms", x: "44%", size: "size-4", duration: "animate-float-up", color: "text-primary" },
-  { icon: Plus, delay: "750ms", x: "50%", size: "size-3.5", duration: "animate-float-up-slow", color: "text-brand-3" },
-  { icon: Users, delay: "1350ms", x: "58%", size: "size-5", duration: "animate-float-up", color: "text-primary" },
-  { icon: Rocket, delay: "300ms", x: "66%", size: "size-4", duration: "animate-float-up", color: "text-brand-2" },
-  { icon: Heart, delay: "1000ms", x: "72%", size: "size-3.5", duration: "animate-float-up-slow", color: "text-primary" },
-  { icon: TrendingUp, delay: "500ms", x: "80%", size: "size-5", duration: "animate-float-up", color: "text-brand-3" },
-  { icon: Plus, delay: "1100ms", x: "88%", size: "size-4", duration: "animate-float-up-slow", color: "text-primary" },
+  { icon: Plus, delay: "0ms", x: "62%", size: "size-4", duration: "animate-float-up", color: "text-primary" },
+  { icon: User, delay: "600ms", x: "70%", size: "size-5", duration: "animate-float-up-slow", color: "text-brand-3" },
+  { icon: Users, delay: "1200ms", x: "78%", size: "size-4", duration: "animate-float-up", color: "text-primary" },
+  { icon: Rocket, delay: "400ms", x: "85%", size: "size-3.5", duration: "animate-float-up-slow", color: "text-brand-2" },
+  { icon: TrendingUp, delay: "900ms", x: "92%", size: "size-5", duration: "animate-float-up", color: "text-brand-3" },
+  { icon: User, delay: "150ms", x: "66%", size: "size-4", duration: "animate-float-up", color: "text-primary" },
+  { icon: Plus, delay: "750ms", x: "74%", size: "size-3.5", duration: "animate-float-up-slow", color: "text-brand-3" },
+  { icon: Users, delay: "1350ms", x: "82%", size: "size-5", duration: "animate-float-up", color: "text-primary" },
+  { icon: Rocket, delay: "300ms", x: "88%", size: "size-4", duration: "animate-float-up", color: "text-brand-2" },
+  { icon: Heart, delay: "1000ms", x: "96%", size: "size-3.5", duration: "animate-float-up-slow", color: "text-primary" },
+  { icon: TrendingUp, delay: "500ms", x: "68%", size: "size-5", duration: "animate-float-up", color: "text-brand-3" },
+  { icon: Plus, delay: "1100ms", x: "90%", size: "size-4", duration: "animate-float-up-slow", color: "text-primary" },
 ];
+
 
 export function Hero({ onCta, className, ...props }: HeroProps) {
   return (
