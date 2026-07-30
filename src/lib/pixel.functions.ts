@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { getRequestHeader } from "@tanstack/react-start/server";
 import { z } from "zod";
 
 /**
@@ -28,4 +29,39 @@ export const trackSiteEvent = createServerFn({ method: "POST" })
     if (data.type === "pageview") settings.incrementVisits();
     else settings.incrementSignups();
     return { ok: true };
+  });
+
+const conversionSchema = z.object({
+  eventName: z.enum(["PageView", "Lead", "Purchase"]),
+  /** Gerado no navegador e reutilizado aqui para deduplicar no Meta. */
+  eventId: z.string().trim().min(6).max(120),
+  eventSourceUrl: z.string().trim().max(500).optional(),
+  email: z.string().trim().max(160).optional(),
+  phone: z.string().trim().max(40).optional(),
+  value: z.number().nonnegative().max(1_000_000).optional(),
+  contentName: z.string().trim().max(160).optional(),
+  orderId: z.string().trim().max(120).optional(),
+  fbp: z.string().trim().max(200).optional(),
+  fbc: z.string().trim().max(200).optional(),
+});
+
+/**
+ * Espelha no servidor (API de Conversões) o evento já disparado no navegador.
+ * O token do Meta fica só no servidor; o retorno nunca expõe detalhes do
+ * provedor. Falhas são silenciosas de propósito: rastreamento não pode
+ * quebrar cadastro nem checkout.
+ */
+export const trackConversion = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) => conversionSchema.parse(data))
+  .handler(async ({ data }): Promise<{ ok: boolean }> => {
+    const { sendCapiEvent } = await import("./capi.server");
+
+    const forwardedFor = getRequestHeader("x-forwarded-for") ?? "";
+    const clientIp = forwardedFor.split(",")[0]?.trim() || undefined;
+
+    return sendCapiEvent({
+      ...data,
+      clientIp,
+      clientUserAgent: getRequestHeader("user-agent") ?? undefined,
+    });
   });

@@ -98,10 +98,12 @@ function PedidoPage() {
     if (!paid || !order) return;
     trackPixelEvent("Purchase", {
       value: order.priceCents / 100,
-      currency: "BRL",
-      content_name: order.planName,
-      order_id: order.orderNsu,
+      contentName: order.planName,
+      orderId: order.orderNsu,
+      email: order.customerEmail,
+      phone: order.customerPhone,
     });
+
   }, [paid, order]);
 
 

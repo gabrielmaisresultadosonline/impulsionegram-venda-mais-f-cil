@@ -15,6 +15,9 @@ interface SiteSettings {
   signups: number;
 }
 
+/** Pixel padrão do projeto — pode ser sobrescrito no /admin ou pelo .env. */
+const DEFAULT_PIXEL_ID = "1055141180794602";
+
 const settings: SiteSettings = {
   facebookPixelId: "",
   visits: 0,
@@ -22,8 +25,12 @@ const settings: SiteSettings = {
 };
 
 export function getSettings(): SiteSettings {
-  return { ...settings };
+  // O .env tem prioridade na primeira leitura; depois vale o que o admin salvar.
+  const pixelId =
+    settings.facebookPixelId || process.env.FACEBOOK_PIXEL_ID || DEFAULT_PIXEL_ID;
+  return { ...settings, facebookPixelId: pixelId };
 }
+
 
 /** Aceita apenas dígitos (formato do Pixel ID) ou string vazia para remover. */
 export function setFacebookPixelId(pixelId: string): void {

@@ -27,6 +27,8 @@ REPO_URL=""
 LETSENCRYPT_EMAIL=""
 ADMIN_EMAIL="mro@gmail.com"
 ADMIN_PASSWORD=""
+FB_PIXEL_ID="1055141180794602"
+FB_CAPI_TOKEN=""
 NODE_MAJOR="22"
 
 # ----------------------------- Argumentos -----------------------------------
@@ -39,9 +41,12 @@ while [[ $# -gt 0 ]]; do
     --no-www) WWW_DOMAIN=""; shift ;;
     --admin-email) ADMIN_EMAIL="$2"; shift 2 ;;
     --admin-pass)  ADMIN_PASSWORD="$2"; shift 2 ;;
+    --fb-pixel)    FB_PIXEL_ID="$2"; shift 2 ;;
+    --fb-token)    FB_CAPI_TOKEN="$2"; shift 2 ;;
     *) echo "Argumento desconhecido: $1"; exit 1 ;;
   esac
 done
+
 
 log()  { printf '\n\033[1;36m==> %s\033[0m\n' "$*"; }
 warn() { printf '\033[1;33m[aviso] %s\033[0m\n' "$*"; }
@@ -106,12 +111,25 @@ ADMIN_EMAIL=${ADMIN_EMAIL}
 ADMIN_LOGIN_PASSWORD=${ADMIN_PASSWORD}
 # Compatibilidade com a versão antiga (login só por senha)
 ADMIN_PASSWORD=${ADMIN_PASSWORD}
+
+# ---- Meta / Facebook (Pixel + API de Conversões) ----
+FACEBOOK_PIXEL_ID=${FB_PIXEL_ID}
+FACEBOOK_CAPI_TOKEN=${FB_CAPI_TOKEN}
+# Preencha só durante testes no "Testar eventos" do Gerenciador:
+# FACEBOOK_TEST_EVENT_CODE=
 EOF
   echo "  >>> LOGIN ADMIN: ${ADMIN_EMAIL} / ${ADMIN_PASSWORD}"
 else
-  log ".env já existe — mantido como está"
+  log ".env já existe — atualizando apenas as chaves do Meta"
+  # Reescreve/insere as chaves do Meta sem tocar no resto do arquivo.
+  sed -i '/^FACEBOOK_PIXEL_ID=/d;/^FACEBOOK_CAPI_TOKEN=/d' "${ENV_FILE}"
+  {
+    echo "FACEBOOK_PIXEL_ID=${FB_PIXEL_ID}"
+    [[ -n "${FB_CAPI_TOKEN}" ]] && echo "FACEBOOK_CAPI_TOKEN=${FB_CAPI_TOKEN}"
+  } >> "${ENV_FILE}"
 fi
 chmod 600 "${ENV_FILE}"
+
 
 
 # --------------------- 6. Build de produção (Node) ---------------------------
