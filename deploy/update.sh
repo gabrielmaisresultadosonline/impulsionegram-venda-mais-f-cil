@@ -20,7 +20,8 @@ REPO_URL="${REPO_URL:-https://github.com/gabrielmaisresultadosonline/impulsioneg
 if [[ -d .git ]]; then
   log "Baixando última versão do repositório"
   git fetch --all --prune
-  git reset --hard "origin/$(git rev-parse --abbrev-ref HEAD)"
+  # Garante que usamos a branch main do GitHub (o repositório remoto usa main, não master).
+  git reset --hard "origin/main" || git reset --hard "origin/$(git rev-parse --abbrev-ref HEAD)"
 else
   log "Pasta sem git — sincronizando código do GitHub (preserva .env)"
   rm -rf /tmp/${APP_NAME}-src
