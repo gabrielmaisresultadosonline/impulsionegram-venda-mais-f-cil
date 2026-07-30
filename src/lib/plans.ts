@@ -28,8 +28,9 @@ export const PLANS: readonly Plan[] = [
       "1.000 seguidores brasileiros",
       "Filtrados por região",
       "Entrega em até 6 horas",
-      "Suporte no WhatsApp",
+      "Suporte por ticket no painel",
     ],
+
   },
   {
     id: "seg-2000",
@@ -81,5 +82,8 @@ export function formatBRL(cents: number): string {
   return new Intl.NumberFormat("pt-BR", {
     style: "currency",
     currency: "BRL",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
   }).format(cents / 100);
 }
+
