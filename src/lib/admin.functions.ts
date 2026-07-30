@@ -9,9 +9,12 @@ import type { OrderRecord } from "./orders-repo.server";
  * ADMIN_PASSWORD. Nenhuma autorização acontece no cliente.
  */
 
-const passwordSchema = z.object({
+const credentialsSchema = z.object({
+  email: z.string().trim().email("E-mail inválido").max(160),
   password: z.string().min(1, "Informe a senha").max(200),
 });
+
+const passwordSchema = credentialsSchema;
 
 const deliverSchema = passwordSchema.extend({
   orderNsu: z.string().trim().min(1).max(120),
@@ -23,15 +26,37 @@ const adminTicketSchema = passwordSchema.extend({
   text: z.string().trim().min(2, "Mensagem muito curta").max(2000),
 });
 
+const pixelSchema = passwordSchema.extend({
+  pixelId: z
+    .string()
+    .trim()
+    .max(32)
+    .regex(/^\d*$/, "O Pixel ID deve conter apenas números"),
+});
+
+export interface AdminSettings {
+  facebookPixelId: string;
+  visits: number;
+  signups: number;
+}
+
+/** Guarda única de autorização usada por todas as funções administrativas. */
+async function assertAdmin(email: string, password: string): Promise<void> {
+  const { isAdminCredentials } = await import("./settings.server");
+  if (!isAdminCredentials(email, password)) {
+    throw new Error("Não autorizado.");
+  }
+}
+
 
 export type AdminOrder = OrderRecord;
 
 export const adminLogin = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => passwordSchema.parse(data))
   .handler(async ({ data }): Promise<{ ok: true }> => {
-    const { isAdminPassword } = await import("./orders-repo.server");
-    if (!isAdminPassword(data.password)) {
-      throw new Error("Senha incorreta.");
+    const { isAdminCredentials } = await import("./settings.server");
+    if (!isAdminCredentials(data.email, data.password)) {
+      throw new Error("E-mail ou senha incorretos.");
     }
     return { ok: true };
   });
@@ -39,20 +64,16 @@ export const adminLogin = createServerFn({ method: "POST" })
 export const adminListOrders = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => passwordSchema.parse(data))
   .handler(async ({ data }): Promise<AdminOrder[]> => {
+    await assertAdmin(data.email, data.password);
     const repo = await import("./orders-repo.server");
-    if (!repo.isAdminPassword(data.password)) {
-      throw new Error("Não autorizado.");
-    }
     return repo.listOrders();
   });
 
 export const adminUpdateOrder = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => deliverSchema.parse(data))
   .handler(async ({ data }): Promise<AdminOrder[]> => {
+    await assertAdmin(data.email, data.password);
     const repo = await import("./orders-repo.server");
-    if (!repo.isAdminPassword(data.password)) {
-      throw new Error("Não autorizado.");
-    }
     const changed =
       data.action === "entregue"
         ? repo.markDelivered(data.orderNsu)
@@ -66,10 +87,8 @@ export const adminUpdateOrder = createServerFn({ method: "POST" })
 export const adminReplyTicket = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => adminTicketSchema.parse(data))
   .handler(async ({ data }): Promise<AdminOrder[]> => {
+    await assertAdmin(data.email, data.password);
     const repo = await import("./orders-repo.server");
-    if (!repo.isAdminPassword(data.password)) {
-      throw new Error("Não autorizado.");
-    }
     const added = repo.addMessage(data.orderNsu, {
       author: "admin",
       text: data.text,
@@ -81,3 +100,20 @@ export const adminReplyTicket = createServerFn({ method: "POST" })
     return repo.listOrders();
   });
 
+
+export const adminGetSettings = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) => passwordSchema.parse(data))
+  .handler(async ({ data }): Promise<AdminSettings> => {
+    await assertAdmin(data.email, data.password);
+    const { getSettings } = await import("./settings.server");
+    return getSettings();
+  });
+
+export const adminSetPixel = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) => pixelSchema.parse(data))
+  .handler(async ({ data }): Promise<AdminSettings> => {
+    await assertAdmin(data.email, data.password);
+    const { setFacebookPixelId, getSettings } = await import("./settings.server");
+    setFacebookPixelId(data.pixelId);
+    return getSettings();
+  });
