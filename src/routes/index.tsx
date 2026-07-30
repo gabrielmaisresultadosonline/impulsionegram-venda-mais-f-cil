@@ -9,15 +9,15 @@ import { PLANS } from "@/lib/plans";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Impulsionegram — Seguidores e engajamento filtrados por região" },
+      { title: "POPULAR — Seja Popular + VENDA MAIS NO AUTOMÁTICO!" },
       {
         name: "description",
         content:
-          "Ganhe popularidade para o seu negócio com seguidores brasileiros filtrados por região e pelo perfil do concorrente. Planos a partir de R$14, entrega em até 6 horas.",
+          "Seja Popular com Público filtrado por Cep, região e até do perfil do seu concorrente. Tudo no automático com apenas 1 configuração. Planos a partir de R$14, entrega em até 6 horas.",
       },
       {
         property: "og:title",
-        content: "Impulsionegram — Seguidores e engajamento filtrados por região",
+        content: "POPULAR — Seja Popular + VENDA MAIS NO AUTOMÁTICO!",
       },
       {
         property: "og:description",
@@ -75,8 +75,8 @@ function Index() {
       <footer className="border-t border-border px-4 py-8">
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-3">
           <p className="text-center text-xs text-muted-foreground">
-            Impulsionegram · Pagamentos processados pela InfinitePay · Resultados iniciam em até 6
-            horas após a aprovação.
+            POPULAR · Parceiro oficial da Meta · Pagamentos processados pela InfinitePay · Resultados
+            iniciam em até 6 horas após a aprovação.
           </p>
           <div className="flex items-center gap-4 text-xs">
             <Link to="/pedido" className="text-muted-foreground hover:text-foreground">

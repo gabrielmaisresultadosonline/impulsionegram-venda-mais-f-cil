@@ -27,13 +27,13 @@ export const Route = createFileRoute("/pedido")({
   }),
   head: () => ({
     meta: [
-      { title: "Meu pedido — Impulsionegram" },
+      { title: "Meu pedido — POPULAR" },
       {
         name: "description",
         content:
-          "Acompanhe em tempo real a confirmação do pagamento e a entrega do seu impulsionamento no Impulsionegram.",
+          "Acompanhe em tempo real a confirmação do pagamento e a entrega do seu impulsionamento no POPULAR.",
       },
-      { property: "og:title", content: "Meu pedido — Impulsionegram" },
+      { property: "og:title", content: "Meu pedido — POPULAR" },
       {
         property: "og:description",
         content: "Confirmação de pagamento em tempo real e prazo de entrega de até 6 horas.",

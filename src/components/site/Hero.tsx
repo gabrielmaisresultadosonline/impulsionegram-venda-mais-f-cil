@@ -1,4 +1,4 @@
-import { ArrowRight, Instagram, ShieldCheck, Timer } from "lucide-react";
+import { ArrowRight, BadgeCheck, Instagram, ShieldCheck, Timer } from "lucide-react";
 import type { ComponentProps } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -23,20 +23,26 @@ export function Hero({ onCta, className, ...props }: HeroProps) {
     >
       <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-2">
         <div>
-          <span className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary/60 px-4 py-1.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-            <Instagram className="size-3.5" aria-hidden="true" />
-            Impulsionegram
-          </span>
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary/60 px-4 py-1.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+              <Instagram className="size-3.5" aria-hidden="true" />
+              POPULAR
+            </span>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-1.5 text-xs font-semibold tracking-wide text-primary uppercase">
+              <BadgeCheck className="size-3.5" aria-hidden="true" />
+              Parceiro oficial da Meta
+            </span>
+          </div>
 
           <h1 className="mt-6 text-4xl leading-[1.05] font-extrabold text-balance md:text-6xl">
-            Nunca foi tão fácil <span className="text-gradient-brand">vender mais</span> sem
-            precisar de muito esforço
+            Seja Popular com Público filtrado por Cep e região e até do seu concorrente!{" "}
+            <span className="text-gradient-brand">Tudo no automático</span> com apenas 1 configuração
           </h1>
 
           <p className="mt-6 max-w-xl text-base text-pretty text-muted-foreground md:text-lg">
-            Ganhe popularidade para o seu negócio com seguidores filtrados por região e filtrados
-            direto do perfil do seu concorrente. Você escolhe o plano, envia até 5 publicações,
-            paga e acompanha tudo no seu painel.
+            SEJA Popular + VENDA MAIS NO AUTOMÁTICO! Ganhe seguidores filtrados por região, cidade e
+            perfil do seu concorrente sem precisar de muito esforço. Você escolhe o plano, envia as
+            publicações, paga e acompanha tudo no seu painel.
           </p>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
