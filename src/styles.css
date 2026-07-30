@@ -229,4 +229,9 @@
   animation: float-up-slow 3.2s ease-in-out infinite;
 }
 
+@utility font-emoji {
+  font-family: "Noto Color Emoji", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+}
+
+
 
