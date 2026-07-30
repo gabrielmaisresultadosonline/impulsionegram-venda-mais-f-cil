@@ -79,6 +79,9 @@ function Index() {
             iniciam em até 6 horas após a aprovação.
           </p>
           <div className="flex items-center gap-4 text-xs">
+            <Link to="/painel" className="text-muted-foreground hover:text-foreground">
+              Meu painel
+            </Link>
             <Link to="/pedido" className="text-muted-foreground hover:text-foreground">
               Acompanhar meu pedido
             </Link>

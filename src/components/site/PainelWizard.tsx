@@ -105,7 +105,6 @@ export function PainelWizard({
             <PlanStep
               selectedPlanId={selectedPlanId}
               onSelect={onSelectPlan}
-              onBack={() => setStep(0)}
               onNext={() => setStep(1)}
             />
           ) : null}
