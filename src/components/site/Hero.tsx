@@ -74,8 +74,8 @@ export function Hero({ onCta, className, ...props }: HeroProps) {
 
           <div className="relative mt-6">
             <div className="relative">
-              <h1 className="text-4xl leading-[1.05] font-extrabold text-balance md:text-6xl">
-                Seja Popular e <span className="text-gradient-brand">Venda Mais</span>
+              <h1 className="text-3xl leading-[1.08] font-extrabold text-balance md:text-5xl">
+                Mais Engajamento, mais clientes, mais público filtrado por região e CEP no automático.
               </h1>
 
               {/* Efeito de ícones flutuando ao lado do título */}
@@ -105,15 +105,10 @@ export function Hero({ onCta, className, ...props }: HeroProps) {
               </div>
             </div>
 
-            <p className="mt-3 text-xl leading-snug font-semibold text-balance text-foreground md:text-2xl">
-              Público filtrado por CEP, região e pelo perfil do seu concorrente.
-            </p>
-
-            <p className="mt-2 text-sm font-medium text-primary/90 md:text-base">
-              SEJA Popular + VENDA MAIS NO AUTOMÁTICO!
+            <p className="mt-4 text-lg leading-snug font-semibold text-balance text-foreground md:text-xl">
+              Basta uma configuração. Faça tudo direto pelo seu celular.
             </p>
           </div>
-
 
           <p className="mt-6 max-w-xl text-base text-pretty text-muted-foreground md:text-lg">
             Ganhe seguidores filtrados por cidade, região e comportamento do seu concorrente — sem
