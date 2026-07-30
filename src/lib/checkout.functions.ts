@@ -116,7 +116,25 @@ export const createCheckoutLink = createServerFn({ method: "POST" })
       throw new Error("Resposta inesperada do provedor de pagamento.");
     }
 
+    // Registra a tentativa de compra para o painel administrativo.
+    const { recordAttempt } = await import("./orders-repo.server");
+    recordAttempt({
+      orderNsu,
+      planId: plan.id,
+      planName: plan.name,
+      priceCents: plan.priceCents,
+      customerName: data.customerName,
+      customerEmail: data.customerEmail,
+      customerPhone: data.customerPhone ?? "",
+      profileUrl: data.profileUrl,
+      region: data.region,
+      competitor: data.competitor ?? "",
+      posts: data.posts ?? [],
+      paymentUrl,
+    });
+
     return { orderNsu, paymentUrl };
+
   });
 
 const paymentCheckSchema = z.object({
@@ -161,11 +179,23 @@ export const checkPaymentStatus = createServerFn({ method: "POST" })
       capture_method?: string;
     };
 
+    const paid = Boolean(body.paid);
+
+    if (paid) {
+      // Fonte de verdade confirmada pela InfinitePay: propaga para o admin.
+      const { markPaid } = await import("./orders-repo.server");
+      markPaid(data.orderNsu, {
+        captureMethod: body.capture_method,
+        transactionNsu: data.transactionNsu || undefined,
+      });
+    }
+
     return {
-      paid: Boolean(body.paid),
+      paid,
       amount: body.amount,
       paidAmount: body.paid_amount,
       installments: body.installments,
       captureMethod: body.capture_method,
     };
   });
+
