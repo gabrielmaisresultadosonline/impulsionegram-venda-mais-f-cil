@@ -64,6 +64,21 @@ export const PLANS: readonly Plan[] = [
     ],
     badge: "Completo",
   },
+  {
+    id: "trimestral-10k",
+    slug: "trimestral",
+    name: "Trimestral 10K",
+    tagline: "3 meses de visibilidade garantida",
+    priceCents: 29700,
+    features: [
+      "10 mil seguidores filtrados por região",
+      "10 mil visualizações",
+      "Curtidas e engajamento contínuos",
+      "Válido por 3 meses",
+      "Até 12x de R$30 no cartão",
+    ],
+    badge: "Mais economia",
+  },
 ] as const;
 
 export function getPlanById(id: string): Plan | undefined {
