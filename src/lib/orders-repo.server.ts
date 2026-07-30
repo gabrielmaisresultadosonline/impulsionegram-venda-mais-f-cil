@@ -93,12 +93,12 @@ export function markPaid(orderNsu: string, patch: Partial<OrderRecord> = {}): vo
       region: "",
       competitor: "",
       posts: [],
-      messages: [],
       createdAt: new Date().toISOString(),
       paidAt: new Date().toISOString(),
       ...patch,
       messages: patch.messages ?? [],
     });
+
     prune();
     return;
   }
