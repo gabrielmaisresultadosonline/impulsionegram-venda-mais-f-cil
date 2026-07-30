@@ -10,11 +10,17 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PedidoRouteImport } from './routes/pedido'
 import { Route as ApiPublicInfinitepayWebhookRouteImport } from './routes/api/public/infinitepay/webhook'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PedidoRoute = PedidoRouteImport.update({
+  id: '/pedido',
+  path: '/pedido',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicInfinitepayWebhookRoute =
@@ -26,27 +32,31 @@ const ApiPublicInfinitepayWebhookRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/pedido': typeof PedidoRoute
   '/api/public/infinitepay/webhook': typeof ApiPublicInfinitepayWebhookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/pedido': typeof PedidoRoute
   '/api/public/infinitepay/webhook': typeof ApiPublicInfinitepayWebhookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/pedido': typeof PedidoRoute
   '/api/public/infinitepay/webhook': typeof ApiPublicInfinitepayWebhookRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/api/public/infinitepay/webhook'
+  fullPaths: '/' | '/pedido' | '/api/public/infinitepay/webhook'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/api/public/infinitepay/webhook'
-  id: '__root__' | '/' | '/api/public/infinitepay/webhook'
+  to: '/' | '/pedido' | '/api/public/infinitepay/webhook'
+  id: '__root__' | '/' | '/pedido' | '/api/public/infinitepay/webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  PedidoRoute: typeof PedidoRoute
   ApiPublicInfinitepayWebhookRoute: typeof ApiPublicInfinitepayWebhookRoute
 }
 
@@ -57,6 +67,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pedido': {
+      id: '/pedido'
+      path: '/pedido'
+      fullPath: '/pedido'
+      preLoaderRoute: typeof PedidoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/infinitepay/webhook': {
@@ -71,6 +88,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  PedidoRoute: PedidoRoute,
   ApiPublicInfinitepayWebhookRoute: ApiPublicInfinitepayWebhookRoute,
 }
 export const routeTree = rootRouteImport
