@@ -62,3 +62,22 @@ export const adminUpdateOrder = createServerFn({ method: "POST" })
     }
     return repo.listOrders();
   });
+
+export const adminReplyTicket = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) => adminTicketSchema.parse(data))
+  .handler(async ({ data }): Promise<AdminOrder[]> => {
+    const repo = await import("./orders-repo.server");
+    if (!repo.isAdminPassword(data.password)) {
+      throw new Error("Não autorizado.");
+    }
+    const added = repo.addMessage(data.orderNsu, {
+      author: "admin",
+      text: data.text,
+      readByAdmin: true,
+    });
+    if (!added) {
+      throw new Error("Pedido não encontrado.");
+    }
+    return repo.listOrders();
+  });
+
