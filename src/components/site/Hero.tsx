@@ -112,8 +112,7 @@ export function Hero({ onCta, className, ...props }: HeroProps) {
 
           <p className="mt-6 max-w-xl text-base text-pretty text-muted-foreground md:text-lg">
             Ganhe seguidores filtrados por cidade, região e comportamento do seu concorrente — sem
-            esforço manual. Escolha o plano, envie as publicações, pague e acompanhe tudo no seu
-            painel.
+            esforço manual. Envie o link do perfil, pague e acompanhe tudo no seu painel.
           </p>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
