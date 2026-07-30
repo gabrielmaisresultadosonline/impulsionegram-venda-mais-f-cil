@@ -14,6 +14,8 @@ import {
   type LocalAccount,
 } from "@/lib/account-storage";
 import { formatBRL, getPlanById } from "@/lib/plans";
+import { trackPixelEvent } from "./FacebookPixel";
+import { trackSiteEvent } from "@/lib/pixel.functions";
 
 export interface SignupCardProps extends ComponentProps<"section"> {
   /** Plano escolhido na seção de planos da home. */
@@ -56,6 +58,8 @@ export function SignupCard({ selectedPlanId, className, ...props }: SignupCardPr
       };
       saveAccount(created);
       savePlanSelection(selectedPlanId);
+      trackPixelEvent("Lead", { content_name: plan?.name });
+      void trackSiteEvent({ data: { type: "signup" } });
       toast.success(`Conta criada! Bem-vindo(a), ${name.split(" ")[0]}.`);
       await navigate({ to: "/painel" });
     } catch {
