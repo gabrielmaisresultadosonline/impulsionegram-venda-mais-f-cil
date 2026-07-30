@@ -13,6 +13,14 @@
 
 export type OrderStatus = "tentativa" | "pago" | "entregue";
 
+export interface TicketMessage {
+  id: string;
+  author: "customer" | "admin";
+  text: string;
+  createdAt: string;
+  readByAdmin: boolean;
+}
+
 export interface OrderRecord {
   orderNsu: string;
   status: OrderStatus;
@@ -33,7 +41,9 @@ export interface OrderRecord {
   receiptUrl?: string;
   captureMethod?: string;
   transactionNsu?: string;
+  messages: TicketMessage[];
 }
+
 
 /** Limite defensivo para evitar crescimento ilimitado de memória. */
 const MAX_RECORDS = 500;
@@ -86,7 +96,9 @@ export function markPaid(orderNsu: string, patch: Partial<OrderRecord> = {}): vo
       createdAt: new Date().toISOString(),
       paidAt: new Date().toISOString(),
       ...patch,
+      messages: patch.messages ?? [],
     });
+
     prune();
     return;
   }
@@ -95,9 +107,11 @@ export function markPaid(orderNsu: string, patch: Partial<OrderRecord> = {}): vo
     ...existing,
     ...patch,
     status: "pago",
+    messages: patch.messages ?? existing.messages ?? [],
     paidAt: existing.paidAt ?? new Date().toISOString(),
   });
 }
+
 
 /** Marca o pedido como entregue. Retorna false quando o pedido não existe. */
 export function markDelivered(orderNsu: string): boolean {
@@ -123,10 +137,53 @@ export function markReopened(orderNsu: string): boolean {
   return true;
 }
 
+/** Adiciona uma mensagem ao ticket do pedido. */
+export function addMessage(
+  orderNsu: string,
+  message: Omit<TicketMessage, "id" | "createdAt">,
+): boolean {
+  const existing = registry.get(orderNsu);
+  if (!existing) return false;
+  const entry: TicketMessage = {
+    ...message,
+    id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    createdAt: new Date().toISOString(),
+  };
+  registry.set(orderNsu, {
+    ...existing,
+    messages: [...existing.messages, entry],
+  });
+  return true;
+}
+
+/** Marca as mensagens como lidas pelo lado indicado. */
+export function markMessagesRead(
+  orderNsu: string,
+  by: "customer" | "admin",
+): boolean {
+  const existing = registry.get(orderNsu);
+  if (!existing) return false;
+  registry.set(orderNsu, {
+    ...existing,
+    messages: existing.messages.map((msg) =>
+      msg.author === (by === "admin" ? "customer" : "admin") && !msg.readByAdmin
+        ? { ...msg, readByAdmin: true }
+        : msg,
+    ),
+  });
+  return true;
+}
+
+/** Busca um pedido pelo NSU. */
+export function getOrderByNsu(orderNsu: string): OrderRecord | undefined {
+  return registry.get(orderNsu);
+}
+
 /** Lista todos os pedidos, do mais recente para o mais antigo. */
 export function listOrders(): OrderRecord[] {
   return [...registry.values()].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
 }
+
 
 /**
  * Valida a senha do administrador contra o secret ADMIN_PASSWORD.

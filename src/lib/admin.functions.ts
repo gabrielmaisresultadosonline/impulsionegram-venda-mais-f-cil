@@ -18,6 +18,12 @@ const deliverSchema = passwordSchema.extend({
   action: z.enum(["entregue", "reabrir"]),
 });
 
+const adminTicketSchema = passwordSchema.extend({
+  orderNsu: z.string().trim().min(1).max(120),
+  text: z.string().trim().min(2, "Mensagem muito curta").max(2000),
+});
+
+
 export type AdminOrder = OrderRecord;
 
 export const adminLogin = createServerFn({ method: "POST" })
@@ -56,3 +62,22 @@ export const adminUpdateOrder = createServerFn({ method: "POST" })
     }
     return repo.listOrders();
   });
+
+export const adminReplyTicket = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) => adminTicketSchema.parse(data))
+  .handler(async ({ data }): Promise<AdminOrder[]> => {
+    const repo = await import("./orders-repo.server");
+    if (!repo.isAdminPassword(data.password)) {
+      throw new Error("Não autorizado.");
+    }
+    const added = repo.addMessage(data.orderNsu, {
+      author: "admin",
+      text: data.text,
+      readByAdmin: true,
+    });
+    if (!added) {
+      throw new Error("Pedido não encontrado.");
+    }
+    return repo.listOrders();
+  });
+

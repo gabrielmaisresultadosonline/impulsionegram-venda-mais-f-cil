@@ -75,11 +75,15 @@ export function OrderWizard({
         planId: plan.id,
         planName: plan.name,
         priceCents: plan.priceCents,
+        customerName: campaign.customerName.trim(),
+        customerEmail: campaign.customerEmail.trim(),
+        customerPhone: campaign.customerPhone.trim(),
         profileUrl: campaign.profileUrl.trim(),
         region: formatRegion(campaign),
         posts: posts.map((post) => post.trim()).filter(Boolean),
         createdAt: new Date().toISOString(),
       });
+
       window.location.href = result.paymentUrl;
     },
     onError: (error: Error) => {

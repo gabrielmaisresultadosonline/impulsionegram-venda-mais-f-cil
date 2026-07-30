@@ -10,6 +10,9 @@ export interface StoredOrder {
   planId: string;
   planName: string;
   priceCents: number;
+  customerName: string;
+  customerEmail: string;
+  customerPhone: string;
   profileUrl: string;
   region: string;
   posts: string[];
@@ -20,6 +23,7 @@ export interface StoredOrder {
   receiptUrl?: string;
   captureMethod?: string;
 }
+
 
 const STORAGE_KEY = "impulsionegram.orders.v1";
 
