@@ -108,6 +108,7 @@ function prune(): void {
 export function recordAttempt(
   record: Omit<OrderRecord, "status" | "createdAt"> & Partial<Pick<OrderRecord, "createdAt">>,
 ): void {
+  loadFromDisk();
   const existing = registry.get(record.orderNsu);
   registry.set(record.orderNsu, {
     ...existing,
@@ -116,10 +117,12 @@ export function recordAttempt(
     createdAt: existing?.createdAt ?? record.createdAt ?? new Date().toISOString(),
   });
   prune();
+  persist();
 }
 
 /** Marca o pedido como pago (idempotente: só aplica na primeira confirmação). */
 export function markPaid(orderNsu: string, patch: Partial<OrderRecord> = {}): void {
+  loadFromDisk();
   const existing = registry.get(orderNsu);
   if (!existing) {
     // Pagamento chegou antes/sem tentativa registrada (ex.: reinício do worker).
@@ -143,6 +146,7 @@ export function markPaid(orderNsu: string, patch: Partial<OrderRecord> = {}): vo
     });
 
     prune();
+  persist();
     return;
   }
   if (existing.status === "entregue") return;
@@ -153,11 +157,13 @@ export function markPaid(orderNsu: string, patch: Partial<OrderRecord> = {}): vo
     messages: patch.messages ?? existing.messages ?? [],
     paidAt: existing.paidAt ?? new Date().toISOString(),
   });
+  persist();
 }
 
 
 /** Marca o pedido como entregue. Retorna false quando o pedido não existe. */
 export function markDelivered(orderNsu: string): boolean {
+  loadFromDisk();
   const existing = registry.get(orderNsu);
   if (!existing) return false;
   registry.set(orderNsu, {
@@ -165,11 +171,13 @@ export function markDelivered(orderNsu: string): boolean {
     status: "entregue",
     deliveredAt: new Date().toISOString(),
   });
+  persist();
   return true;
 }
 
 /** Reabre um pedido entregue (correção operacional). */
 export function markReopened(orderNsu: string): boolean {
+  loadFromDisk();
   const existing = registry.get(orderNsu);
   if (!existing) return false;
   registry.set(orderNsu, {
@@ -177,6 +185,7 @@ export function markReopened(orderNsu: string): boolean {
     status: existing.paidAt ? "pago" : "tentativa",
     deliveredAt: undefined,
   });
+  persist();
   return true;
 }
 
@@ -185,6 +194,7 @@ export function addMessage(
   orderNsu: string,
   message: Omit<TicketMessage, "id" | "createdAt">,
 ): boolean {
+  loadFromDisk();
   const existing = registry.get(orderNsu);
   if (!existing) return false;
   const entry: TicketMessage = {
@@ -196,6 +206,7 @@ export function addMessage(
     ...existing,
     messages: [...existing.messages, entry],
   });
+  persist();
   return true;
 }
 
@@ -204,6 +215,7 @@ export function markMessagesRead(
   orderNsu: string,
   by: "customer" | "admin",
 ): boolean {
+  loadFromDisk();
   const existing = registry.get(orderNsu);
   if (!existing) return false;
   registry.set(orderNsu, {
@@ -214,6 +226,7 @@ export function markMessagesRead(
         : msg,
     ),
   });
+  persist();
   return true;
 }
 
@@ -226,6 +239,7 @@ export function markPaidByProductName(
   productName: string,
   patch: Partial<OrderRecord> = {},
 ): string | undefined {
+  loadFromDisk();
   const target = productName.trim().toLowerCase();
   if (!target) return undefined;
 
@@ -245,6 +259,7 @@ export function markPaidByProductName(
 
 /** Último pedido registrado para um e-mail (fallback do painel do cliente). */
 export function getLatestOrderByEmail(email: string): OrderRecord | undefined {
+  loadFromDisk();
   const target = email.trim().toLowerCase();
   if (!target) return undefined;
   return [...registry.values()]
@@ -254,11 +269,13 @@ export function getLatestOrderByEmail(email: string): OrderRecord | undefined {
 
 /** Busca um pedido pelo NSU. */
 export function getOrderByNsu(orderNsu: string): OrderRecord | undefined {
+  loadFromDisk();
   return registry.get(orderNsu);
 }
 
 /** Lista todos os pedidos, do mais recente para o mais antigo. */
 export function listOrders(): OrderRecord[] {
+  loadFromDisk();
   return [...registry.values()].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
 }
 
