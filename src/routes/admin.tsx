@@ -21,6 +21,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { formatBRL } from "@/lib/plans";
+import { sourceLabel } from "@/lib/traffic-source";
 import { PixelCard } from "@/components/admin/PixelCard";
 import { SignupsCard } from "@/components/admin/SignupsCard";
 import {
@@ -318,6 +319,9 @@ function AdminDashboard({ credentials, onLogout }: AdminDashboardProps) {
                             {order.orderNsu}
                           </span>
                           <StatusBadge status={order.status} />
+                          <Badge variant="outline" className="border-primary/40 text-primary">
+                            {sourceLabel(order.source)}
+                          </Badge>
                           {order.cancelledAt ? (
                             <Badge
                               variant="outline"
@@ -421,6 +425,7 @@ function OrderCard({ order, busy, onDeliver, onReopen }: OrderCardProps) {
         <Field label="Perfil" value={order.profileUrl || "—"} />
         <Field label="Região" value={order.region || "—"} />
         <Field label="Concorrente" value={order.competitor || "—"} />
+        <Field label="Veio de" value={sourceLabel(order.source)} />
         <Field label="Criado em" value={formatDate(order.createdAt)} />
         <Field label="Pago em" value={order.paidAt ? formatDate(order.paidAt) : "—"} />
         <Field

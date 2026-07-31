@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { adminListSignups, type AdminSignup } from "@/lib/admin.functions";
+import { sourceLabel } from "@/lib/traffic-source";
 
 export interface SignupsCardProps extends ComponentProps<"section"> {
   credentials: { email: string; password: string };
@@ -65,7 +66,7 @@ export function SignupsCard({ credentials, className, ...props }: SignupsCardPro
           signups.map((signup) => (
             <article
               key={signup.email}
-              className="border-border grid gap-3 rounded-xl border p-4 sm:grid-cols-4"
+              className="border-border grid gap-3 rounded-xl border p-4 sm:grid-cols-5"
             >
               <Field label="Nome">
                 <span className="flex items-center gap-2">
@@ -75,6 +76,11 @@ export function SignupsCard({ credentials, className, ...props }: SignupsCardPro
               </Field>
               <Field label="E-mail">
                 <span className="break-all">{signup.email}</span>
+              </Field>
+              <Field label="Veio de">
+                <Badge variant="outline" className="border-primary/40 text-primary">
+                  {sourceLabel(signup.source)}
+                </Badge>
               </Field>
               <Field label="Cadastrado em">{formatDateTime(signup.createdAt)}</Field>
               <Field label="Último acesso / tentativas">
