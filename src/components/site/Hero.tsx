@@ -27,12 +27,10 @@ export function Hero({ onCta, onSecondary, className, ...props }: HeroProps) {
 
         <Social3DIcons className="mt-4 md:mt-12" />
 
-        <h1 className="mt-3 text-4xl leading-[1.1] font-extrabold tracking-tight text-balance md:mt-8 md:text-6xl">
-          Mais vendas,
-          <br />
-          Mais engajamento,
-          <br />
-          Mais clientes.
+        <h1 className="mt-3 text-3xl leading-[1.1] font-extrabold tracking-tight text-balance md:mt-8 md:text-6xl">
+          <span className="block whitespace-nowrap">Mais vendas,</span>
+          <span className="block whitespace-nowrap">Mais Engajamento</span>
+          <span className="block whitespace-nowrap">Mais Clientes</span>
         </h1>
 
         <p className="mt-4 max-w-2xl text-xl leading-snug font-semibold text-balance text-muted-foreground md:text-2xl">
