@@ -37,7 +37,6 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const [selectedPlanId, setSelectedPlanId] = useState<string>(PLANS[1].id);
   const [signupOpen, setSignupOpen] = useState(false);
 
   // Contabiliza a visita para o painel administrativo (uma vez por carregamento).
