@@ -254,8 +254,6 @@ function AdminDashboard({ credentials, onLogout }: AdminDashboardProps) {
 
         <PixelCard credentials={credentials} className="mt-6" />
 
-        <SignupsCard credentials={credentials} className="mt-6" />
-
         <nav className="mt-8 flex flex-wrap gap-2" aria-label="Filtrar pedidos">
           {TABS.map((item) => (
             <button
@@ -275,28 +273,81 @@ function AdminDashboard({ credentials, onLogout }: AdminDashboardProps) {
           ))}
         </nav>
 
-        <section className="mt-6 space-y-4">
-          {ordersQuery.isLoading ? (
-            <div className="glass-panel text-muted-foreground flex items-center gap-3 rounded-2xl p-6 text-sm">
-              <Loader2 className="size-4 animate-spin" aria-hidden="true" />
-              Carregando pedidos...
-            </div>
-          ) : filtered.length === 0 ? (
-            <div className="glass-panel text-muted-foreground rounded-2xl p-8 text-center text-sm">
-              Nenhum pedido nesta aba por enquanto.
-            </div>
-          ) : (
-            filtered.map((order) => (
-              <OrderCard
-                key={order.orderNsu}
-                order={order}
-                busy={mutation.isPending && mutation.variables?.orderNsu === order.orderNsu}
-                onDeliver={() => mutation.mutate({ orderNsu: order.orderNsu, action: "entregue" })}
-                onReopen={() => mutation.mutate({ orderNsu: order.orderNsu, action: "reabrir" })}
-              />
-            ))
-          )}
-        </section>
+        {tab === "cadastros" ? (
+          <>
+            <SignupsCard credentials={credentials} className="mt-6" />
+            <section className="mt-6 space-y-4">
+              <h2 className="text-lg font-bold">Pedidos por cliente</h2>
+              {customerGroups.length === 0 ? (
+                <div className="glass-panel text-muted-foreground rounded-2xl p-8 text-center text-sm">
+                  Nenhum pedido registrado ainda.
+                </div>
+              ) : (
+                customerGroups.map((group) => (
+                  <article key={group.email} className="glass-panel rounded-2xl p-5">
+                    <div className="flex flex-wrap items-baseline justify-between gap-2">
+                      <div>
+                        <h3 className="text-base font-bold">{group.name || "Sem nome"}</h3>
+                        <p className="text-muted-foreground text-xs break-all">{group.email}</p>
+                      </div>
+                      <p className="text-muted-foreground text-xs">
+                        {group.orders.length} pedido(s)
+                      </p>
+                    </div>
+                    <ul className="mt-3 space-y-2">
+                      {group.orders.map((order) => (
+                        <li
+                          key={order.orderNsu}
+                          className="border-border flex flex-wrap items-center gap-2 rounded-xl border p-3 text-sm"
+                        >
+                          <span className="font-semibold">{order.planName}</span>
+                          <span className="text-muted-foreground font-mono text-xs break-all">
+                            {order.orderNsu}
+                          </span>
+                          <StatusBadge status={order.status} />
+                          {order.cancelledAt ? (
+                            <Badge
+                              variant="outline"
+                              className="text-destructive border-destructive/30"
+                            >
+                              Cancelado pelo cliente
+                            </Badge>
+                          ) : null}
+                          <span className="text-muted-foreground ml-auto text-xs">
+                            {formatDateTime(order.createdAt)}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </article>
+                ))
+              )}
+            </section>
+          </>
+        ) : (
+          <section className="mt-6 space-y-4">
+            {ordersQuery.isLoading ? (
+              <div className="glass-panel text-muted-foreground flex items-center gap-3 rounded-2xl p-6 text-sm">
+                <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+                Carregando pedidos...
+              </div>
+            ) : filtered.length === 0 ? (
+              <div className="glass-panel text-muted-foreground rounded-2xl p-8 text-center text-sm">
+                Nenhum pedido nesta aba por enquanto.
+              </div>
+            ) : (
+              filtered.map((order) => (
+                <OrderCard
+                  key={order.orderNsu}
+                  order={order}
+                  busy={mutation.isPending && mutation.variables?.orderNsu === order.orderNsu}
+                  onDeliver={() => mutation.mutate({ orderNsu: order.orderNsu, action: "entregue" })}
+                  onReopen={() => mutation.mutate({ orderNsu: order.orderNsu, action: "reabrir" })}
+                />
+              ))
+            )}
+          </section>
+        )}
       </div>
     </main>
   );
