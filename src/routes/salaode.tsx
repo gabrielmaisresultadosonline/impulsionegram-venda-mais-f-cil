@@ -79,12 +79,12 @@ function SalonPage() {
           </p>
 
           <div className="mt-12 flex flex-wrap justify-center gap-6">
-            {PLANS.map((plan) => (
+            {getSalonPlans().map((plan) => (
               <PlanCard
                 key={plan.id}
                 plan={plan}
                 selected={false}
-                className="w-full sm:w-[calc(50%-12px)] lg:w-[calc(25%-18px)] lg:max-w-[300px] last:lg:w-[calc(50%-12px)] last:lg:max-w-[560px]"
+                className="w-full sm:w-[calc(50%-12px)] lg:w-[calc(50%-18px)] lg:max-w-[420px]"
               />
             ))}
           </div>
