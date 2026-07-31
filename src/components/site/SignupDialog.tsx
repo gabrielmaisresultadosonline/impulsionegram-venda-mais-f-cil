@@ -77,7 +77,7 @@ export function SignupDialog({ open, onOpenChange, selectedPlanId }: SignupDialo
         email,
         value: plan ? plan.priceCents / 100 : undefined,
       });
-      void trackSiteEvent({ data: { type: "signup" } });
+      void trackSiteEvent({ data: { type: "signup", name, email } });
       toast.success(`Conta criada! Bem-vindo(a), ${name.split(" ")[0]}.`);
       onOpenChange(false);
       await navigate({ to: "/painel" });
