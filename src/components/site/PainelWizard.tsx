@@ -18,6 +18,8 @@ export interface PainelWizardProps extends ComponentProps<"section"> {
   account: LocalAccount;
   selectedPlanId: string;
   onSelectPlan: (planId: string) => void;
+  /** Lista de planos disponíveis no funil (ex.: filtrada por origem /salaode). */
+  availablePlans?: readonly Plan[];
 }
 
 /**
