@@ -27,7 +27,7 @@ else
   rm -rf /tmp/${APP_NAME}-src
   git clone --depth 1 "${REPO_URL}" /tmp/${APP_NAME}-src
   rsync -a --delete \
-    --exclude .git --exclude node_modules --exclude .output --exclude .env \
+    --exclude .git --exclude node_modules --exclude .output --exclude .env --exclude .data \
     /tmp/${APP_NAME}-src/ "${APP_DIR}/"
   rm -rf /tmp/${APP_NAME}-src
 fi
