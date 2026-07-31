@@ -61,7 +61,10 @@ export function PlanCard({
         <Button
           onClick={() => onSelect(plan.id)}
           variant={ctaLabel ? "default" : selected ? "default" : "outline"}
-          className={cn("mt-7 h-11 w-full", (ctaLabel || selected) && "bg-gradient-brand")}
+          className={cn(
+            "mt-7 h-11 w-full",
+            (ctaLabel || selected) && "bg-gradient-brand text-primary-foreground font-semibold",
+          )}
         >
           {ctaLabel ?? (selected ? "Plano selecionado" : "Escolher este plano")}
         </Button>
