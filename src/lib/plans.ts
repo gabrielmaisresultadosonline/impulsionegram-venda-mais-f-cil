@@ -109,6 +109,12 @@ export const THERAPY_PLAN_IDS: readonly string[] = [
   "trimestral-10k",
 ] as const;
 
+/** Planos exibidos no funil de delivery (/delivery). */
+export const DELIVERY_PLAN_IDS: readonly string[] = [
+  "marketing-completo",
+  "trimestral-10k",
+] as const;
+
 export function getPlanById(id: string): Plan | undefined {
   return PLANS.find((plan) => plan.id === id);
 }
@@ -127,6 +133,13 @@ export function getBarberPlans(): readonly Plan[] {
 export function getTherapyPlans(): readonly Plan[] {
   return THERAPY_PLAN_IDS.map((id) => getPlanById(id)).filter((p): p is Plan => p !== undefined);
 }
+
+/** Retorna apenas os planos disponíveis para o nicho de delivery. */
+export function getDeliveryPlans(): readonly Plan[] {
+  return DELIVERY_PLAN_IDS.map((id) => getPlanById(id)).filter((p): p is Plan => p !== undefined);
+}
+
+
 
 /**
  * Monta o nome do produto enviado à InfinitePay: prefixo do plano + e-mail do
