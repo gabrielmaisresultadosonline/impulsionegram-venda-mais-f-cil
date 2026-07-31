@@ -15,6 +15,7 @@ import { Route as BarbeaRouteImport } from './routes/barbea'
 import { Route as PainelRouteImport } from './routes/painel'
 import { Route as PedidoRouteImport } from './routes/pedido'
 import { Route as SalaodeRouteImport } from './routes/salaode'
+import { Route as TerapiRouteImport } from './routes/terapi'
 import { Route as WhatsRouteImport } from './routes/whats'
 import { Route as ApiPublicInfinitepayWebhookRouteImport } from './routes/api/public/infinitepay/webhook'
 
@@ -48,6 +49,11 @@ const SalaodeRoute = SalaodeRouteImport.update({
   path: '/salaode',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TerapiRoute = TerapiRouteImport.update({
+  id: '/terapi',
+  path: '/terapi',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const WhatsRoute = WhatsRouteImport.update({
   id: '/whats',
   path: '/whats',
@@ -67,6 +73,7 @@ export interface FileRoutesByFullPath {
   '/painel': typeof PainelRoute
   '/pedido': typeof PedidoRoute
   '/salaode': typeof SalaodeRoute
+  '/terapi': typeof TerapiRoute
   '/whats': typeof WhatsRoute
   '/api/public/infinitepay/webhook': typeof ApiPublicInfinitepayWebhookRoute
 }
@@ -77,6 +84,7 @@ export interface FileRoutesByTo {
   '/painel': typeof PainelRoute
   '/pedido': typeof PedidoRoute
   '/salaode': typeof SalaodeRoute
+  '/terapi': typeof TerapiRoute
   '/whats': typeof WhatsRoute
   '/api/public/infinitepay/webhook': typeof ApiPublicInfinitepayWebhookRoute
 }
@@ -88,6 +96,7 @@ export interface FileRoutesById {
   '/painel': typeof PainelRoute
   '/pedido': typeof PedidoRoute
   '/salaode': typeof SalaodeRoute
+  '/terapi': typeof TerapiRoute
   '/whats': typeof WhatsRoute
   '/api/public/infinitepay/webhook': typeof ApiPublicInfinitepayWebhookRoute
 }
@@ -100,6 +109,7 @@ export interface FileRouteTypes {
     | '/painel'
     | '/pedido'
     | '/salaode'
+    | '/terapi'
     | '/whats'
     | '/api/public/infinitepay/webhook'
   fileRoutesByTo: FileRoutesByTo
@@ -110,6 +120,7 @@ export interface FileRouteTypes {
     | '/painel'
     | '/pedido'
     | '/salaode'
+    | '/terapi'
     | '/whats'
     | '/api/public/infinitepay/webhook'
   id:
@@ -120,6 +131,7 @@ export interface FileRouteTypes {
     | '/painel'
     | '/pedido'
     | '/salaode'
+    | '/terapi'
     | '/whats'
     | '/api/public/infinitepay/webhook'
   fileRoutesById: FileRoutesById
@@ -131,6 +143,7 @@ export interface RootRouteChildren {
   PainelRoute: typeof PainelRoute
   PedidoRoute: typeof PedidoRoute
   SalaodeRoute: typeof SalaodeRoute
+  TerapiRoute: typeof TerapiRoute
   WhatsRoute: typeof WhatsRoute
   ApiPublicInfinitepayWebhookRoute: typeof ApiPublicInfinitepayWebhookRoute
 }
@@ -179,6 +192,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SalaodeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/terapi': {
+      id: '/terapi'
+      path: '/terapi'
+      fullPath: '/terapi'
+      preLoaderRoute: typeof TerapiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/whats': {
       id: '/whats'
       path: '/whats'
@@ -203,6 +223,7 @@ const rootRouteChildren: RootRouteChildren = {
   PainelRoute: PainelRoute,
   PedidoRoute: PedidoRoute,
   SalaodeRoute: SalaodeRoute,
+  TerapiRoute: TerapiRoute,
   WhatsRoute: WhatsRoute,
   ApiPublicInfinitepayWebhookRoute: ApiPublicInfinitepayWebhookRoute,
 }
