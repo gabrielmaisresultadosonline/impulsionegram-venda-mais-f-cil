@@ -1,5 +1,5 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { createFileRoute, Link, useNavigate, useSearch } from "@tanstack/react-router";
+import { useEffect, useMemo, useState } from "react";
 import { LogOut, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PainelWizard } from "@/components/site/PainelWizard";
@@ -11,7 +11,7 @@ import {
   savePlanSelection,
   type LocalAccount,
 } from "@/lib/account-storage";
-import { PLANS } from "@/lib/plans";
+import { PLANS, getPlanById, getSalonPlans } from "@/lib/plans";
 
 export const Route = createFileRoute("/painel")({
   head: () => ({
@@ -35,21 +35,30 @@ export const Route = createFileRoute("/painel")({
 
 function PainelPage() {
   const navigate = useNavigate();
+  const search = useSearch({ from: "/painel" }) as Record<string, unknown>;
+  const source = String(search.source ?? "");
+  const isSalon = source === "salaode";
+  const availablePlans = useMemo(() => (isSalon ? getSalonPlans() : PLANS), [isSalon]);
+
   const [account, setAccount] = useState<LocalAccount | null>(null);
   const [ready, setReady] = useState(false);
-  const [selectedPlanId, setSelectedPlanId] = useState<string>(PLANS[1].id);
+  const [selectedPlanId, setSelectedPlanId] = useState<string>(availablePlans[1]?.id ?? availablePlans[0]?.id);
 
   useEffect(() => {
     const stored = getAccount();
     setAccount(stored);
     const plan = getPlanSelection();
-    if (plan) setSelectedPlanId(plan);
+    const preferredId = plan || selectedPlanId;
+    const validPlan = availablePlans.find((p) => p.id === preferredId);
+    setSelectedPlanId(validPlan ? validPlan.id : availablePlans[0]?.id);
     setReady(true);
-  }, []);
+  }, [availablePlans]);
 
   const handleSelectPlan = (planId: string) => {
-    setSelectedPlanId(planId);
-    savePlanSelection(planId);
+    const validPlan = availablePlans.find((p) => p.id === planId);
+    if (!validPlan) return;
+    setSelectedPlanId(validPlan.id);
+    savePlanSelection(validPlan.id);
   };
 
   if (!ready) {
@@ -114,6 +123,7 @@ function PainelPage() {
         account={account}
         selectedPlanId={selectedPlanId}
         onSelectPlan={handleSelectPlan}
+        availablePlans={availablePlans}
       />
 
       <MyOrders customerEmail={account.email} />

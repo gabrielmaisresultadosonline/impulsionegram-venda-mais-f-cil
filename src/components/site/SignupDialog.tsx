@@ -28,6 +28,8 @@ export interface SignupDialogProps {
   onOpenChange: (open: boolean) => void;
   /** Plano pré-selecionado (opcional). O cliente pode escolher depois no painel. */
   selectedPlanId?: string;
+  /** Para onde redirecionar após cadastro/login. Padrão: /painel */
+  redirectTo?: string;
 }
 
 type DialogMode = "signup" | "login";
@@ -36,7 +38,7 @@ type DialogMode = "signup" | "login";
  * Popup de cadastro/login acionado pelos CTAs "Cadastre-se grátis" da home.
  * Mantém o mesmo contrato do fluxo antigo: cria a conta local e leva ao painel.
  */
-export function SignupDialog({ open, onOpenChange, selectedPlanId }: SignupDialogProps) {
+export function SignupDialog({ open, onOpenChange, selectedPlanId, redirectTo = "/painel" }: SignupDialogProps) {
   const navigate = useNavigate();
   const [mode, setMode] = useState<DialogMode>("signup");
   const [saving, setSaving] = useState(false);
@@ -80,7 +82,7 @@ export function SignupDialog({ open, onOpenChange, selectedPlanId }: SignupDialo
       void trackSiteEvent({ data: { type: "signup", name, email } });
       toast.success(`Conta criada! Bem-vindo(a), ${name.split(" ")[0]}.`);
       onOpenChange(false);
-      await navigate({ to: "/painel" });
+      await navigate({ to: redirectTo });
     } catch {
       toast.error("Não foi possível concluir o cadastro. Tente novamente.");
     } finally {
@@ -113,7 +115,7 @@ export function SignupDialog({ open, onOpenChange, selectedPlanId }: SignupDialo
       if (selectedPlanId) savePlanSelection(selectedPlanId);
       toast.success(`Bem-vindo(a) de volta, ${stored.name.split(" ")[0]}!`);
       onOpenChange(false);
-      await navigate({ to: "/painel" });
+      await navigate({ to: redirectTo });
     } catch {
       toast.error("Não foi possível entrar. Tente novamente.");
     } finally {
@@ -237,9 +239,9 @@ export function SignupDialog({ open, onOpenChange, selectedPlanId }: SignupDialo
             className="h-11 w-full"
             onClick={() => {
               if (selectedPlanId) savePlanSelection(selectedPlanId);
-              onOpenChange(false);
-              void navigate({ to: "/painel" });
-            }}
+            onOpenChange(false);
+            void navigate({ to: redirectTo });
+          }}
           >
             Já tenho conta — entrar no painel
           </Button>

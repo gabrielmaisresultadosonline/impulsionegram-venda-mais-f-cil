@@ -1,16 +1,18 @@
 import { ArrowRight, BellRing } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PlanCard } from "@/components/site/PlanCard";
-import { PLANS, formatBRL, getPlanById } from "@/lib/plans";
+import { PLANS, formatBRL, getPlanById, type Plan } from "@/lib/plans";
 
 export interface PlanStepProps {
   selectedPlanId: string;
   onSelect: (planId: string) => void;
   onBack?: () => void;
   onNext: () => void;
+  /** Planos a exibir. Padrão: todos os planos. */
+  plans?: readonly Plan[];
 }
 
-export function PlanStep({ selectedPlanId, onSelect, onBack, onNext }: PlanStepProps) {
+export function PlanStep({ selectedPlanId, onSelect, onBack, onNext, plans = PLANS }: PlanStepProps) {
   const plan = getPlanById(selectedPlanId);
 
   return (
@@ -32,7 +34,7 @@ export function PlanStep({ selectedPlanId, onSelect, onBack, onNext }: PlanStepP
       </header>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        {PLANS.map((item) => (
+        {plans.map((item) => (
           <PlanCard
             key={item.id}
             plan={item}

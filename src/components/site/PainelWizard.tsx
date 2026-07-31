@@ -4,7 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { createCheckoutLink } from "@/lib/checkout.functions";
-import { formatBRL, getPlanById } from "@/lib/plans";
+import { formatBRL, getPlanById, type Plan } from "@/lib/plans";
 import { saveOrder } from "@/lib/order-storage";
 import type { LocalAccount } from "@/lib/account-storage";
 import { StepIndicator } from "./wizard/StepIndicator";
@@ -18,6 +18,8 @@ export interface PainelWizardProps extends ComponentProps<"section"> {
   account: LocalAccount;
   selectedPlanId: string;
   onSelectPlan: (planId: string) => void;
+  /** Lista de planos disponíveis no funil (ex.: filtrada por origem /salaode). */
+  availablePlans?: readonly Plan[];
 }
 
 /**
@@ -31,6 +33,7 @@ export function PainelWizard({
   account,
   selectedPlanId,
   onSelectPlan,
+  availablePlans,
   className,
   ...props
 }: PainelWizardProps) {
@@ -104,6 +107,7 @@ export function PainelWizard({
         <div className="mt-8">
           {step === 0 ? (
             <PlanStep
+              plans={availablePlans}
               selectedPlanId={selectedPlanId}
               onSelect={onSelectPlan}
               onNext={() => setStep(1)}

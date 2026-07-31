@@ -6,7 +6,7 @@ import { HowItWorks } from "@/components/site/HowItWorks";
 import { SignupDialog } from "@/components/site/SignupDialog";
 import { PlanCard } from "@/components/site/PlanCard";
 import { Button } from "@/components/ui/button";
-import { PLANS } from "@/lib/plans";
+import { PLANS, getSalonPlans } from "@/lib/plans";
 import { trackSiteEvent } from "@/lib/pixel.functions";
 
 export const Route = createFileRoute("/salaode")({
@@ -18,7 +18,7 @@ export const Route = createFileRoute("/salaode")({
       {
         name: "description",
         content:
-          "Atraia mais clientes para o seu salão de beleza. Seguidores filtrados por região e CEP no automático. Planos a partir de R$14, entrega em até 6 horas.",
+          "Atraia mais clientes para o seu salão de beleza. Planos Marketing Completo e Trimestral 10K com seguidores filtrados por região e CEP.",
       },
       {
         property: "og:title",
@@ -79,12 +79,12 @@ function SalonPage() {
           </p>
 
           <div className="mt-12 flex flex-wrap justify-center gap-6">
-            {PLANS.map((plan) => (
+            {getSalonPlans().map((plan) => (
               <PlanCard
                 key={plan.id}
                 plan={plan}
                 selected={false}
-                className="w-full sm:w-[calc(50%-12px)] lg:w-[calc(25%-18px)] lg:max-w-[300px] last:lg:w-[calc(50%-12px)] last:lg:max-w-[560px]"
+                className="w-full sm:w-[calc(50%-12px)] lg:w-[calc(50%-18px)] lg:max-w-[420px]"
               />
             ))}
           </div>
@@ -123,7 +123,7 @@ function SalonPage() {
         </div>
       </section>
 
-      <SignupDialog open={signupOpen} onOpenChange={setSignupOpen} />
+      <SignupDialog open={signupOpen} onOpenChange={setSignupOpen} redirectTo="/painel?source=salaode" />
 
       <footer className="border-t border-border px-4 py-8">
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-3">
