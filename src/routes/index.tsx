@@ -81,7 +81,7 @@ function Index() {
               <PlanCard
                 key={plan.id}
                 plan={plan}
-                selected={plan.id === PLANS[1].id}
+                selected={plan.highlight}
               />
             ))}
           </div>
@@ -123,7 +123,7 @@ function Index() {
       <SignupDialog
         open={signupOpen}
         onOpenChange={setSignupOpen}
-        selectedPlanId={PLANS[1].id}
+        selectedPlanId={PLANS.find((p) => p.highlight)?.id ?? PLANS[0].id}
       />
 
 
