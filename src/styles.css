@@ -297,6 +297,21 @@
   animation: pulse-glow 3.5s ease-in-out infinite;
 }
 
+/* Destaque do plano selecionado: pulsa apenas o brilho/borda, nunca a opacidade. */
+@keyframes plan-selected-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--primary) 45%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 0 10px color-mix(in oklab, var(--primary) 0%, transparent);
+  }
+}
+
+@utility animate-plan-selected {
+  animation: plan-selected-pulse 2.2s ease-out infinite;
+}
+
 @utility animate-shine-sweep {
   animation: shine-sweep 3.6s ease-in-out infinite;
 }
