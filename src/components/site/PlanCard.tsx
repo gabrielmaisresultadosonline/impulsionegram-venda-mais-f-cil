@@ -54,11 +54,10 @@ export function PlanCard({
 
       <Button
         onClick={() => onSelect(plan.id)}
-        variant={selected ? "default" : "outline"}
-        className={cn("mt-7 h-11 w-full", selected && "bg-gradient-brand")}
-        aria-pressed={selected}
+        variant={ctaLabel ? "default" : selected ? "default" : "outline"}
+        className={cn("mt-7 h-11 w-full", (ctaLabel || selected) && "bg-gradient-brand")}
       >
-        {selected ? "Plano selecionado" : "Escolher este plano"}
+        {ctaLabel ?? (selected ? "Plano selecionado" : "Escolher este plano")}
       </Button>
     </article>
   );
