@@ -273,6 +273,25 @@ export function getOrderByNsu(orderNsu: string): OrderRecord | undefined {
   return registry.get(orderNsu);
 }
 
+/**
+ * Remove um pedido ainda não pago.
+ *
+ * Retorna false quando o pedido não existe, o e-mail não confere ou o pedido
+ * já foi pago/entregue — pedidos pagos nunca podem ser apagados pelo cliente.
+ */
+export function deleteUnpaidOrder(orderNsu: string, customerEmail: string): boolean {
+  loadFromDisk();
+  const order = registry.get(orderNsu);
+  if (!order) return false;
+  if (order.customerEmail.trim().toLowerCase() !== customerEmail.trim().toLowerCase()) {
+    return false;
+  }
+  if (order.status !== "tentativa") return false;
+  registry.delete(orderNsu);
+  persist();
+  return true;
+}
+
 /** Lista todos os pedidos, do mais recente para o mais antigo. */
 export function listOrders(): OrderRecord[] {
   loadFromDisk();

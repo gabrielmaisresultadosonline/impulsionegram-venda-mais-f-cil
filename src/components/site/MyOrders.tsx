@@ -1,11 +1,25 @@
-import { type ComponentProps } from "react";
+import { useState, type ComponentProps } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { CheckCircle2, Clock, Loader2, PackageCheck, Receipt } from "lucide-react";
+import { toast } from "sonner";
+import {
+  CheckCircle2,
+  Clock,
+  CreditCard,
+  Loader2,
+  PackageCheck,
+  Receipt,
+  Trash2,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { formatBRL } from "@/lib/plans";
-import { customerListOrdersByEmail, type CustomerOrder } from "@/lib/tickets.functions";
+import {
+  customerDeleteOrder,
+  customerListOrdersByEmail,
+  type CustomerOrder,
+} from "@/lib/tickets.functions";
 
 export interface MyOrdersProps extends ComponentProps<"section"> {
   /** E-mail da conta local — chave de consulta dos pedidos no servidor. */
@@ -52,7 +66,14 @@ export function MyOrders({ customerEmail, className, ...props }: MyOrdersProps) 
               Você ainda não fez nenhum pedido. Escolha um plano acima para começar.
             </div>
           ) : (
-            orders.map((order) => <OrderRow key={order.orderNsu} order={order} />)
+            orders.map((order) => (
+              <OrderRow
+                key={order.orderNsu}
+                order={order}
+                customerEmail={customerEmail}
+                onChanged={() => void ordersQuery.refetch()}
+              />
+            ))
           )}
         </div>
       </div>
@@ -60,7 +81,38 @@ export function MyOrders({ customerEmail, className, ...props }: MyOrdersProps) 
   );
 }
 
-function OrderRow({ order }: { order: CustomerOrder }) {
+function OrderRow({
+  order,
+  customerEmail,
+  onChanged,
+}: {
+  order: CustomerOrder;
+  customerEmail: string;
+  onChanged: () => void;
+}) {
+  const deleteOrder = useServerFn(customerDeleteOrder);
+  const [deleting, setDeleting] = useState(false);
+  const pending = order.status === "tentativa";
+
+  async function handleDelete() {
+    if (deleting) return;
+    if (!window.confirm("Apagar este pedido pendente? Essa ação não pode ser desfeita.")) return;
+    setDeleting(true);
+    try {
+      const result = await deleteOrder({ data: { orderNsu: order.orderNsu, customerEmail } });
+      if (result.deleted) {
+        toast.success("Pedido apagado.");
+        onChanged();
+      } else {
+        toast.error("Não foi possível apagar este pedido.");
+      }
+    } catch {
+      toast.error("Falha ao apagar o pedido. Tente novamente.");
+    } finally {
+      setDeleting(false);
+    }
+  }
+
   return (
     <article className="glass-panel rounded-2xl p-5">
       <div className="flex flex-wrap items-start justify-between gap-3">
@@ -84,6 +136,35 @@ function OrderRow({ order }: { order: CustomerOrder }) {
           value={order.deliveredAt ? formatDateTime(order.deliveredAt) : "Em processamento"}
         />
       </dl>
+
+      {pending ? (
+        <div className="mt-4 flex flex-wrap items-center gap-2">
+          {order.paymentUrl ? (
+            <Button
+              asChild
+              className="from-primary bg-gradient-to-r to-[oklch(0.75_0.16_75)] text-white"
+            >
+              <a href={order.paymentUrl} target="_blank" rel="noopener noreferrer">
+                <CreditCard className="size-4" aria-hidden="true" />
+                Pagar pedido {formatBRL(order.priceCents)}
+              </a>
+            </Button>
+          ) : null}
+          <Button
+            variant="outline"
+            onClick={() => void handleDelete()}
+            disabled={deleting}
+            className="text-destructive hover:text-destructive"
+          >
+            {deleting ? (
+              <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+            ) : (
+              <Trash2 className="size-4" aria-hidden="true" />
+            )}
+            Apagar pedido
+          </Button>
+        </div>
+      ) : null}
 
       {order.profileUrl ? (
         <p className="text-muted-foreground mt-3 text-xs break-all">
