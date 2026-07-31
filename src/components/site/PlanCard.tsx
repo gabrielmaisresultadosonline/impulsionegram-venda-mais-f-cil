@@ -26,7 +26,7 @@ export function PlanCard({
         "glass-panel relative flex flex-col rounded-2xl p-6 transition-all duration-300",
         plan.highlight && !selected && "border-primary/50",
         selected
-          ? "shadow-glow animate-pulse-glow border-2 border-primary bg-gradient-to-br from-primary/25 via-primary/15 to-transparent -translate-y-1"
+          ? "animate-plan-selected border-primary bg-card border-2 opacity-100 -translate-y-1"
           : "bg-card hover:-translate-y-1",
         className,
       )}
@@ -38,12 +38,8 @@ export function PlanCard({
         </span>
       ) : null}
 
-      <h3 className={cn("text-lg font-bold", selected ? "text-foreground" : "text-foreground")}>
-        {plan.name}
-      </h3>
-      <p className={cn("mt-1 text-sm", selected ? "text-foreground/80" : "text-muted-foreground")}>
-        {plan.tagline}
-      </p>
+      <h3 className="text-foreground text-lg font-bold">{plan.name}</h3>
+      <p className="text-muted-foreground mt-1 text-sm">{plan.tagline}</p>
 
       <p className="mt-5 text-4xl font-extrabold">
         <span className="text-gradient-brand">{formatBRL(plan.priceCents)}</span>
@@ -52,16 +48,14 @@ export function PlanCard({
       <ul className="mt-6 flex-1 space-y-3">
         {plan.features.map((feature) => (
           <li key={feature} className="flex items-start gap-2.5 text-sm">
-            <Check
-              className={cn("mt-0.5 size-4 shrink-0", selected ? "text-primary" : "text-primary")}
-              aria-hidden="true"
-            />
-            <span className={cn(selected ? "text-foreground/90" : "text-muted-foreground")}>
+            <Check className="text-primary mt-0.5 size-4 shrink-0" aria-hidden="true" />
+            <span className={cn(selected ? "text-foreground" : "text-muted-foreground")}>
               {feature}
             </span>
           </li>
         ))}
       </ul>
+
 
       {onSelect ? (
         <Button
