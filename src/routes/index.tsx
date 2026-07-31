@@ -49,7 +49,7 @@ function Index() {
 
   return (
     <main className="min-h-screen">
-      <Hero onCta={openSignup} onSecondary={scrollToPlans} />
+      <Hero onCta={openSignup} onSecondary={openSignup} />
 
       <section className="px-4 pb-6">
         <div className="glass-panel mx-auto flex max-w-4xl flex-col items-center gap-4 rounded-2xl p-6 text-center md:flex-row md:justify-between md:text-left">
@@ -67,7 +67,7 @@ function Index() {
         </div>
       </section>
 
-      <section ref={plansRef} className="px-4 py-20" id="planos">
+      <section className="px-4 py-20" id="planos">
         <div className="mx-auto max-w-6xl">
           <h2 className="text-3xl font-extrabold text-balance md:text-4xl">
             Planos <span className="text-gradient-brand">simples e diretos</span>
@@ -83,8 +83,6 @@ function Index() {
                 key={plan.id}
                 plan={plan}
                 selected={plan.id === selectedPlanId}
-                onSelect={handleSelect}
-                ctaLabel="Cadastre-se grátis"
               />
             ))}
           </div>
