@@ -28,6 +28,8 @@ export interface SignupDialogProps {
   onOpenChange: (open: boolean) => void;
   /** Plano pré-selecionado (opcional). O cliente pode escolher depois no painel. */
   selectedPlanId?: string;
+  /** Para onde redirecionar após cadastro/login. Padrão: /painel */
+  redirectTo?: string;
 }
 
 type DialogMode = "signup" | "login";
