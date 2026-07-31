@@ -12,7 +12,7 @@ export interface PlanStepProps {
   plans?: readonly Plan[];
 }
 
-export function PlanStep({ selectedPlanId, onSelect, onBack, onNext }: PlanStepProps) {
+export function PlanStep({ selectedPlanId, onSelect, onBack, onNext, plans = PLANS }: PlanStepProps) {
   const plan = getPlanById(selectedPlanId);
 
   return (
