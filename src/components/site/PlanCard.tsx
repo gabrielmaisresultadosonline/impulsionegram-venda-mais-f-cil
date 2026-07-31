@@ -8,9 +8,18 @@ export interface PlanCardProps extends Omit<ComponentProps<"article">, "onSelect
   plan: Plan;
   selected: boolean;
   onSelect: (planId: string) => void;
+  /** Rótulo customizado do botão (ex.: "Cadastre-se grátis" na home). */
+  ctaLabel?: string;
 }
 
-export function PlanCard({ plan, selected, onSelect, className, ...props }: PlanCardProps) {
+export function PlanCard({
+  plan,
+  selected,
+  onSelect,
+  ctaLabel,
+  className,
+  ...props
+}: PlanCardProps) {
   return (
     <article
       className={cn(
