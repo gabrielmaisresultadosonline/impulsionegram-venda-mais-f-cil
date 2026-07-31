@@ -26,14 +26,14 @@ export function PlanCard({
         "glass-panel relative flex flex-col rounded-2xl p-6 transition-all duration-300",
         plan.highlight && !selected && "border-primary/50",
         selected
-          ? "animate-plan-selected border-primary bg-card border-2 opacity-100 -translate-y-1"
+          ? "animate-plan-selected border-primary bg-gradient-to-br from-primary via-[oklch(0.63_0.21_25)] to-[oklch(0.75_0.16_75)] border-2 text-primary-foreground -translate-y-1"
           : "bg-card hover:-translate-y-1",
         className,
       )}
       {...props}
     >
       {plan.badge ? (
-        <span className="bg-gradient-brand text-primary-foreground absolute -top-3 left-6 rounded-full px-3 py-1 text-[11px] font-bold tracking-wide uppercase">
+        <span className="bg-primary-foreground text-primary absolute -top-3 left-6 rounded-full px-3 py-1 text-[11px] font-bold tracking-wide uppercase">
           {plan.badge}
         </span>
       ) : null}
