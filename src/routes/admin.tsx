@@ -192,7 +192,10 @@ function AdminDashboard({ credentials, onLogout }: AdminDashboardProps) {
   }, [orders]);
 
   const filtered = useMemo(
-    () => (tab === "todos" ? orders : orders.filter((order) => order.status === tab)),
+    () =>
+      tab === "todos" || tab === "cadastros"
+        ? orders
+        : orders.filter((order) => order.status === tab),
     [orders, tab],
   );
 
