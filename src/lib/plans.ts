@@ -109,6 +109,12 @@ export const THERAPY_PLAN_IDS: readonly string[] = [
   "trimestral-10k",
 ] as const;
 
+/** Planos exibidos no funil de delivery (/delivery). */
+export const DELIVERY_PLAN_IDS: readonly string[] = [
+  "marketing-completo",
+  "trimestral-10k",
+] as const;
+
 export function getPlanById(id: string): Plan | undefined {
   return PLANS.find((plan) => plan.id === id);
 }

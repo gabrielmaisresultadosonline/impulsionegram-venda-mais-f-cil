@@ -5,13 +5,20 @@
  * no pedido, permitindo ao admin saber por onde veio o lead e a venda.
  */
 
-export type TrafficSource = "home" | "salaode" | "barbea" | "terapi" | "whats";
+export type TrafficSource =
+  | "home"
+  | "salaode"
+  | "barbea"
+  | "terapi"
+  | "delivery"
+  | "whats";
 
 const LABELS: Record<TrafficSource, string> = {
   home: "Home (global)",
   salaode: "Salão de Beleza",
   barbea: "Barbearia",
   terapi: "Terapeutas",
+  delivery: "Delivery",
   whats: "WhatsApp",
 };
 
