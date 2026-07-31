@@ -8,9 +8,18 @@ export interface PlanCardProps extends Omit<ComponentProps<"article">, "onSelect
   plan: Plan;
   selected: boolean;
   onSelect: (planId: string) => void;
+  /** Rótulo customizado do botão (ex.: "Cadastre-se grátis" na home). */
+  ctaLabel?: string;
 }
 
-export function PlanCard({ plan, selected, onSelect, className, ...props }: PlanCardProps) {
+export function PlanCard({
+  plan,
+  selected,
+  onSelect,
+  ctaLabel,
+  className,
+  ...props
+}: PlanCardProps) {
   return (
     <article
       className={cn(
@@ -45,11 +54,10 @@ export function PlanCard({ plan, selected, onSelect, className, ...props }: Plan
 
       <Button
         onClick={() => onSelect(plan.id)}
-        variant={selected ? "default" : "outline"}
-        className={cn("mt-7 h-11 w-full", selected && "bg-gradient-brand")}
-        aria-pressed={selected}
+        variant={ctaLabel ? "default" : selected ? "default" : "outline"}
+        className={cn("mt-7 h-11 w-full", (ctaLabel || selected) && "bg-gradient-brand")}
       >
-        {selected ? "Plano selecionado" : "Escolher este plano"}
+        {ctaLabel ?? (selected ? "Plano selecionado" : "Escolher este plano")}
       </Button>
     </article>
   );

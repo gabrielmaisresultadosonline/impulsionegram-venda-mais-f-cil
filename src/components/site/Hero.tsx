@@ -5,8 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Social3DIcons } from "@/components/site/Social3DIcons";
 
 export interface HeroProps extends ComponentProps<"section"> {
-  /** Rola até a seção de planos. */
+  /** Abre o popup de cadastro. */
   onCta: () => void;
+  /** Rola até a seção de planos. */
+  onSecondary?: () => void;
 }
 
 const TRUST_ITEMS = [
@@ -15,7 +17,7 @@ const TRUST_ITEMS = [
   { icon: Instagram, label: "Filtro por região" },
 ] as const;
 
-export function Hero({ onCta, className, ...props }: HeroProps) {
+export function Hero({ onCta, onSecondary, className, ...props }: HeroProps) {
   return (
     <section
       className={cn("relative overflow-hidden bg-aurora px-4 pt-14 pb-20 md:pt-20", className)}
@@ -53,11 +55,11 @@ export function Hero({ onCta, className, ...props }: HeroProps) {
 
         <div className="mt-9 flex w-full flex-col justify-center gap-3 sm:w-auto sm:flex-row">
           <Button size="lg" onClick={onCta} className="bg-gradient-brand shadow-glow h-12 px-7">
-            Ver planos e impulsionar
+            Cadastre-se grátis
             <ArrowRight className="size-4" aria-hidden="true" />
           </Button>
-          <Button size="lg" variant="outline" onClick={onCta} className="h-12 px-7">
-            Como funciona
+          <Button size="lg" variant="outline" onClick={onSecondary ?? onCta} className="h-12 px-7">
+            Ver planos
           </Button>
         </div>
 

@@ -1,11 +1,17 @@
-import { useEffect, useState, type ComponentProps, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { UserPlus } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { cn } from "@/lib/utils";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   getAccount,
   hashPassword,
@@ -17,25 +23,27 @@ import { formatBRL, getPlanById } from "@/lib/plans";
 import { trackPixelEvent } from "./FacebookPixel";
 import { trackSiteEvent } from "@/lib/pixel.functions";
 
-export interface SignupCardProps extends ComponentProps<"section"> {
-  /** Plano escolhido na seção de planos da home. */
-  selectedPlanId: string;
+export interface SignupDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  /** Plano pré-selecionado (opcional). O cliente pode escolher depois no painel. */
+  selectedPlanId?: string;
 }
 
 /**
- * Etapa 1 do funil (home): escolher o plano e criar a conta.
- * O restante (dados da campanha, publicações e pagamento) acontece no painel.
+ * Popup de cadastro acionado pelos CTAs "Cadastre-se grátis" da home.
+ * Mantém o mesmo contrato do fluxo antigo: cria a conta local e leva ao painel.
  */
-export function SignupCard({ selectedPlanId, className, ...props }: SignupCardProps) {
+export function SignupDialog({ open, onOpenChange, selectedPlanId }: SignupDialogProps) {
   const navigate = useNavigate();
   const [saving, setSaving] = useState(false);
   const [account, setAccount] = useState<LocalAccount | null>(null);
 
-  const plan = getPlanById(selectedPlanId);
+  const plan = selectedPlanId ? getPlanById(selectedPlanId) : undefined;
 
   useEffect(() => {
-    setAccount(getAccount());
-  }, []);
+    if (open) setAccount(getAccount());
+  }, [open]);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -57,7 +65,7 @@ export function SignupCard({ selectedPlanId, className, ...props }: SignupCardPr
         createdAt: new Date().toISOString(),
       };
       saveAccount(created);
-      savePlanSelection(selectedPlanId);
+      if (selectedPlanId) savePlanSelection(selectedPlanId);
       trackPixelEvent("Lead", {
         contentName: plan?.name,
         email,
@@ -65,6 +73,7 @@ export function SignupCard({ selectedPlanId, className, ...props }: SignupCardPr
       });
       void trackSiteEvent({ data: { type: "signup" } });
       toast.success(`Conta criada! Bem-vindo(a), ${name.split(" ")[0]}.`);
+      onOpenChange(false);
       await navigate({ to: "/painel" });
     } catch {
       toast.error("Não foi possível concluir o cadastro. Tente novamente.");
@@ -74,26 +83,32 @@ export function SignupCard({ selectedPlanId, className, ...props }: SignupCardPr
   };
 
   return (
-    <section id="pedido" className={cn("px-4 pb-24", className)} {...props}>
-      <div className="glass-panel mx-auto max-w-2xl rounded-3xl p-6 md:p-10">
-        <h2 className="text-2xl font-extrabold md:text-3xl">Crie sua conta para começar</h2>
-        <p className="text-muted-foreground mt-2 text-sm">
-          Plano selecionado:{" "}
-          <strong className="text-foreground">
-            {plan ? `${plan.name} — ${formatBRL(plan.priceCents)}` : "escolha um plano acima"}
-          </strong>
-          . Você confirma tudo no painel antes de pagar.
-        </p>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle className="text-2xl font-extrabold">Cadastre-se grátis</DialogTitle>
+          <DialogDescription>
+            {plan
+              ? `Plano em destaque: ${plan.name} — ${formatBRL(plan.priceCents)}. Você confirma tudo no painel antes de pagar.`
+              : "Crie sua conta em segundos. Você escolhe o plano e confirma tudo no painel antes de pagar."}
+          </DialogDescription>
+        </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+        <form onSubmit={handleSubmit} className="mt-2 space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="name">Nome completo *</Label>
-            <Input id="name" name="name" defaultValue={account?.name} maxLength={120} required />
+            <Label htmlFor="signup-name">Nome completo *</Label>
+            <Input
+              id="signup-name"
+              name="name"
+              defaultValue={account?.name}
+              maxLength={120}
+              required
+            />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="email">E-mail *</Label>
+            <Label htmlFor="signup-email">E-mail *</Label>
             <Input
-              id="email"
+              id="signup-email"
               name="email"
               type="email"
               defaultValue={account?.email}
@@ -102,8 +117,8 @@ export function SignupCard({ selectedPlanId, className, ...props }: SignupCardPr
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password">Senha *</Label>
-            <Input id="password" name="password" type="password" minLength={6} required />
+            <Label htmlFor="signup-password">Senha *</Label>
+            <Input id="signup-password" name="password" type="password" minLength={6} required />
           </div>
 
           <Button
@@ -113,7 +128,7 @@ export function SignupCard({ selectedPlanId, className, ...props }: SignupCardPr
             className="bg-gradient-brand shadow-glow h-12 w-full"
           >
             <UserPlus className="size-4" aria-hidden="true" />
-            {saving ? "Criando conta..." : "Criar conta e ir para o painel"}
+            {saving ? "Criando conta..." : "Criar conta grátis"}
           </Button>
         </form>
 
@@ -121,16 +136,17 @@ export function SignupCard({ selectedPlanId, className, ...props }: SignupCardPr
           <Button
             type="button"
             variant="outline"
-            className="mt-4 h-11 w-full"
+            className="h-11 w-full"
             onClick={() => {
-              savePlanSelection(selectedPlanId);
+              if (selectedPlanId) savePlanSelection(selectedPlanId);
+              onOpenChange(false);
               void navigate({ to: "/painel" });
             }}
           >
             Já tenho conta — entrar no painel
           </Button>
         ) : null}
-      </div>
-    </section>
+      </DialogContent>
+    </Dialog>
   );
 }
