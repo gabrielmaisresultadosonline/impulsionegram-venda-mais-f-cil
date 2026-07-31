@@ -1,7 +1,7 @@
 import { ArrowRight, BellRing } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PlanCard } from "@/components/site/PlanCard";
-import { PLANS, formatBRL, getPlanById } from "@/lib/plans";
+import { PLANS, formatBRL, getPlanById, type Plan } from "@/lib/plans";
 
 export interface PlanStepProps {
   selectedPlanId: string;
