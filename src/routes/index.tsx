@@ -38,6 +38,7 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const [selectedPlanId, setSelectedPlanId] = useState<string>(PLANS[1].id);
+  const [signupOpen, setSignupOpen] = useState(false);
   const plansRef = useRef<HTMLDivElement>(null);
 
   // Contabiliza a visita para o painel administrativo (uma vez por carregamento).
@@ -49,14 +50,33 @@ function Index() {
     plansRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, []);
 
+  const openSignup = useCallback(() => setSignupOpen(true), []);
+
+  // Clicar num plano apenas destaca o pacote e já abre o popup de cadastro.
   const handleSelect = useCallback((planId: string) => {
     setSelectedPlanId(planId);
-    document.getElementById("pedido")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    setSignupOpen(true);
   }, []);
 
   return (
     <main className="min-h-screen">
-      <Hero onCta={scrollToPlans} />
+      <Hero onCta={openSignup} onSecondary={scrollToPlans} />
+
+      <section className="px-4 pb-6">
+        <div className="glass-panel mx-auto flex max-w-4xl flex-col items-center gap-4 rounded-2xl p-6 text-center md:flex-row md:justify-between md:text-left">
+          <p className="text-sm font-semibold text-muted-foreground md:text-base">
+            Crie sua conta em menos de 1 minuto — sem cartão, sem compromisso.
+          </p>
+          <Button
+            size="lg"
+            onClick={openSignup}
+            className="bg-gradient-brand shadow-glow h-12 w-full px-7 md:w-auto"
+          >
+            <Sparkles className="size-4" aria-hidden="true" />
+            Cadastre-se grátis
+          </Button>
+        </div>
+      </section>
 
       <section ref={plansRef} className="px-4 py-20" id="planos">
         <div className="mx-auto max-w-6xl">
@@ -75,14 +95,51 @@ function Index() {
                 plan={plan}
                 selected={plan.id === selectedPlanId}
                 onSelect={handleSelect}
+                ctaLabel="Cadastre-se grátis"
               />
             ))}
+          </div>
+
+          <div className="mt-10 flex justify-center">
+            <Button
+              size="lg"
+              onClick={openSignup}
+              className="bg-gradient-brand shadow-glow h-12 px-8"
+            >
+              Cadastre-se grátis
+              <ArrowRight className="size-4" aria-hidden="true" />
+            </Button>
           </div>
         </div>
       </section>
 
       <HowItWorks />
-      <SignupCard selectedPlanId={selectedPlanId} />
+
+      <section className="px-4 pb-24">
+        <div className="glass-panel mx-auto max-w-3xl rounded-3xl p-8 text-center md:p-12">
+          <h2 className="text-2xl font-extrabold text-balance md:text-3xl">
+            Pronto para <span className="text-gradient-brand">vender mais no automático?</span>
+          </h2>
+          <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground md:text-base">
+            Crie sua conta grátis, escolha o plano no painel e acompanhe a entrega em tempo real.
+          </p>
+          <Button
+            size="lg"
+            onClick={openSignup}
+            className="bg-gradient-brand shadow-glow mt-7 h-12 w-full px-8 sm:w-auto"
+          >
+            Cadastre-se grátis
+            <ArrowRight className="size-4" aria-hidden="true" />
+          </Button>
+        </div>
+      </section>
+
+      <SignupDialog
+        open={signupOpen}
+        onOpenChange={setSignupOpen}
+        selectedPlanId={selectedPlanId}
+      />
+
 
       <footer className="border-t border-border px-4 py-8">
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-3">
