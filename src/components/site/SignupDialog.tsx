@@ -30,6 +30,8 @@ export interface SignupDialogProps {
   selectedPlanId?: string;
   /** Para onde redirecionar após cadastro/login. Padrão: /painel */
   redirectTo?: string;
+  /** Landing page de origem (home, salaode, barbea, terapi). */
+  source?: string;
 }
 
 type DialogMode = "signup" | "login";
@@ -38,7 +40,13 @@ type DialogMode = "signup" | "login";
  * Popup de cadastro/login acionado pelos CTAs "Cadastre-se grátis" da home.
  * Mantém o mesmo contrato do fluxo antigo: cria a conta local e leva ao painel.
  */
-export function SignupDialog({ open, onOpenChange, selectedPlanId, redirectTo = "/painel" }: SignupDialogProps) {
+export function SignupDialog({
+  open,
+  onOpenChange,
+  selectedPlanId,
+  redirectTo = "/painel",
+  source = "home",
+}: SignupDialogProps) {
   const navigate = useNavigate();
   const [mode, setMode] = useState<DialogMode>("signup");
   const [saving, setSaving] = useState(false);
@@ -79,7 +87,7 @@ export function SignupDialog({ open, onOpenChange, selectedPlanId, redirectTo = 
         email,
         value: plan ? plan.priceCents / 100 : undefined,
       });
-      void trackSiteEvent({ data: { type: "signup", name, email } });
+      void trackSiteEvent({ data: { type: "signup", name, email, source } });
       toast.success(`Conta criada! Bem-vindo(a), ${name.split(" ")[0]}.`);
       onOpenChange(false);
       await navigate({ to: redirectTo });
