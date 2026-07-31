@@ -1,4 +1,4 @@
-import { ArrowRight, ShieldCheck, Timer } from "lucide-react";
+import { ArrowRight, Instagram, ShieldCheck, Timer } from "lucide-react";
 import type { ComponentProps } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -28,9 +28,11 @@ export function Hero({ onCta, onSecondary, className, ...props }: HeroProps) {
         <Social3DIcons className="mt-10 md:mt-12" />
 
         <h1 className="mt-8 text-4xl leading-[1.1] font-extrabold tracking-tight text-balance md:text-6xl">
+          Mais vendas,
+          <br />
           Mais engajamento,
           <br />
-          mais clientes.
+          Mais clientes.
         </h1>
 
         <p className="mt-4 max-w-2xl text-xl leading-snug font-semibold text-balance text-muted-foreground md:text-2xl">
