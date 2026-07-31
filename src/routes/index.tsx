@@ -72,8 +72,7 @@ function Index() {
             Planos <span className="text-gradient-brand">simples e diretos</span>
           </h2>
           <p className="mt-3 max-w-2xl text-muted-foreground">
-            Todos os pacotes incluem filtro por região e entrega em até 6 horas após a confirmação
-            do pagamento.
+            Escolha o ideal para o seu perfil. Entrega em até 6 horas após a confirmação do pagamento.
           </p>
 
           <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
@@ -81,7 +80,7 @@ function Index() {
               <PlanCard
                 key={plan.id}
                 plan={plan}
-                selected={plan.highlight}
+                selected={false}
               />
             ))}
           </div>
@@ -123,8 +122,8 @@ function Index() {
       <SignupDialog
         open={signupOpen}
         onOpenChange={setSignupOpen}
-        selectedPlanId={PLANS.find((p) => p.highlight)?.id ?? PLANS[0].id}
       />
+
 
 
       <footer className="border-t border-border px-4 py-8">
