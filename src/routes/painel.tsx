@@ -1,5 +1,5 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { createFileRoute, Link, useNavigate, useSearch } from "@tanstack/react-router";
+import { useEffect, useMemo, useState } from "react";
 import { LogOut, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PainelWizard } from "@/components/site/PainelWizard";
@@ -11,7 +11,7 @@ import {
   savePlanSelection,
   type LocalAccount,
 } from "@/lib/account-storage";
-import { PLANS } from "@/lib/plans";
+import { PLANS, getPlanById, getSalonPlans } from "@/lib/plans";
 
 export const Route = createFileRoute("/painel")({
   head: () => ({
