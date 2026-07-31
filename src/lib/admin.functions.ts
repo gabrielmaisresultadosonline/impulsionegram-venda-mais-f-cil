@@ -109,14 +109,45 @@ export interface AdminSignup {
   lastSeenAt: string;
 }
 
-/** Lista os cadastros feitos na home (nome, e-mail e horário). */
+/**
+ * Lista os cadastros feitos na home (nome, e-mail e horário).
+ *
+ * Além do arquivo de cadastros, reconstruímos leads a partir dos pedidos
+ * já registrados — assim nenhum cliente antigo some do painel mesmo que o
+ * registro de cadastro tenha sido criado depois dele.
+ */
 export const adminListSignups = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => passwordSchema.parse(data))
   .handler(async ({ data }): Promise<AdminSignup[]> => {
     await assertAdmin(data.email, data.password);
     const { listSignups } = await import("./signups-repo.server");
-    return listSignups();
+    const repo = await import("./orders-repo.server");
+
+    const map = new Map<string, AdminSignup>();
+    for (const signup of listSignups()) map.set(signup.email.toLowerCase(), signup);
+
+    for (const order of repo.listOrders()) {
+      const email = (order.customerEmail ?? "").trim().toLowerCase();
+      if (!email) continue;
+      const existing = map.get(email);
+      if (existing) {
+        // Mantém a data mais antiga como criação do lead.
+        if (order.createdAt < existing.createdAt) existing.createdAt = order.createdAt;
+        if (!existing.name) existing.name = order.customerName ?? "";
+        continue;
+      }
+      map.set(email, {
+        email,
+        name: order.customerName ?? "",
+        createdAt: order.createdAt,
+        attempts: 1,
+        lastSeenAt: order.createdAt,
+      });
+    }
+
+    return [...map.values()].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
   });
+
 
 export const adminGetSettings = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => passwordSchema.parse(data))
