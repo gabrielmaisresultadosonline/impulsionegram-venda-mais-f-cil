@@ -11,7 +11,7 @@ import {
   savePlanSelection,
   type LocalAccount,
 } from "@/lib/account-storage";
-import { PLANS, getBarberPlans, getSalonPlans } from "@/lib/plans";
+import { PLANS, getBarberPlans, getSalonPlans, getTherapyPlans } from "@/lib/plans";
 
 export const Route = createFileRoute("/painel")({
   head: () => ({
@@ -39,10 +39,13 @@ function PainelPage() {
   const source = String(search.source ?? "");
   const isSalon = source === "salaode";
   const isBarber = source === "barbea";
-  const availablePlans = useMemo(
-    () => (isSalon ? getSalonPlans() : isBarber ? getBarberPlans() : PLANS),
-    [isSalon, isBarber],
-  );
+  const isTherapy = source === "terapi";
+  const availablePlans = useMemo(() => {
+    if (isSalon) return getSalonPlans();
+    if (isBarber) return getBarberPlans();
+    if (isTherapy) return getTherapyPlans();
+    return PLANS;
+  }, [isSalon, isBarber, isTherapy]);
 
   const [account, setAccount] = useState<LocalAccount | null>(null);
   const [ready, setReady] = useState(false);
