@@ -34,7 +34,7 @@ export function PlanStep({ selectedPlanId, onSelect, onBack, onNext, plans = PLA
       </header>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        {PLANS.map((item) => (
+        {plans.map((item) => (
           <PlanCard
             key={item.id}
             plan={item}
