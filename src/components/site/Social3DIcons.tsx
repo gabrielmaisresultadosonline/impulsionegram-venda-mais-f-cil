@@ -45,19 +45,19 @@ function Coin3D({ children, label, reverse = false, className }: Coin3DProps) {
 export function Social3DIcons({ className, ...props }: Social3DIconsProps) {
   return (
     <div
-      className={cn("relative flex items-center justify-center gap-8 py-6 md:gap-14", className)}
+      className={cn("relative flex items-center justify-center gap-4 py-6 md:gap-14", className)}
       {...props}
     >
-      <Coin3D label="Curtidas" className="size-20 md:size-28" reverse>
-        <Heart className="size-9 fill-current md:size-12" aria-hidden="true" />
+      <Coin3D label="Curtidas" className="size-12 md:size-28" reverse>
+        <Heart className="size-5 fill-current md:size-12" aria-hidden="true" />
       </Coin3D>
 
-      <Coin3D label="Novos seguidores" className="size-28 md:size-40">
-        <UserPlus className="size-12 md:size-16" aria-hidden="true" />
+      <Coin3D label="Novos seguidores" className="size-16 md:size-40">
+        <UserPlus className="size-7 md:size-16" aria-hidden="true" />
       </Coin3D>
 
-      <Coin3D label="Curtidas" className="size-20 md:size-28">
-        <Heart className="size-9 fill-current md:size-12" aria-hidden="true" />
+      <Coin3D label="Curtidas" className="size-12 md:size-28">
+        <Heart className="size-5 fill-current md:size-12" aria-hidden="true" />
       </Coin3D>
     </div>
   );
