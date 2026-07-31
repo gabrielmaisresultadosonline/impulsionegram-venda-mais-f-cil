@@ -39,24 +39,13 @@ export const Route = createFileRoute("/")({
 function Index() {
   const [selectedPlanId, setSelectedPlanId] = useState<string>(PLANS[1].id);
   const [signupOpen, setSignupOpen] = useState(false);
-  const plansRef = useRef<HTMLDivElement>(null);
 
   // Contabiliza a visita para o painel administrativo (uma vez por carregamento).
   useEffect(() => {
     void trackSiteEvent({ data: { type: "pageview" } });
   }, []);
 
-  const scrollToPlans = useCallback(() => {
-    plansRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-  }, []);
-
   const openSignup = useCallback(() => setSignupOpen(true), []);
-
-  // Clicar num plano apenas destaca o pacote e já abre o popup de cadastro.
-  const handleSelect = useCallback((planId: string) => {
-    setSelectedPlanId(planId);
-    setSignupOpen(true);
-  }, []);
 
   return (
     <main className="min-h-screen">
