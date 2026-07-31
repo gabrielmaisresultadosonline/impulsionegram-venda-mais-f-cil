@@ -67,3 +67,21 @@ export const customerListOrdersByEmail = createServerFn({ method: "POST" })
       .listOrders()
       .filter((order) => order.customerEmail.trim().toLowerCase() === target);
   });
+
+/**
+ * Apaga um pedido pendente (não pago) do histórico do cliente.
+ * Pedidos pagos ou entregues são protegidos e nunca removidos aqui.
+ */
+export const customerDeleteOrder = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) =>
+    z
+      .object({
+        orderNsu: z.string().trim().min(1).max(120),
+        customerEmail: z.string().trim().email().min(1).max(160),
+      })
+      .parse(data),
+  )
+  .handler(async ({ data }): Promise<{ deleted: boolean }> => {
+    const repo = await import("./orders-repo.server");
+    return { deleted: repo.deleteUnpaidOrder(data.orderNsu, data.customerEmail) };
+  });
