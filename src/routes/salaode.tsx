@@ -6,7 +6,7 @@ import { HowItWorks } from "@/components/site/HowItWorks";
 import { SignupDialog } from "@/components/site/SignupDialog";
 import { PlanCard } from "@/components/site/PlanCard";
 import { Button } from "@/components/ui/button";
-import { PLANS } from "@/lib/plans";
+import { PLANS, getSalonPlans } from "@/lib/plans";
 import { trackSiteEvent } from "@/lib/pixel.functions";
 
 export const Route = createFileRoute("/salaode")({
