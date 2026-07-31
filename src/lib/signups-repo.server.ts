@@ -16,6 +16,8 @@ export interface SignupRecord {
   /** Quantas vezes o mesmo e-mail se cadastrou novamente. */
   attempts: number;
   lastSeenAt: string;
+  /** Landing page de origem do cadastro (home, salaode, barbea, terapi...). */
+  source?: string;
 }
 
 const MAX_RECORDS = 1000;
@@ -56,7 +58,7 @@ function prune(): void {
 }
 
 /** Registra (ou atualiza) um cadastro feito na home. */
-export function recordSignup(input: { name: string; email: string }): void {
+export function recordSignup(input: { name: string; email: string; source?: string }): void {
   loadFromDisk();
   const email = input.email.trim().toLowerCase();
   if (!email) return;
@@ -68,6 +70,8 @@ export function recordSignup(input: { name: string; email: string }): void {
     createdAt: existing?.createdAt ?? now,
     attempts: (existing?.attempts ?? 0) + 1,
     lastSeenAt: now,
+    // Preserva a primeira origem conhecida do lead.
+    source: existing?.source ?? input.source ?? "home",
   });
   prune();
   persist();

@@ -131,6 +131,7 @@ function PainelPage() {
         selectedPlanId={selectedPlanId}
         onSelectPlan={handleSelectPlan}
         availablePlans={availablePlans}
+        source={source || "home"}
       />
 
       <MyOrders customerEmail={account.email} />

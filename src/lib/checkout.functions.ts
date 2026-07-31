@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { buildProductName, getPlanById } from "./plans";
 import { safeOrigin } from "./checkout.server";
+import { normalizeSource } from "./traffic-source";
 
 /**
  * Integração InfinitePay (Checkout Integrado).
@@ -37,6 +38,8 @@ const createCheckoutSchema = z.object({
   customerPhone: z.string().trim().min(10, "Informe o WhatsApp").max(30),
   /** Origem do site, usada para montar redirect_url e webhook_url. */
   origin: z.string().trim().url().max(300),
+  /** Landing page de origem do funil, usada nos relatórios do admin. */
+  source: z.string().trim().max(40).optional(),
 });
 
 export type CreateCheckoutInput = z.input<typeof createCheckoutSchema>;
@@ -125,6 +128,7 @@ export const createCheckoutLink = createServerFn({ method: "POST" })
       competitor: data.competitor ?? "",
       posts: [],
       productName,
+      source: normalizeSource(data.source),
       paymentUrl,
       messages: [],
     });

@@ -20,6 +20,8 @@ export interface PainelWizardProps extends ComponentProps<"section"> {
   onSelectPlan: (planId: string) => void;
   /** Lista de planos disponíveis no funil (ex.: filtrada por origem /salaode). */
   availablePlans?: readonly Plan[];
+  /** Origem do funil (home, salaode, barbea, terapi) registrada no pedido. */
+  source?: string;
 }
 
 /**
@@ -34,6 +36,7 @@ export function PainelWizard({
   selectedPlanId,
   onSelectPlan,
   availablePlans,
+  source = "home",
   className,
   ...props
 }: PainelWizardProps) {
@@ -71,6 +74,7 @@ export function PainelWizard({
           customerEmail: campaign.customerEmail.trim(),
           customerPhone: campaign.customerPhone.trim(),
           origin: window.location.origin,
+          source,
         },
       }),
     onSuccess: (result) => {

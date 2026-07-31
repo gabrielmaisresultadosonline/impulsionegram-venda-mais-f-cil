@@ -38,6 +38,8 @@ export interface OrderRecord {
   posts: string[];
   /** Nome do produto na InfinitePay: prefixo do plano + e-mail do cliente. */
   productName?: string;
+  /** Landing page de origem do pedido (home, salaode, barbea, terapi). */
+  source?: string;
   createdAt: string;
   /** Quando o cliente descartou o pedido pendente (soft delete: some do painel do cliente, permanece no admin). */
   cancelledAt?: string;

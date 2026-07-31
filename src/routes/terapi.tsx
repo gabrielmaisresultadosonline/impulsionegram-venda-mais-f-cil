@@ -123,7 +123,7 @@ function TherapyPage() {
         </div>
       </section>
 
-      <SignupDialog open={signupOpen} onOpenChange={setSignupOpen} redirectTo="/painel?source=terapi" />
+      <SignupDialog open={signupOpen} onOpenChange={setSignupOpen} redirectTo="/painel?source=terapi" source="terapi" />
 
       <footer className="border-t border-border px-4 py-8">
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-3">
