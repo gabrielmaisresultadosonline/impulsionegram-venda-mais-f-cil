@@ -46,12 +46,14 @@ function PainelPage() {
   const isSalon = source === "salaode";
   const isBarber = source === "barbea";
   const isTherapy = source === "terapi";
+  const isDelivery = source === "delivery";
   const availablePlans = useMemo(() => {
     if (isSalon) return getSalonPlans();
     if (isBarber) return getBarberPlans();
     if (isTherapy) return getTherapyPlans();
+    if (isDelivery) return getDeliveryPlans();
     return PLANS;
-  }, [isSalon, isBarber, isTherapy]);
+  }, [isSalon, isBarber, isTherapy, isDelivery]);
 
   const [account, setAccount] = useState<LocalAccount | null>(null);
   const [ready, setReady] = useState(false);
