@@ -1,4 +1,4 @@
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, BellRing } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PlanCard } from "@/components/site/PlanCard";
 import { PLANS, formatBRL, getPlanById } from "@/lib/plans";
