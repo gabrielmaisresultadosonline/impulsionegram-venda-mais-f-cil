@@ -1,4 +1,4 @@
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, BellRing } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PlanCard } from "@/components/site/PlanCard";
 import { PLANS, formatBRL, getPlanById } from "@/lib/plans";
@@ -15,11 +15,20 @@ export function PlanStep({ selectedPlanId, onSelect, onBack, onNext }: PlanStepP
 
   return (
     <div className="space-y-6">
-      <header>
+      <header className="relative">
         <h3 className="text-xl font-bold">Escolha o melhor plano</h3>
         <p className="text-muted-foreground mt-1 text-sm">
           Você pode trocar de plano antes de finalizar o pagamento.
         </p>
+
+        <div className="animate-pulse-glow bg-gradient-brand text-primary-foreground relative mt-4 inline-flex items-center gap-2 rounded-2xl px-4 py-2 text-sm font-semibold shadow-lg">
+          <BellRing className="size-4" aria-hidden="true" />
+          Selecione o seu plano
+          <span
+            className="bg-primary absolute -bottom-1.5 left-6 size-3 rotate-45 rounded-[2px]"
+            aria-hidden="true"
+          />
+        </div>
       </header>
 
       <div className="grid gap-4 sm:grid-cols-2">
