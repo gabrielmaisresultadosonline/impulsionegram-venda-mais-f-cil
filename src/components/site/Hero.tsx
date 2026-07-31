@@ -17,7 +17,7 @@ const TRUST_ITEMS = [
   { icon: Instagram, label: "Filtro por região" },
 ] as const;
 
-export function Hero({ onCta, className, ...props }: HeroProps) {
+export function Hero({ onCta, onSecondary, className, ...props }: HeroProps) {
   return (
     <section
       className={cn("relative overflow-hidden bg-aurora px-4 pt-14 pb-20 md:pt-20", className)}
