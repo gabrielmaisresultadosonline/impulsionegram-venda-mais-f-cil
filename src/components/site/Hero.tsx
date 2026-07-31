@@ -1,4 +1,4 @@
-import { ArrowRight, BadgeCheck, Instagram, ShieldCheck, Timer } from "lucide-react";
+import { ArrowRight, Instagram, ShieldCheck, Timer } from "lucide-react";
 import type { ComponentProps } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -24,23 +24,15 @@ export function Hero({ onCta, onSecondary, className, ...props }: HeroProps) {
       {...props}
     >
       <div className="mx-auto flex max-w-4xl flex-col items-center text-center">
-        <div className="flex flex-wrap items-center justify-center gap-3">
-          <span className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary/60 px-3 py-1.5 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
-            <Instagram className="size-3.5 text-primary" aria-hidden="true" />
-            POPULAR
-          </span>
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-1.5 text-xs font-semibold tracking-wider text-primary uppercase">
-            <BadgeCheck className="size-3.5" aria-hidden="true" />
-            Parceiro oficial da Meta
-          </span>
-        </div>
 
         <Social3DIcons className="mt-10 md:mt-12" />
 
         <h1 className="mt-8 text-4xl leading-[1.1] font-extrabold tracking-tight text-balance md:text-6xl">
+          Mais vendas,
+          <br />
           Mais engajamento,
           <br />
-          mais clientes.
+          Mais clientes.
         </h1>
 
         <p className="mt-4 max-w-2xl text-xl leading-snug font-semibold text-balance text-muted-foreground md:text-2xl">

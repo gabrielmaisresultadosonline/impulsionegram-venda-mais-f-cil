@@ -13,7 +13,7 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       {
-        title: "POPULAR — Mais Engajamento, mais clientes, mais público filtrado por região e CEP",
+        title: "POPULAR — Mais vendas, Mais engajamento, Mais clientes",
       },
       {
         name: "description",
@@ -22,8 +22,7 @@ export const Route = createFileRoute("/")({
       },
       {
         property: "og:title",
-        content:
-          "POPULAR — Mais Engajamento, mais clientes, mais público filtrado por região e CEP",
+        content: "POPULAR — Mais vendas, Mais engajamento, Mais clientes",
       },
       {
         property: "og:description",
