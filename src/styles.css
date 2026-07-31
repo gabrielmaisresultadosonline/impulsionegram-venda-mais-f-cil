@@ -316,3 +316,18 @@
   animation: shine-sweep 3.6s ease-in-out infinite;
 }
 
+/* --------- Botão flutuante do WhatsApp --------- */
+@keyframes whatsapp-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@utility animate-whatsapp-float {
+  animation: whatsapp-float 3s ease-in-out infinite;
+}
+
