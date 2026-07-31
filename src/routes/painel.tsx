@@ -123,6 +123,7 @@ function PainelPage() {
         account={account}
         selectedPlanId={selectedPlanId}
         onSelectPlan={handleSelectPlan}
+        availablePlans={availablePlans}
       />
 
       <MyOrders customerEmail={account.email} />
