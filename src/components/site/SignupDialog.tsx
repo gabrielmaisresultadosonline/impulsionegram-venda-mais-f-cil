@@ -239,9 +239,9 @@ export function SignupDialog({ open, onOpenChange, selectedPlanId, redirectTo = 
             className="h-11 w-full"
             onClick={() => {
               if (selectedPlanId) savePlanSelection(selectedPlanId);
-              onOpenChange(false);
-              void navigate({ to: "/painel" });
-            }}
+            onOpenChange(false);
+            void navigate({ to: redirectTo });
+          }}
           >
             Já tenho conta — entrar no painel
           </Button>
