@@ -22,6 +22,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { formatBRL } from "@/lib/plans";
 import { PixelCard } from "@/components/admin/PixelCard";
+import { SignupsCard } from "@/components/admin/SignupsCard";
 import {
   adminListOrders,
   adminLogin,
@@ -248,6 +249,8 @@ function AdminDashboard({ credentials, onLogout }: AdminDashboardProps) {
         </section>
 
         <PixelCard credentials={credentials} className="mt-6" />
+
+        <SignupsCard credentials={credentials} className="mt-6" />
 
         <nav className="mt-8 flex flex-wrap gap-2" aria-label="Filtrar pedidos">
           {TABS.map((item) => (
