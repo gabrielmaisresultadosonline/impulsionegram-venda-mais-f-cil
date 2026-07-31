@@ -74,9 +74,14 @@ function Index() {
             pagamento.
           </p>
 
-          <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-12 flex flex-wrap justify-center gap-6">
             {PLANS.map((plan) => (
-              <PlanCard key={plan.id} plan={plan} selected={false} />
+              <PlanCard
+                key={plan.id}
+                plan={plan}
+                selected={false}
+                className="w-full sm:w-[calc(50%-12px)] lg:w-[calc(25%-18px)] lg:max-w-[300px]"
+              />
             ))}
           </div>
 
