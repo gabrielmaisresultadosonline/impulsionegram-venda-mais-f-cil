@@ -81,7 +81,7 @@ function Index() {
               <PlanCard
                 key={plan.id}
                 plan={plan}
-                selected={plan.id === selectedPlanId}
+                selected={plan.id === PLANS[1].id}
               />
             ))}
           </div>
