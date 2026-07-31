@@ -5,7 +5,6 @@ import { Hero } from "@/components/site/Hero";
 import { HowItWorks } from "@/components/site/HowItWorks";
 import { SignupDialog } from "@/components/site/SignupDialog";
 import { PlanCard } from "@/components/site/PlanCard";
-import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { Button } from "@/components/ui/button";
 import { PLANS } from "@/lib/plans";
 import { trackSiteEvent } from "@/lib/pixel.functions";
