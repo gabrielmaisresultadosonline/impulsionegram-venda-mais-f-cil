@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect } from "react";
-import { trackPixelEvent } from "@/lib/pixel.functions";
 import { trackSiteEvent } from "@/lib/pixel.functions";
+import { trackPixelEvent } from "@/components/site/FacebookPixel";
 import { WhatsAppIcon } from "@/components/site/WhatsAppIcon";
 import { cn } from "@/lib/utils";
 
