@@ -4,6 +4,7 @@ import { LogOut, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PainelWizard } from "@/components/site/PainelWizard";
 import { MyOrders } from "@/components/site/MyOrders";
+import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import {
   clearAccount,
   getAccount,
