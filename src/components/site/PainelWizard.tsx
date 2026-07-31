@@ -107,6 +107,7 @@ export function PainelWizard({
         <div className="mt-8">
           {step === 0 ? (
             <PlanStep
+              plans={availablePlans}
               selectedPlanId={selectedPlanId}
               onSelect={onSelectPlan}
               onNext={() => setStep(1)}
