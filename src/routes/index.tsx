@@ -80,7 +80,7 @@ function Index() {
                 key={plan.id}
                 plan={plan}
                 selected={false}
-                className="w-full sm:w-[calc(50%-12px)] lg:w-[calc(25%-18px)] lg:max-w-[300px]"
+                className="w-full sm:w-[calc(50%-12px)] lg:w-[calc(25%-18px)] lg:max-w-[300px] last:lg:w-[calc(50%-12px)] last:lg:max-w-[560px]"
               />
             ))}
           </div>
