@@ -130,9 +130,9 @@
   --shadow-card: 0 18px 45px -30px oklch(0.22 0.02 300 / 35%);
 }
 
-/* Tema único (dark-first): a classe .dark herda os mesmos tokens. */
+/* Tema único (light-first): a classe .dark herda os mesmos tokens claros. */
 .dark {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 @layer base {
