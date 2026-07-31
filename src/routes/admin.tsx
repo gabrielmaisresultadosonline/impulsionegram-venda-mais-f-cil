@@ -314,7 +314,7 @@ function AdminDashboard({ credentials, onLogout }: AdminDashboardProps) {
                             </Badge>
                           ) : null}
                           <span className="text-muted-foreground ml-auto text-xs">
-                            {formatDateTime(order.createdAt)}
+                            {formatDate(order.createdAt)}
                           </span>
                         </li>
                       ))}
