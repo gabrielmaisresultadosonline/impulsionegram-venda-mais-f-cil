@@ -97,6 +97,12 @@ export const SALON_PLAN_IDS: readonly string[] = [
   "trimestral-10k",
 ] as const;
 
+/** Planos exibidos no funil de barbearia (/barbea). */
+export const BARBER_PLAN_IDS: readonly string[] = [
+  "marketing-completo",
+  "trimestral-10k",
+] as const;
+
 export function getPlanById(id: string): Plan | undefined {
   return PLANS.find((plan) => plan.id === id);
 }
@@ -104,6 +110,11 @@ export function getPlanById(id: string): Plan | undefined {
 /** Retorna apenas os planos disponíveis para o nicho de salão de beleza. */
 export function getSalonPlans(): readonly Plan[] {
   return SALON_PLAN_IDS.map((id) => getPlanById(id)).filter((p): p is Plan => p !== undefined);
+}
+
+/** Retorna apenas os planos disponíveis para o nicho de barbearia. */
+export function getBarberPlans(): readonly Plan[] {
+  return BARBER_PLAN_IDS.map((id) => getPlanById(id)).filter((p): p is Plan => p !== undefined);
 }
 
 /**
