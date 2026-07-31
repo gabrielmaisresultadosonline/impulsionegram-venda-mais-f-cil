@@ -101,6 +101,23 @@ export const adminReplyTicket = createServerFn({ method: "POST" })
   });
 
 
+export interface AdminSignup {
+  email: string;
+  name: string;
+  createdAt: string;
+  attempts: number;
+  lastSeenAt: string;
+}
+
+/** Lista os cadastros feitos na home (nome, e-mail e horário). */
+export const adminListSignups = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) => passwordSchema.parse(data))
+  .handler(async ({ data }): Promise<AdminSignup[]> => {
+    await assertAdmin(data.email, data.password);
+    const { listSignups } = await import("./signups-repo.server");
+    return listSignups();
+  });
+
 export const adminGetSettings = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => passwordSchema.parse(data))
   .handler(async ({ data }): Promise<AdminSettings> => {

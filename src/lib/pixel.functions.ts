@@ -19,6 +19,9 @@ export const getPixelConfig = createServerFn({ method: "GET" }).handler(
 
 const eventSchema = z.object({
   type: z.enum(["pageview", "signup"]),
+  /** Enviados apenas no cadastro, para listar os leads no painel admin. */
+  name: z.string().trim().max(160).optional(),
+  email: z.string().trim().max(160).optional(),
 });
 
 /** Contadores internos de visita/cadastro exibidos no painel administrativo. */
@@ -26,8 +29,16 @@ export const trackSiteEvent = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => eventSchema.parse(data))
   .handler(async ({ data }): Promise<{ ok: true }> => {
     const settings = await import("./settings.server");
-    if (data.type === "pageview") settings.incrementVisits();
-    else settings.incrementSignups();
+    if (data.type === "pageview") {
+      settings.incrementVisits();
+      return { ok: true };
+    }
+
+    settings.incrementSignups();
+    if (data.email) {
+      const { recordSignup } = await import("./signups-repo.server");
+      recordSignup({ name: data.name ?? "", email: data.email });
+    }
     return { ok: true };
   });
 
