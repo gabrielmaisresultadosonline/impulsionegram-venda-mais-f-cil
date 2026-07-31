@@ -134,6 +134,13 @@ export function getTherapyPlans(): readonly Plan[] {
   return THERAPY_PLAN_IDS.map((id) => getPlanById(id)).filter((p): p is Plan => p !== undefined);
 }
 
+/** Retorna apenas os planos disponíveis para o nicho de delivery. */
+export function getDeliveryPlans(): readonly Plan[] {
+  return DELIVERY_PLAN_IDS.map((id) => getPlanById(id)).filter((p): p is Plan => p !== undefined);
+}
+
+
+
 /**
  * Monta o nome do produto enviado à InfinitePay: prefixo do plano + e-mail do
  * cliente (ex.: "startcliente@gmail.com"). Isso permite reconhecer o plano e o
