@@ -199,6 +199,19 @@ function AdminDashboard({ credentials, onLogout }: AdminDashboardProps) {
     [orders, tab],
   );
 
+  /** Agrupa os pedidos por e-mail do cliente para a aba "Cadastros". */
+  const customerGroups = useMemo(() => {
+    const map = new Map<string, { email: string; name: string; orders: AdminOrder[] }>();
+    for (const order of orders) {
+      const email = order.customerEmail.trim().toLowerCase() || "sem-email";
+      const group = map.get(email) ?? { email, name: order.customerName, orders: [] };
+      group.name = group.name || order.customerName;
+      group.orders.push(order);
+      map.set(email, group);
+    }
+    return [...map.values()];
+  }, [orders]);
+
   return (
     <main className="bg-aurora min-h-screen px-4 py-10">
       <div className="mx-auto max-w-6xl">
