@@ -10,7 +10,7 @@ export interface HeroProps extends ComponentProps<"section"> {
   /** Rola até a seção de planos. */
   onSecondary?: () => void;
   /** Linhas do título principal (padrão: home). */
-  title?: readonly string[];
+  headline?: readonly string[];
   /** Subtítulo em destaque. */
   highlight?: string;
   /** Descrição abaixo do subtítulo. */
