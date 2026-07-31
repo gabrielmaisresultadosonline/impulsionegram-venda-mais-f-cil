@@ -25,7 +25,9 @@ export function PlanCard({
       className={cn(
         "glass-panel relative flex flex-col rounded-2xl p-6 transition-all duration-300",
         plan.highlight && "border-primary/50",
-        selected ? "shadow-glow border-primary -translate-y-1" : "hover:-translate-y-1",
+        selected
+          ? "shadow-glow animate-pulse-glow border-primary bg-primary/10 -translate-y-1"
+          : "bg-card hover:-translate-y-1",
         className,
       )}
       {...props}
