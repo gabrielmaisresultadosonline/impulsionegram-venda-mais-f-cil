@@ -96,18 +96,18 @@ function OrderRow({
 
   async function handleDelete() {
     if (deleting) return;
-    if (!window.confirm("Apagar este pedido pendente? Essa ação não pode ser desfeita.")) return;
+    if (!window.confirm("Cancelar este pedido pendente? Ele sai do seu histórico, mas fica registrado para o suporte.")) return;
     setDeleting(true);
     try {
       const result = await deleteOrder({ data: { orderNsu: order.orderNsu, customerEmail } });
       if (result.deleted) {
-        toast.success("Pedido apagado.");
+        toast.success("Pedido cancelado.");
         onChanged();
       } else {
-        toast.error("Não foi possível apagar este pedido.");
+        toast.error("Não foi possível cancelar este pedido.");
       }
     } catch {
-      toast.error("Falha ao apagar o pedido. Tente novamente.");
+      toast.error("Falha ao cancelar o pedido. Tente novamente.");
     } finally {
       setDeleting(false);
     }
@@ -161,7 +161,7 @@ function OrderRow({
             ) : (
               <Trash2 className="size-4" aria-hidden="true" />
             )}
-            Apagar pedido
+            Cancelar pedido
           </Button>
         </div>
       ) : null}
