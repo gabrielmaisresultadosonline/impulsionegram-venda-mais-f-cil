@@ -55,11 +55,11 @@ export function Hero({ onCta, onSecondary, className, ...props }: HeroProps) {
 
         <div className="mt-9 flex w-full flex-col justify-center gap-3 sm:w-auto sm:flex-row">
           <Button size="lg" onClick={onCta} className="bg-gradient-brand shadow-glow h-12 px-7">
-            Ver planos e impulsionar
+            Cadastre-se grátis
             <ArrowRight className="size-4" aria-hidden="true" />
           </Button>
-          <Button size="lg" variant="outline" onClick={onCta} className="h-12 px-7">
-            Como funciona
+          <Button size="lg" variant="outline" onClick={onSecondary ?? onCta} className="h-12 px-7">
+            Ver planos
           </Button>
         </div>
 
