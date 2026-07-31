@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as BarbeaRouteImport } from './routes/barbea'
+import { Route as DeliveryRouteImport } from './routes/delivery'
 import { Route as PainelRouteImport } from './routes/painel'
 import { Route as PedidoRouteImport } from './routes/pedido'
 import { Route as SalaodeRouteImport } from './routes/salaode'
@@ -32,6 +33,11 @@ const AdminRoute = AdminRouteImport.update({
 const BarbeaRoute = BarbeaRouteImport.update({
   id: '/barbea',
   path: '/barbea',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DeliveryRoute = DeliveryRouteImport.update({
+  id: '/delivery',
+  path: '/delivery',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PainelRoute = PainelRouteImport.update({
@@ -70,6 +76,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/barbea': typeof BarbeaRoute
+  '/delivery': typeof DeliveryRoute
   '/painel': typeof PainelRoute
   '/pedido': typeof PedidoRoute
   '/salaode': typeof SalaodeRoute
@@ -81,6 +88,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/barbea': typeof BarbeaRoute
+  '/delivery': typeof DeliveryRoute
   '/painel': typeof PainelRoute
   '/pedido': typeof PedidoRoute
   '/salaode': typeof SalaodeRoute
@@ -93,6 +101,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/barbea': typeof BarbeaRoute
+  '/delivery': typeof DeliveryRoute
   '/painel': typeof PainelRoute
   '/pedido': typeof PedidoRoute
   '/salaode': typeof SalaodeRoute
@@ -106,6 +115,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/barbea'
+    | '/delivery'
     | '/painel'
     | '/pedido'
     | '/salaode'
@@ -117,6 +127,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/barbea'
+    | '/delivery'
     | '/painel'
     | '/pedido'
     | '/salaode'
@@ -128,6 +139,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/barbea'
+    | '/delivery'
     | '/painel'
     | '/pedido'
     | '/salaode'
@@ -140,6 +152,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
   BarbeaRoute: typeof BarbeaRoute
+  DeliveryRoute: typeof DeliveryRoute
   PainelRoute: typeof PainelRoute
   PedidoRoute: typeof PedidoRoute
   SalaodeRoute: typeof SalaodeRoute
@@ -169,6 +182,13 @@ declare module '@tanstack/react-router' {
       path: '/barbea'
       fullPath: '/barbea'
       preLoaderRoute: typeof BarbeaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/delivery': {
+      id: '/delivery'
+      path: '/delivery'
+      fullPath: '/delivery'
+      preLoaderRoute: typeof DeliveryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/painel': {
@@ -220,6 +240,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   BarbeaRoute: BarbeaRoute,
+  DeliveryRoute: DeliveryRoute,
   PainelRoute: PainelRoute,
   PedidoRoute: PedidoRoute,
   SalaodeRoute: SalaodeRoute,
@@ -230,3 +251,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
