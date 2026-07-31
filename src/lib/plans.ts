@@ -27,13 +27,10 @@ export const PLANS: readonly Plan[] = [
     name: "Básico 1.000",
     tagline: "Comece a crescer agora",
     priceCents: 1400,
-    features: [
-      "1.000 seguidores filtrados por região",
-      "Curtidas nas publicações",
-      "Filtro por concorrente",
-      "Entrega em até 6 horas",
-    ],
+    features: ["1.000 seguidores", "Entrega em até 6 horas"],
+    badge: "Popular",
   },
+
   {
     id: "seg-2000",
     slug: "impulso",
