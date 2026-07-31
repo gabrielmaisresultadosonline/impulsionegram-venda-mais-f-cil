@@ -24,9 +24,9 @@ export function PlanCard({
     <article
       className={cn(
         "glass-panel relative flex flex-col rounded-2xl p-6 transition-all duration-300",
-        plan.highlight && "border-primary/50",
+        plan.highlight && !selected && "border-primary/50",
         selected
-          ? "shadow-glow animate-pulse-glow border-primary bg-primary/10 -translate-y-1"
+          ? "shadow-glow animate-pulse-glow border-2 border-primary bg-gradient-to-br from-primary/25 via-primary/15 to-transparent -translate-y-1"
           : "bg-card hover:-translate-y-1",
         className,
       )}
