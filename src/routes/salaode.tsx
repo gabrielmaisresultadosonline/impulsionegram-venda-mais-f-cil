@@ -18,7 +18,7 @@ export const Route = createFileRoute("/salaode")({
       {
         name: "description",
         content:
-          "Atraia mais clientes para o seu salão de beleza. Seguidores filtrados por região e CEP no automático. Planos a partir de R$14, entrega em até 6 horas.",
+          "Atraia mais clientes para o seu salão de beleza. Planos Marketing Completo e Trimestral 10K com seguidores filtrados por região e CEP.",
       },
       {
         property: "og:title",
