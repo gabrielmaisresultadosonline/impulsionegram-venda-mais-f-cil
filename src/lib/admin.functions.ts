@@ -107,6 +107,8 @@ export interface AdminSignup {
   createdAt: string;
   attempts: number;
   lastSeenAt: string;
+  /** Origem do cadastro (home, salaode, barbea, terapi). */
+  source?: string;
 }
 
 /**
@@ -134,6 +136,7 @@ export const adminListSignups = createServerFn({ method: "POST" })
         // Mantém a data mais antiga como criação do lead.
         if (order.createdAt < existing.createdAt) existing.createdAt = order.createdAt;
         if (!existing.name) existing.name = order.customerName ?? "";
+        if (!existing.source && order.source) existing.source = order.source;
         continue;
       }
       map.set(email, {
@@ -142,6 +145,7 @@ export const adminListSignups = createServerFn({ method: "POST" })
         createdAt: order.createdAt,
         attempts: 1,
         lastSeenAt: order.createdAt,
+        source: order.source ?? "home",
       });
     }
 

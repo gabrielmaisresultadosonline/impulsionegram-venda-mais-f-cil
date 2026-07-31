@@ -22,6 +22,8 @@ const eventSchema = z.object({
   /** Enviados apenas no cadastro, para listar os leads no painel admin. */
   name: z.string().trim().max(160).optional(),
   email: z.string().trim().max(160).optional(),
+  /** Landing page de origem (home, salaode, barbea, terapi, whats). */
+  source: z.string().trim().max(40).optional(),
 });
 
 /** Contadores internos de visita/cadastro exibidos no painel administrativo. */
@@ -37,7 +39,7 @@ export const trackSiteEvent = createServerFn({ method: "POST" })
     settings.incrementSignups();
     if (data.email) {
       const { recordSignup } = await import("./signups-repo.server");
-      recordSignup({ name: data.name ?? "", email: data.email });
+      recordSignup({ name: data.name ?? "", email: data.email, source: data.source });
     }
     return { ok: true };
   });
