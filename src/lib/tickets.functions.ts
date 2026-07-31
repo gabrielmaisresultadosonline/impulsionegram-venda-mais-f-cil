@@ -65,7 +65,10 @@ export const customerListOrdersByEmail = createServerFn({ method: "POST" })
     const target = data.customerEmail.toLowerCase();
     return repo
       .listOrders()
-      .filter((order) => order.customerEmail.trim().toLowerCase() === target);
+      .filter(
+        (order) =>
+          order.customerEmail.trim().toLowerCase() === target && !order.cancelledAt,
+      );
   });
 
 /**

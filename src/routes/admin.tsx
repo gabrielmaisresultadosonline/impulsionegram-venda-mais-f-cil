@@ -335,6 +335,11 @@ function OrderCard({ order, busy, onDeliver, onReopen }: OrderCardProps) {
           <div className="flex flex-wrap items-center gap-2">
             <h2 className="text-base font-bold">{order.planName}</h2>
             <StatusBadge status={order.status} />
+            {order.cancelledAt ? (
+              <Badge variant="outline" className="text-destructive border-destructive/30">
+                Descartado pelo cliente
+              </Badge>
+            ) : null}
           </div>
           <p className="text-muted-foreground mt-1 font-mono text-xs">{order.orderNsu}</p>
         </div>

@@ -39,6 +39,8 @@ export interface OrderRecord {
   /** Nome do produto na InfinitePay: prefixo do plano + e-mail do cliente. */
   productName?: string;
   createdAt: string;
+  /** Quando o cliente descartou o pedido pendente (soft delete: some do painel do cliente, permanece no admin). */
+  cancelledAt?: string;
   paidAt?: string;
   deliveredAt?: string;
   paymentUrl?: string;
@@ -274,10 +276,11 @@ export function getOrderByNsu(orderNsu: string): OrderRecord | undefined {
 }
 
 /**
- * Remove um pedido ainda não pago.
+ * Descarta um pedido ainda não pago (soft delete).
  *
- * Retorna false quando o pedido não existe, o e-mail não confere ou o pedido
- * já foi pago/entregue — pedidos pagos nunca podem ser apagados pelo cliente.
+ * O registro NÃO é apagado: ele apenas ganha `cancelledAt` e some do painel do
+ * cliente. No admin ele continua visível como tentativa cancelada — assim
+ * nenhum lead desaparece do histórico comercial.
  */
 export function deleteUnpaidOrder(orderNsu: string, customerEmail: string): boolean {
   loadFromDisk();
@@ -287,7 +290,7 @@ export function deleteUnpaidOrder(orderNsu: string, customerEmail: string): bool
     return false;
   }
   if (order.status !== "tentativa") return false;
-  registry.delete(orderNsu);
+  registry.set(orderNsu, { ...order, cancelledAt: new Date().toISOString() });
   persist();
   return true;
 }
