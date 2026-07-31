@@ -74,6 +74,7 @@ function PainelPage() {
             <Link to="/">Ir para a página inicial</Link>
           </Button>
         </div>
+        <WhatsAppFloat />
       </main>
     );
   }
