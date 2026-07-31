@@ -38,7 +38,7 @@ type DialogMode = "signup" | "login";
  * Popup de cadastro/login acionado pelos CTAs "Cadastre-se grátis" da home.
  * Mantém o mesmo contrato do fluxo antigo: cria a conta local e leva ao painel.
  */
-export function SignupDialog({ open, onOpenChange, selectedPlanId }: SignupDialogProps) {
+export function SignupDialog({ open, onOpenChange, selectedPlanId, redirectTo = "/painel" }: SignupDialogProps) {
   const navigate = useNavigate();
   const [mode, setMode] = useState<DialogMode>("signup");
   const [saving, setSaving] = useState(false);
