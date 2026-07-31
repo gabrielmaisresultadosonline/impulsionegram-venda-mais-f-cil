@@ -6,8 +6,8 @@ import { formatBRL, type Plan } from "@/lib/plans";
 
 export interface PlanCardProps extends Omit<ComponentProps<"article">, "onSelect"> {
   plan: Plan;
-  selected: boolean;
-  onSelect: (planId: string) => void;
+  selected?: boolean;
+  onSelect?: (planId: string) => void;
   /** Rótulo customizado do botão (ex.: "Cadastre-se grátis" na home). */
   ctaLabel?: string;
 }
@@ -52,13 +52,15 @@ export function PlanCard({
         ))}
       </ul>
 
-      <Button
-        onClick={() => onSelect(plan.id)}
-        variant={ctaLabel ? "default" : selected ? "default" : "outline"}
-        className={cn("mt-7 h-11 w-full", (ctaLabel || selected) && "bg-gradient-brand")}
-      >
-        {ctaLabel ?? (selected ? "Plano selecionado" : "Escolher este plano")}
-      </Button>
+      {onSelect ? (
+        <Button
+          onClick={() => onSelect(plan.id)}
+          variant={ctaLabel ? "default" : selected ? "default" : "outline"}
+          className={cn("mt-7 h-11 w-full", (ctaLabel || selected) && "bg-gradient-brand")}
+        >
+          {ctaLabel ?? (selected ? "Plano selecionado" : "Escolher este plano")}
+        </Button>
+      ) : null}
     </article>
   );
 }

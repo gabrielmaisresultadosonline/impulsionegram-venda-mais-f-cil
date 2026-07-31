@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { Hero } from "@/components/site/Hero";
 import { HowItWorks } from "@/components/site/HowItWorks";
@@ -37,30 +37,18 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const [selectedPlanId, setSelectedPlanId] = useState<string>(PLANS[1].id);
   const [signupOpen, setSignupOpen] = useState(false);
-  const plansRef = useRef<HTMLDivElement>(null);
 
   // Contabiliza a visita para o painel administrativo (uma vez por carregamento).
   useEffect(() => {
     void trackSiteEvent({ data: { type: "pageview" } });
   }, []);
 
-  const scrollToPlans = useCallback(() => {
-    plansRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-  }, []);
-
   const openSignup = useCallback(() => setSignupOpen(true), []);
-
-  // Clicar num plano apenas destaca o pacote e já abre o popup de cadastro.
-  const handleSelect = useCallback((planId: string) => {
-    setSelectedPlanId(planId);
-    setSignupOpen(true);
-  }, []);
 
   return (
     <main className="min-h-screen">
-      <Hero onCta={openSignup} onSecondary={scrollToPlans} />
+      <Hero onCta={openSignup} onSecondary={openSignup} />
 
       <section className="px-4 pb-6">
         <div className="glass-panel mx-auto flex max-w-4xl flex-col items-center gap-4 rounded-2xl p-6 text-center md:flex-row md:justify-between md:text-left">
@@ -78,7 +66,7 @@ function Index() {
         </div>
       </section>
 
-      <section ref={plansRef} className="px-4 py-20" id="planos">
+      <section className="px-4 py-20" id="planos">
         <div className="mx-auto max-w-6xl">
           <h2 className="text-3xl font-extrabold text-balance md:text-4xl">
             Planos <span className="text-gradient-brand">simples e diretos</span>
@@ -93,9 +81,7 @@ function Index() {
               <PlanCard
                 key={plan.id}
                 plan={plan}
-                selected={plan.id === selectedPlanId}
-                onSelect={handleSelect}
-                ctaLabel="Cadastre-se grátis"
+                selected={plan.id === PLANS[1].id}
               />
             ))}
           </div>
@@ -137,7 +123,7 @@ function Index() {
       <SignupDialog
         open={signupOpen}
         onOpenChange={setSignupOpen}
-        selectedPlanId={selectedPlanId}
+        selectedPlanId={PLANS[1].id}
       />
 
 
