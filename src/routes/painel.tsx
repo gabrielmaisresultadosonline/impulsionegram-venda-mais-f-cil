@@ -119,6 +119,8 @@ function PainelPage() {
 
       <MyOrders customerEmail={account.email} />
 
+      <WhatsAppFloat />
+
       <footer className="border-border border-t px-4 py-8">
         <div className="mx-auto flex max-w-3xl items-center justify-center gap-4 text-xs">
           <Link to="/" className="text-muted-foreground hover:text-foreground">

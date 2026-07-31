@@ -122,6 +122,8 @@ function Index() {
 
       <SignupDialog open={signupOpen} onOpenChange={setSignupOpen} />
 
+      <WhatsAppFloat />
+
       <footer className="border-t border-border px-4 py-8">
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-3">
           <p className="text-center text-xs text-muted-foreground">
