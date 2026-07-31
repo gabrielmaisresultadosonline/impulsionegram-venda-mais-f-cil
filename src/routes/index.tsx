@@ -123,7 +123,7 @@ function Index() {
       <SignupDialog
         open={signupOpen}
         onOpenChange={setSignupOpen}
-        selectedPlanId={selectedPlanId}
+        selectedPlanId={PLANS[1].id}
       />
 
 
