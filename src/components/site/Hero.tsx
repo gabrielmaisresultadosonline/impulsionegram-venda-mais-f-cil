@@ -5,8 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Social3DIcons } from "@/components/site/Social3DIcons";
 
 export interface HeroProps extends ComponentProps<"section"> {
-  /** Rola até a seção de planos. */
+  /** Abre o popup de cadastro. */
   onCta: () => void;
+  /** Rola até a seção de planos. */
+  onSecondary?: () => void;
 }
 
 const TRUST_ITEMS = [
