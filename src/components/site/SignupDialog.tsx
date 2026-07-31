@@ -115,7 +115,7 @@ export function SignupDialog({ open, onOpenChange, selectedPlanId, redirectTo = 
       if (selectedPlanId) savePlanSelection(selectedPlanId);
       toast.success(`Bem-vindo(a) de volta, ${stored.name.split(" ")[0]}!`);
       onOpenChange(false);
-      await navigate({ to: "/painel" });
+      await navigate({ to: redirectTo });
     } catch {
       toast.error("Não foi possível entrar. Tente novamente.");
     } finally {
