@@ -1,9 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { ArrowRight, Sparkles } from "lucide-react";
 import { Hero } from "@/components/site/Hero";
 import { HowItWorks } from "@/components/site/HowItWorks";
-import { SignupCard } from "@/components/site/SignupCard";
+import { SignupDialog } from "@/components/site/SignupDialog";
 import { PlanCard } from "@/components/site/PlanCard";
+import { Button } from "@/components/ui/button";
 import { PLANS } from "@/lib/plans";
 import { trackSiteEvent } from "@/lib/pixel.functions";
 
