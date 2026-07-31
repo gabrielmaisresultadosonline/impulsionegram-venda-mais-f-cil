@@ -37,13 +37,14 @@ export interface AdminCredentials {
   password: string;
 }
 
-type TabKey = "todos" | "pago" | "tentativa" | "entregue";
+type TabKey = "todos" | "pago" | "tentativa" | "entregue" | "cadastros";
 
 const TABS: ReadonlyArray<{ key: TabKey; label: string }> = [
   { key: "pago", label: "A entregar" },
   { key: "tentativa", label: "Tentativas" },
   { key: "entregue", label: "Entregues" },
   { key: "todos", label: "Todos" },
+  { key: "cadastros", label: "Cadastros" },
 ];
 
 export const Route = createFileRoute("/admin")({
