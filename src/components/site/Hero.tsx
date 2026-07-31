@@ -35,7 +35,7 @@ const DEFAULT_DESCRIPTION =
 export function Hero({
   onCta,
   onSecondary,
-  title,
+  headline,
   highlight,
   description,
   ctaLabel,
@@ -43,7 +43,7 @@ export function Hero({
   className,
   ...props
 }: HeroProps) {
-  const titleLines = title ?? DEFAULT_TITLE;
+  const titleLines = headline ?? DEFAULT_TITLE;
   const highlightText = highlight ?? DEFAULT_HIGHLIGHT;
   const descriptionText = description ?? DEFAULT_DESCRIPTION;
   const primaryCta = ctaLabel ?? "Cadastre-se grátis";
