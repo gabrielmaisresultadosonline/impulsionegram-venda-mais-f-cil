@@ -20,14 +20,14 @@ const TRUST_ITEMS = [
 export function Hero({ onCta, onSecondary, className, ...props }: HeroProps) {
   return (
     <section
-      className={cn("relative overflow-hidden bg-aurora px-4 pt-14 pb-20 md:pt-20", className)}
+      className={cn("relative overflow-hidden bg-aurora px-4 pt-6 pb-16 md:pt-20", className)}
       {...props}
     >
       <div className="mx-auto flex max-w-4xl flex-col items-center text-center">
 
-        <Social3DIcons className="mt-10 md:mt-12" />
+        <Social3DIcons className="mt-4 md:mt-12" />
 
-        <h1 className="mt-8 text-4xl leading-[1.1] font-extrabold tracking-tight text-balance md:text-6xl">
+        <h1 className="mt-3 text-4xl leading-[1.1] font-extrabold tracking-tight text-balance md:mt-8 md:text-6xl">
           Mais vendas,
           <br />
           Mais engajamento,

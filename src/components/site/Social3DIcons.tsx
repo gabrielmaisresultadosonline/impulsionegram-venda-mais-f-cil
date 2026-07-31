@@ -25,7 +25,7 @@ function Coin3D({ children, label, reverse = false, className }: Coin3DProps) {
         )}
       >
         {/* Halo luminoso */}
-        <div className="bg-gradient-brand animate-pulse-glow absolute -inset-4 rounded-full blur-2xl" />
+        <div className="bg-gradient-brand animate-pulse-glow absolute -inset-2 rounded-full blur-xl md:-inset-4 md:blur-2xl" />
 
         {/* Corpo da moeda */}
         <div className="bg-gradient-brand shadow-glow relative grid size-full place-items-center overflow-hidden rounded-full border border-white/25">
@@ -45,19 +45,19 @@ function Coin3D({ children, label, reverse = false, className }: Coin3DProps) {
 export function Social3DIcons({ className, ...props }: Social3DIconsProps) {
   return (
     <div
-      className={cn("relative flex items-center justify-center gap-4 py-6 md:gap-14", className)}
+      className={cn("relative flex items-center justify-center gap-3 py-3 md:gap-14 md:py-6", className)}
       {...props}
     >
-      <Coin3D label="Curtidas" className="size-12 md:size-28" reverse>
-        <Heart className="size-5 fill-current md:size-12" aria-hidden="true" />
+      <Coin3D label="Curtidas" className="size-10 md:size-28" reverse>
+        <Heart className="size-4 fill-current md:size-12" aria-hidden="true" />
       </Coin3D>
 
-      <Coin3D label="Novos seguidores" className="size-16 md:size-40">
-        <UserPlus className="size-7 md:size-16" aria-hidden="true" />
+      <Coin3D label="Novos seguidores" className="size-14 md:size-40">
+        <UserPlus className="size-6 md:size-16" aria-hidden="true" />
       </Coin3D>
 
-      <Coin3D label="Curtidas" className="size-12 md:size-28">
-        <Heart className="size-5 fill-current md:size-12" aria-hidden="true" />
+      <Coin3D label="Curtidas" className="size-10 md:size-28">
+        <Heart className="size-4 fill-current md:size-12" aria-hidden="true" />
       </Coin3D>
     </div>
   );
