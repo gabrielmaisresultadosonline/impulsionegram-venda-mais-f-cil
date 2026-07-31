@@ -33,6 +33,7 @@ export function PainelWizard({
   account,
   selectedPlanId,
   onSelectPlan,
+  availablePlans,
   className,
   ...props
 }: PainelWizardProps) {
