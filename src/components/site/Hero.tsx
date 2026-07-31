@@ -24,16 +24,6 @@ export function Hero({ onCta, onSecondary, className, ...props }: HeroProps) {
       {...props}
     >
       <div className="mx-auto flex max-w-4xl flex-col items-center text-center">
-        <div className="flex flex-wrap items-center justify-center gap-3">
-          <span className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary/60 px-3 py-1.5 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
-            <Instagram className="size-3.5 text-primary" aria-hidden="true" />
-            POPULAR
-          </span>
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-1.5 text-xs font-semibold tracking-wider text-primary uppercase">
-            <BadgeCheck className="size-3.5" aria-hidden="true" />
-            Parceiro oficial da Meta
-          </span>
-        </div>
 
         <Social3DIcons className="mt-10 md:mt-12" />
 
