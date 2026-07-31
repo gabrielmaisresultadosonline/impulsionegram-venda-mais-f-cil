@@ -126,4 +126,3 @@ export function formatBRL(cents: number): string {
     maximumFractionDigits: 0,
   }).format(cents / 100);
 }
-

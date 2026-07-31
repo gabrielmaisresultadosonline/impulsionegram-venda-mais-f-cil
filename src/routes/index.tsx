@@ -13,8 +13,7 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       {
-        title:
-          "POPULAR — Mais Engajamento, mais clientes, mais público filtrado por região e CEP",
+        title: "POPULAR — Mais Engajamento, mais clientes, mais público filtrado por região e CEP",
       },
       {
         name: "description",
@@ -72,17 +71,13 @@ function Index() {
             Planos <span className="text-gradient-brand">simples e diretos</span>
           </h2>
           <p className="mt-3 max-w-2xl text-muted-foreground">
-            Todos os pacotes incluem filtro por região e entrega em até 6 horas após a confirmação
-            do pagamento.
+            Escolha o ideal para o seu perfil. Entrega em até 6 horas após a confirmação do
+            pagamento.
           </p>
 
           <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             {PLANS.map((plan) => (
-              <PlanCard
-                key={plan.id}
-                plan={plan}
-                selected={plan.highlight}
-              />
+              <PlanCard key={plan.id} plan={plan} selected={false} />
             ))}
           </div>
 
@@ -120,18 +115,13 @@ function Index() {
         </div>
       </section>
 
-      <SignupDialog
-        open={signupOpen}
-        onOpenChange={setSignupOpen}
-        selectedPlanId={PLANS.find((p) => p.highlight)?.id ?? PLANS[0].id}
-      />
-
+      <SignupDialog open={signupOpen} onOpenChange={setSignupOpen} />
 
       <footer className="border-t border-border px-4 py-8">
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-3">
           <p className="text-center text-xs text-muted-foreground">
-            POPULAR · Parceiro oficial da Meta · Pagamentos processados pela InfinitePay · Resultados
-            iniciam em até 6 horas após a aprovação.
+            POPULAR · Parceiro oficial da Meta · Pagamentos processados pela InfinitePay ·
+            Resultados iniciam em até 6 horas após a aprovação.
           </p>
           <div className="flex items-center gap-4 text-xs">
             <Link to="/painel" className="text-muted-foreground hover:text-foreground">
