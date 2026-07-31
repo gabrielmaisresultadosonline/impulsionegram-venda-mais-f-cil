@@ -11,7 +11,13 @@ import {
   savePlanSelection,
   type LocalAccount,
 } from "@/lib/account-storage";
-import { PLANS, getBarberPlans, getSalonPlans, getTherapyPlans } from "@/lib/plans";
+import {
+  PLANS,
+  getBarberPlans,
+  getDeliveryPlans,
+  getSalonPlans,
+  getTherapyPlans,
+} from "@/lib/plans";
 
 export const Route = createFileRoute("/painel")({
   head: () => ({
