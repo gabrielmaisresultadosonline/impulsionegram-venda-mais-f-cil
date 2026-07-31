@@ -8,6 +8,8 @@ export interface PlanStepProps {
   onSelect: (planId: string) => void;
   onBack?: () => void;
   onNext: () => void;
+  /** Planos a exibir. Padrão: todos os planos. */
+  plans?: readonly Plan[];
 }
 
 export function PlanStep({ selectedPlanId, onSelect, onBack, onNext }: PlanStepProps) {
