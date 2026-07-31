@@ -4,7 +4,6 @@ import { LogOut, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PainelWizard } from "@/components/site/PainelWizard";
 import { MyOrders } from "@/components/site/MyOrders";
-import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import {
   clearAccount,
   getAccount,
@@ -57,7 +56,6 @@ function PainelPage() {
     return (
       <main className="flex min-h-screen items-center justify-center px-4">
         <p className="text-muted-foreground text-sm">Carregando seu painel...</p>
-        <WhatsAppFloat />
       </main>
     );
   }
@@ -74,7 +72,6 @@ function PainelPage() {
             <Link to="/">Ir para a página inicial</Link>
           </Button>
         </div>
-        <WhatsAppFloat />
       </main>
     );
   }
@@ -120,8 +117,6 @@ function PainelPage() {
       />
 
       <MyOrders customerEmail={account.email} />
-
-      <WhatsAppFloat />
 
       <footer className="border-border border-t px-4 py-8">
         <div className="mx-auto flex max-w-3xl items-center justify-center gap-4 text-xs">

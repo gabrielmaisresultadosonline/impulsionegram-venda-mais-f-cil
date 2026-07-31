@@ -5,7 +5,6 @@ import { Hero } from "@/components/site/Hero";
 import { HowItWorks } from "@/components/site/HowItWorks";
 import { SignupDialog } from "@/components/site/SignupDialog";
 import { PlanCard } from "@/components/site/PlanCard";
-import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { Button } from "@/components/ui/button";
 import { PLANS } from "@/lib/plans";
 import { trackSiteEvent } from "@/lib/pixel.functions";
@@ -121,8 +120,6 @@ function Index() {
       </section>
 
       <SignupDialog open={signupOpen} onOpenChange={setSignupOpen} />
-
-      <WhatsAppFloat />
 
       <footer className="border-t border-border px-4 py-8">
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-3">
