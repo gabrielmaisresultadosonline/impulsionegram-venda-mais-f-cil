@@ -82,7 +82,7 @@ export function SignupDialog({ open, onOpenChange, selectedPlanId, redirectTo = 
       void trackSiteEvent({ data: { type: "signup", name, email } });
       toast.success(`Conta criada! Bem-vindo(a), ${name.split(" ")[0]}.`);
       onOpenChange(false);
-      await navigate({ to: "/painel" });
+      await navigate({ to: redirectTo });
     } catch {
       toast.error("Não foi possível concluir o cadastro. Tente novamente.");
     } finally {
