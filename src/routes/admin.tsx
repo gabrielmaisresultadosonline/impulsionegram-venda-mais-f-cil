@@ -45,8 +45,8 @@ const TABS: ReadonlyArray<{ key: TabKey; label: string }> = [
   { key: "pago", label: "A entregar" },
   { key: "tentativa", label: "Tentativas" },
   { key: "entregue", label: "Entregues" },
-  { key: "todos", label: "Todos" },
   { key: "cadastros", label: "Cadastros" },
+  { key: "todos", label: "Todos" },
 ];
 
 export const Route = createFileRoute("/admin")({
