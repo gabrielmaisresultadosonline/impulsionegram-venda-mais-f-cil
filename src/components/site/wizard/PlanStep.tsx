@@ -58,7 +58,7 @@ export function PlanStep({
                   size="lg"
                   onClick={onNext}
                   disabled={pending}
-                  className="h-14 w-full min-w-0 gap-2 bg-[oklch(0.85_0.17_85)] px-3 text-sm leading-tight font-bold whitespace-normal text-[oklch(0.25_0.05_60)] shadow-lg hover:bg-[oklch(0.88_0.17_85)] sm:text-base"
+                  className="h-14 w-full min-w-0 gap-2 bg-[oklch(0.62_0.18_145)] px-3 text-sm leading-tight font-bold whitespace-normal text-white shadow-lg hover:bg-[oklch(0.67_0.18_145)] sm:text-base"
                 >
                   {pending ? (
                     <>
