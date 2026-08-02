@@ -80,6 +80,7 @@ export function SignupDialog({
       const created: LocalAccount = {
         name,
         email,
+        phone,
         passwordHash: await hashPassword(password),
         createdAt: new Date().toISOString(),
       };

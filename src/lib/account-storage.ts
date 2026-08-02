@@ -10,6 +10,8 @@
 export interface LocalAccount {
   name: string;
   email: string;
+  /** WhatsApp com DDD informado no cadastro. */
+  phone?: string;
   /** SHA-256 hex da senha. Nunca a senha em si. */
   passwordHash: string;
   createdAt: string;

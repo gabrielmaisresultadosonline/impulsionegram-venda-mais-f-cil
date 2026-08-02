@@ -13,19 +13,29 @@ export interface CampaignQuizProps {
   /** Salva os dados e avança para a escolha do plano. */
   onSubmit: () => void;
   pending: boolean;
+  /**
+   * Quando `false` o quiz não pergunta o WhatsApp — ele já veio do cadastro.
+   * Só voltamos a perguntar em contas antigas que não guardaram o telefone.
+   */
+  askPhone?: boolean;
 }
-
-const TOTAL_QUESTIONS = 4;
 
 /**
  * Quiz de configuração da campanha: uma pergunta por tela.
  *
  * Perfil → região (CEP ou cidade/estado, apenas Brasil) → concorrente →
- * WhatsApp → confirmação. A confirmação repete a escolha do público antes
- * de liberar os planos.
+ * (WhatsApp, só se faltar no cadastro) → confirmação.
  */
-export function CampaignQuiz({ data, onChange, onSubmit, pending }: CampaignQuizProps) {
+export function CampaignQuiz({ data, onChange, onSubmit, pending, askPhone = false }: CampaignQuizProps) {
   const [index, setIndex] = useState(0);
+
+  /** Ordem das perguntas exibidas — o WhatsApp entra apenas quando necessário. */
+  const questions = useMemo(
+    () => (askPhone ? (["profile", "region", "competitor", "phone"] as const) : (["profile", "region", "competitor"] as const)),
+    [askPhone],
+  );
+  const totalQuestions = questions.length;
+  const currentQuestion = questions[index];
 
   const regionSummary = useMemo(() => {
     const value = data.regionValue.trim();
@@ -34,11 +44,11 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending }: CampaignQuiz
 
   /** Valida a pergunta atual antes de liberar o avanço. */
   const validate = (): boolean => {
-    if (index === 0 && data.profileUrl.trim().length < 3) {
+    if (currentQuestion === "profile" && data.profileUrl.trim().length < 3) {
       toast.error("Informe o @ ou o link do seu Instagram.");
       return false;
     }
-    if (index === 1) {
+    if (currentQuestion === "region") {
       const value = data.regionValue.trim();
       if (data.regionMode === "cep" && value.replace(/\D/g, "").length !== 8) {
         toast.error("Informe um CEP brasileiro válido (8 dígitos).");
@@ -49,11 +59,11 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending }: CampaignQuiz
         return false;
       }
     }
-    if (index === 2 && data.competitor.trim().length < 3) {
+    if (currentQuestion === "competitor" && data.competitor.trim().length < 3) {
       toast.error("Informe o Instagram do concorrente.");
       return false;
     }
-    if (index === 3 && data.customerPhone.replace(/\D/g, "").length < 10) {
+    if (currentQuestion === "phone" && data.customerPhone.replace(/\D/g, "").length < 10) {
       toast.error("Informe um WhatsApp válido com DDD.");
       return false;
     }
@@ -62,31 +72,32 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending }: CampaignQuiz
 
   const next = () => {
     if (!validate()) return;
-    setIndex((current) => Math.min(current + 1, TOTAL_QUESTIONS));
+    setIndex((current) => Math.min(current + 1, totalQuestions));
   };
 
   const back = () => setIndex((current) => Math.max(current - 1, 0));
 
-  const isSummary = index === TOTAL_QUESTIONS;
+  const isSummary = index === totalQuestions;
+
 
   return (
     <div className="space-y-6">
       <div className="space-y-2">
         <div className="text-muted-foreground flex items-center justify-between text-xs font-semibold">
-          <span>{isSummary ? "Tudo pronto" : `Pergunta ${index + 1} de ${TOTAL_QUESTIONS}`}</span>
-          <span>{Math.round(((isSummary ? TOTAL_QUESTIONS : index) / TOTAL_QUESTIONS) * 100)}%</span>
+          <span>{isSummary ? "Tudo pronto" : `Pergunta ${index + 1} de ${totalQuestions}`}</span>
+          <span>{Math.round(((isSummary ? totalQuestions : index) / totalQuestions) * 100)}%</span>
         </div>
         <div className="bg-muted h-2 w-full overflow-hidden rounded-full">
           <div
             className="bg-gradient-brand h-full rounded-full transition-all duration-500"
             style={{
-              width: `${((isSummary ? TOTAL_QUESTIONS : index) / TOTAL_QUESTIONS) * 100}%`,
+              width: `${((isSummary ? totalQuestions : index) / totalQuestions) * 100}%`,
             }}
           />
         </div>
       </div>
 
-      {index === 0 ? (
+      {currentQuestion === "profile" ? (
         <Question
           icon={<Instagram className="size-5" aria-hidden="true" />}
           title="Qual é o seu Instagram?"
@@ -108,7 +119,7 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending }: CampaignQuiz
         </Question>
       ) : null}
 
-      {index === 1 ? (
+      {currentQuestion === "region" ? (
         <Question
           icon={<MapPin className="size-5" aria-hidden="true" />}
           title="De onde você quer o seu público?"
@@ -148,7 +159,7 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending }: CampaignQuiz
         </Question>
       ) : null}
 
-      {index === 2 ? (
+      {currentQuestion === "competitor" ? (
         <Question
           icon={<Target className="size-5" aria-hidden="true" />}
           title="Qual concorrente tem o público que você quer?"
@@ -170,7 +181,7 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending }: CampaignQuiz
         </Question>
       ) : null}
 
-      {index === 3 ? (
+      {currentQuestion === "phone" ? (
         <Question
           icon={<Phone className="size-5" aria-hidden="true" />}
           title="Qual o seu WhatsApp?"
@@ -216,7 +227,7 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending }: CampaignQuiz
         </Question>
       ) : null}
 
-      <div className="grid grid-cols-[1fr_2fr] items-center gap-3 sm:flex sm:flex-row">
+      <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,2fr)] items-stretch gap-3 sm:flex sm:flex-row">
         {index > 0 ? (
           <Button
             type="button"
@@ -224,7 +235,7 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending }: CampaignQuiz
             size="lg"
             onClick={back}
             disabled={pending}
-            className="h-12 w-full sm:w-auto"
+            className="h-14 w-full min-w-0 px-2 text-sm sm:h-12 sm:w-auto sm:px-6"
           >
             <ArrowLeft className="size-4" aria-hidden="true" />
             Voltar
@@ -237,7 +248,7 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending }: CampaignQuiz
           size="lg"
           onClick={isSummary ? onSubmit : next}
           disabled={pending}
-          className="bg-gradient-brand shadow-glow h-14 w-full flex-1 text-base font-bold sm:h-12"
+          className="bg-gradient-brand shadow-glow h-14 w-full min-w-0 flex-1 px-3 text-sm font-bold whitespace-normal sm:h-12 sm:px-6 sm:text-base"
         >
           {pending ? (
             <>
