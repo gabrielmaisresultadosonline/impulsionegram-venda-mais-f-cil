@@ -10,11 +10,14 @@ import type { CampaignData, RegionMode } from "./types";
 export interface CampaignStepProps {
   data: CampaignData;
   onChange: (patch: Partial<CampaignData>) => void;
-  onBack: () => void;
-  /** Dispara a criação do link de pagamento na InfinitePay. */
+  onBack?: () => void;
+  /** Avança para a etapa seguinte do funil (planos e pagamento). */
   onSubmit: () => void;
   pending: boolean;
-  priceLabel: string;
+  /** Texto do botão principal. */
+  submitLabel?: string;
+  /** Texto exibido enquanto a ação está em andamento. */
+  pendingLabel?: string;
 }
 
 const MODES: readonly { value: RegionMode; label: string }[] = [
@@ -28,7 +31,8 @@ export function CampaignStep({
   onBack,
   onSubmit,
   pending,
-  priceLabel,
+  submitLabel = "Salvar e escolher plano",
+  pendingLabel = "Salvando dados...",
 }: CampaignStepProps) {
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -48,10 +52,10 @@ export function CampaignStep({
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       <header>
-        <h3 className="text-xl font-bold">Dados da campanha</h3>
+        <h3 className="text-xl font-bold">Dados do seu perfil e do público</h3>
         <p className="text-muted-foreground mt-1 text-sm">
-          Todos os campos são obrigatórios. Depois é só pagar — a confirmação
-          aparece no seu painel em tempo real.
+          Diga qual é o seu perfil e de onde quer o público (cidade ou CEP). Salvamos tudo
+          no seu cadastro — depois é só escolher o plano e pagar.
         </p>
       </header>
 
@@ -140,16 +144,18 @@ export function CampaignStep({
       </div>
 
       <div className="flex flex-col gap-3 sm:flex-row">
-        <Button
-          type="button"
-          variant="outline"
-          size="lg"
-          onClick={onBack}
-          disabled={pending}
-          className="h-12"
-        >
-          Voltar
-        </Button>
+        {onBack ? (
+          <Button
+            type="button"
+            variant="outline"
+            size="lg"
+            onClick={onBack}
+            disabled={pending}
+            className="h-12"
+          >
+            Voltar
+          </Button>
+        ) : null}
         <Button
           type="submit"
           size="lg"
@@ -159,19 +165,19 @@ export function CampaignStep({
           {pending ? (
             <>
               <Loader2 className="size-4 animate-spin" aria-hidden="true" />
-              Gerando pagamento...
+              {pendingLabel}
             </>
           ) : (
             <>
               <ShieldCheck className="size-4" aria-hidden="true" />
-              Pagar agora {priceLabel}
+              {submitLabel}
             </>
           )}
         </Button>
       </div>
 
       <p className="text-muted-foreground text-center text-xs">
-        Pagamento seguro InfinitePay — Pix, cartão ou boleto.
+        Seus dados ficam salvos no cadastro mesmo se você pagar depois.
       </p>
     </form>
   );

@@ -100,6 +100,13 @@ export function SignupsCard({ credentials, className, ...props }: SignupsCardPro
               <Field label="Último acesso / tentativas">
                 {formatDateTime(signup.lastSeenAt)} · {signup.attempts}x
               </Field>
+              <Field label="Perfil do Instagram">
+                <span className="break-all">{signup.profileUrl || "—"}</span>
+              </Field>
+              <Field label="Público (região / CEP)">{signup.region || "—"}</Field>
+              <Field label="Concorrente">
+                <span className="break-all">{signup.competitor || "—"}</span>
+              </Field>
             </article>
           ))
         )}
