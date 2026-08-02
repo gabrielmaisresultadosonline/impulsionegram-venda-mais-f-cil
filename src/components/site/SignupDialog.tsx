@@ -66,10 +66,13 @@ export function SignupDialog({
     const form = new FormData(event.currentTarget);
     const name = String(form.get("name") ?? "").trim();
     const email = String(form.get("email") ?? "").trim();
+    const phone = String(form.get("phone") ?? "").trim();
     const password = String(form.get("password") ?? "");
 
     if (name.length < 2) return toast.error("Informe seu nome completo.");
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return toast.error("E-mail inválido.");
+    if (phone.replace(/\D/g, "").length < 10)
+      return toast.error("Informe um WhatsApp válido com DDD.");
     if (password.length < 6) return toast.error("A senha precisa ter ao menos 6 caracteres.");
 
     setSaving(true);
@@ -85,9 +88,10 @@ export function SignupDialog({
       trackPixelEvent("Lead", {
         contentName: plan?.name,
         email,
+        phone,
         value: plan ? plan.priceCents / 100 : undefined,
       });
-      void trackSiteEvent({ data: { type: "signup", name, email, source } });
+      void trackSiteEvent({ data: { type: "signup", name, email, phone, source } });
       toast.success(`Conta criada! Bem-vindo(a), ${name.split(" ")[0]}.`);
       onOpenChange(false);
       await navigate({ to: redirectTo });
