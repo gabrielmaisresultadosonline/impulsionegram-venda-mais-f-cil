@@ -66,7 +66,7 @@ export function SignupsCard({ credentials, className, ...props }: SignupsCardPro
           signups.map((signup) => (
             <article
               key={signup.email}
-              className="border-border grid gap-3 rounded-xl border p-4 sm:grid-cols-5"
+              className="border-border grid gap-3 rounded-xl border p-4 sm:grid-cols-3 lg:grid-cols-6"
             >
               <Field label="Nome">
                 <span className="flex items-center gap-2">
@@ -76,6 +76,20 @@ export function SignupsCard({ credentials, className, ...props }: SignupsCardPro
               </Field>
               <Field label="E-mail">
                 <span className="break-all">{signup.email}</span>
+              </Field>
+              <Field label="WhatsApp">
+                {signup.phone ? (
+                  <a
+                    href={`https://wa.me/${signup.phone.replace(/\D/g, "")}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-primary hover:underline"
+                  >
+                    {signup.phone}
+                  </a>
+                ) : (
+                  "—"
+                )}
               </Field>
               <Field label="Veio de">
                 <Badge variant="outline" className="border-primary/40 text-primary">
