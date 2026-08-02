@@ -1,4 +1,4 @@
-import { ArrowRight, BellRing } from "lucide-react";
+import { ArrowRight, BellRing, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PlanCard } from "@/components/site/PlanCard";
 import { PLANS, formatBRL, getPlanById, type Plan } from "@/lib/plans";
@@ -10,9 +10,21 @@ export interface PlanStepProps {
   onNext: () => void;
   /** Planos a exibir. Padrão: todos os planos. */
   plans?: readonly Plan[];
+  /** Ação em andamento (geração do link de pagamento). */
+  pending?: boolean;
+  /** Prefixo do botão principal. */
+  ctaLabel?: string;
 }
 
-export function PlanStep({ selectedPlanId, onSelect, onBack, onNext, plans = PLANS }: PlanStepProps) {
+export function PlanStep({
+  selectedPlanId,
+  onSelect,
+  onBack,
+  onNext,
+  plans = PLANS,
+  pending = false,
+  ctaLabel = "Continuar com",
+}: PlanStepProps) {
   const plan = getPlanById(selectedPlanId);
 
   return (
@@ -46,7 +58,14 @@ export function PlanStep({ selectedPlanId, onSelect, onBack, onNext, plans = PLA
 
       <div className="flex flex-col gap-3 sm:flex-row">
         {onBack ? (
-          <Button type="button" variant="outline" size="lg" onClick={onBack} className="h-12">
+          <Button
+            type="button"
+            variant="outline"
+            size="lg"
+            onClick={onBack}
+            disabled={pending}
+            className="h-12"
+          >
             Voltar
           </Button>
         ) : null}
@@ -54,11 +73,20 @@ export function PlanStep({ selectedPlanId, onSelect, onBack, onNext, plans = PLA
           type="button"
           size="lg"
           onClick={onNext}
-          disabled={!plan}
+          disabled={!plan || pending}
           className="bg-gradient-brand shadow-glow h-12 flex-1"
         >
-          Continuar com {plan ? `${plan.name} — ${formatBRL(plan.priceCents)}` : "um plano"}
-          <ArrowRight className="size-4" aria-hidden="true" />
+          {pending ? (
+            <>
+              <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+              Gerando pagamento...
+            </>
+          ) : (
+            <>
+              {ctaLabel} {plan ? `${plan.name} — ${formatBRL(plan.priceCents)}` : "um plano"}
+              <ArrowRight className="size-4" aria-hidden="true" />
+            </>
+          )}
         </Button>
       </div>
     </div>
