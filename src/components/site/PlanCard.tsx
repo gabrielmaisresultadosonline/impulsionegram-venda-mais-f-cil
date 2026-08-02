@@ -86,6 +86,8 @@ export function PlanCard({
           {ctaLabel ?? (selected ? "Plano selecionado" : "Escolher este plano")}
         </Button>
       ) : null}
+
+      {action ? <div className="mt-3">{action}</div> : null}
     </article>
   );
 }
