@@ -2,8 +2,9 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { CheckCircle2, Clock, ExternalLink, Loader2 } from "lucide-react";
+import { CheckCircle2, Clock, ExternalLink, Loader2, PlusCircle, Receipt } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { MyOrders } from "@/components/site/MyOrders";
 import { checkPaymentStatus, getOrderStatusByEmail } from "@/lib/checkout.functions";
 import { formatBRL } from "@/lib/plans";
 import { getLatestOrder, getOrder, updateOrder, type StoredOrder } from "@/lib/order-storage";
@@ -47,6 +48,7 @@ export const Route = createFileRoute("/pedido")({
 function PedidoPage() {
   const search = Route.useSearch();
   const [order, setOrder] = useState<StoredOrder | undefined>();
+  const [showOrders, setShowOrders] = useState(false);
   const check = useServerFn(checkPaymentStatus);
   const statusByEmail = useServerFn(getOrderStatusByEmail);
 
@@ -196,9 +198,37 @@ function PedidoPage() {
                   </a>
                 </Button>
               ) : null}
+
+              {paid ? (
+                <div className="border-border mt-8 border-t pt-6">
+                  <p className="text-sm font-semibold">E agora, o que você quer fazer?</p>
+                  <div className="mt-3 flex flex-col gap-3 sm:flex-row">
+                    <Button asChild size="lg" className="bg-gradient-brand shadow-glow h-12 flex-1">
+                      <Link to="/painel">
+                        <PlusCircle className="size-4" aria-hidden="true" />
+                        Criar novo engajamento
+                      </Link>
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="lg"
+                      onClick={() => setShowOrders((current) => !current)}
+                      className="h-12 flex-1"
+                    >
+                      <Receipt className="size-4" aria-hidden="true" />
+                      {showOrders ? "Ocultar meus engajamentos" : "Ver engajamentos / pedidos"}
+                    </Button>
+                  </div>
+                </div>
+              ) : null}
             </>
           )}
         </div>
+
+        {paid && showOrders && order?.customerEmail ? (
+          <MyOrders customerEmail={order.customerEmail} className="mt-8 px-0 pb-0" />
+        ) : null}
       </div>
     </main>
   );

@@ -10,7 +10,7 @@ import { saveOrder } from "@/lib/order-storage";
 import type { LocalAccount } from "@/lib/account-storage";
 import { StepIndicator } from "./wizard/StepIndicator";
 import { PlanStep } from "./wizard/PlanStep";
-import { CampaignStep } from "./wizard/CampaignStep";
+import { CampaignQuiz } from "./wizard/CampaignQuiz";
 import { EMPTY_CAMPAIGN, formatRegion, type CampaignData } from "./wizard/types";
 
 const STEPS = ["Perfil e público", "Plano e pagamento"] as const;
@@ -133,7 +133,7 @@ export function PainelWizard({
 
         <div className="mt-8">
           {step === 0 ? (
-            <CampaignStep
+            <CampaignQuiz
               data={campaign}
               onChange={patchCampaign}
               onSubmit={() => saveProfile.mutate()}
