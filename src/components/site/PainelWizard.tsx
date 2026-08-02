@@ -12,7 +12,7 @@ import { PlanStep } from "./wizard/PlanStep";
 import { CampaignStep } from "./wizard/CampaignStep";
 import { EMPTY_CAMPAIGN, formatRegion, type CampaignData } from "./wizard/types";
 
-const STEPS = ["Plano", "Dados e pagamento"] as const;
+const STEPS = ["Perfil e público", "Plano e pagamento"] as const;
 
 export interface PainelWizardProps extends ComponentProps<"section"> {
   account: LocalAccount;
@@ -110,20 +110,21 @@ export function PainelWizard({
 
         <div className="mt-8">
           {step === 0 ? (
+            <CampaignStep
+              data={campaign}
+              onChange={patchCampaign}
+              onSubmit={() => saveProfile.mutate()}
+              pending={saveProfile.isPending}
+            />
+          ) : (
             <PlanStep
               plans={availablePlans}
               selectedPlanId={selectedPlanId}
               onSelect={onSelectPlan}
-              onNext={() => setStep(1)}
-            />
-          ) : (
-            <CampaignStep
-              data={campaign}
-              onChange={patchCampaign}
               onBack={() => setStep(0)}
-              onSubmit={() => mutation.mutate()}
+              onNext={() => mutation.mutate()}
               pending={mutation.isPending}
-              priceLabel={plan ? formatBRL(plan.priceCents) : ""}
+              ctaLabel="Pagar agora —"
             />
           )}
         </div>
