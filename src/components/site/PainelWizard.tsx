@@ -4,7 +4,8 @@ import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { createCheckoutLink } from "@/lib/checkout.functions";
-import { formatBRL, getPlanById, type Plan } from "@/lib/plans";
+import { saveCampaignProfile } from "@/lib/profile.functions";
+import { getPlanById, type Plan } from "@/lib/plans";
 import { saveOrder } from "@/lib/order-storage";
 import type { LocalAccount } from "@/lib/account-storage";
 import { StepIndicator } from "./wizard/StepIndicator";
@@ -49,6 +50,28 @@ export function PainelWizard({
 
   const plan = getPlanById(selectedPlanId);
   const createLink = useServerFn(createCheckoutLink);
+  const persistProfile = useServerFn(saveCampaignProfile);
+
+  /**
+   * Salva os dados do perfil/público no cadastro antes de mostrar os planos.
+   * Se a gravação falhar, seguimos assim mesmo: o cliente não pode ficar
+   * travado no funil por causa do registro auxiliar.
+   */
+  const saveProfile = useMutation({
+    mutationFn: () =>
+      persistProfile({
+        data: {
+          name: campaign.customerName.trim(),
+          email: campaign.customerEmail.trim(),
+          phone: campaign.customerPhone.trim(),
+          profileUrl: campaign.profileUrl.trim(),
+          region: formatRegion(campaign),
+          competitor: campaign.competitor.trim(),
+          source,
+        },
+      }),
+    onSettled: () => setStep(1),
+  });
 
   useEffect(() => {
     setCampaign((current) => ({
