@@ -56,7 +56,7 @@ export function PlanStep({
         ))}
       </div>
 
-      <div className="flex flex-col gap-3 sm:flex-row">
+      <div className="flex flex-row-reverse items-stretch gap-3 sm:flex-row">
         {onBack ? (
           <Button
             type="button"
@@ -64,7 +64,7 @@ export function PlanStep({
             size="lg"
             onClick={onBack}
             disabled={pending}
-            className="h-12"
+            className="h-14 w-1/3 shrink-0 sm:h-12 sm:w-auto"
           >
             Voltar
           </Button>
@@ -74,21 +74,24 @@ export function PlanStep({
           size="lg"
           onClick={onNext}
           disabled={!plan || pending}
-          className="bg-gradient-brand shadow-glow h-12 flex-1"
+          className="bg-gradient-brand shadow-glow h-14 min-w-0 flex-1 gap-2 px-3 text-sm leading-tight whitespace-normal sm:h-12 sm:px-6 sm:text-base"
         >
           {pending ? (
             <>
-              <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+              <Loader2 className="size-4 shrink-0 animate-spin" aria-hidden="true" />
               Gerando pagamento...
             </>
           ) : (
             <>
-              {ctaLabel} {plan ? `${plan.name} — ${formatBRL(plan.priceCents)}` : "um plano"}
-              <ArrowRight className="size-4" aria-hidden="true" />
+              <span className="min-w-0">
+                {ctaLabel} {plan ? `${plan.name} — ${formatBRL(plan.priceCents)}` : "um plano"}
+              </span>
+              <ArrowRight className="size-4 shrink-0" aria-hidden="true" />
             </>
           )}
         </Button>
       </div>
+
     </div>
   );
 }
