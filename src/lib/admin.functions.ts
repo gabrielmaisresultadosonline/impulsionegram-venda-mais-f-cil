@@ -138,12 +138,14 @@ export const adminListSignups = createServerFn({ method: "POST" })
         // Mantém a data mais antiga como criação do lead.
         if (order.createdAt < existing.createdAt) existing.createdAt = order.createdAt;
         if (!existing.name) existing.name = order.customerName ?? "";
+        if (!existing.phone && order.customerPhone) existing.phone = order.customerPhone;
         if (!existing.source && order.source) existing.source = order.source;
         continue;
       }
       map.set(email, {
         email,
         name: order.customerName ?? "",
+        phone: order.customerPhone ?? undefined,
         createdAt: order.createdAt,
         attempts: 1,
         lastSeenAt: order.createdAt,
