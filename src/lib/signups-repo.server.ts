@@ -12,6 +12,8 @@ export interface SignupRecord {
   /** E-mail é a chave natural do cadastro. */
   email: string;
   name: string;
+  /** WhatsApp informado no cadastro (obrigatório na home). */
+  phone?: string;
   createdAt: string;
   /** Quantas vezes o mesmo e-mail se cadastrou novamente. */
   attempts: number;
@@ -58,7 +60,12 @@ function prune(): void {
 }
 
 /** Registra (ou atualiza) um cadastro feito na home. */
-export function recordSignup(input: { name: string; email: string; source?: string }): void {
+export function recordSignup(input: {
+  name: string;
+  email: string;
+  phone?: string;
+  source?: string;
+}): void {
   loadFromDisk();
   const email = input.email.trim().toLowerCase();
   if (!email) return;
@@ -67,6 +74,8 @@ export function recordSignup(input: { name: string; email: string; source?: stri
   registry.set(email, {
     email,
     name: input.name.trim() || existing?.name || "",
+    // Mantém o WhatsApp mais recente informado.
+    phone: input.phone?.trim() || existing?.phone,
     createdAt: existing?.createdAt ?? now,
     attempts: (existing?.attempts ?? 0) + 1,
     lastSeenAt: now,
