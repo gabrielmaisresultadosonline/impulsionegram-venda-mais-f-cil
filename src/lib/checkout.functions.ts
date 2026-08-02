@@ -65,39 +65,57 @@ export const createCheckoutLink = createServerFn({ method: "POST" })
     // para reconhecer a venda no webhook mesmo sem o NSU.
     const productName = buildProductName(plan, data.customerEmail);
 
-    const payload: Record<string, unknown> = {
-      handle: HANDLE,
-      order_nsu: orderNsu,
-      items: [
-        {
-          quantity: 1,
-          price: plan.priceCents,
-          description: productName,
+    const phone = normalizePhone(data.customerPhone ?? "");
+
+    const buildPayload = (withPhone: boolean): Record<string, unknown> => {
+      const payload: Record<string, unknown> = {
+        handle: HANDLE,
+        order_nsu: orderNsu,
+        items: [
+          {
+            quantity: 1,
+            price: plan.priceCents,
+            description: productName,
+          },
+        ],
+        customer: {
+          name: data.customerName,
+          email: data.customerEmail,
+          ...(withPhone && phone ? { phone_number: phone } : {}),
         },
-      ],
-      customer: {
-        name: data.customerName,
-        email: data.customerEmail,
-        ...(data.customerPhone ? { phone_number: data.customerPhone } : {}),
-      },
+      };
+
+      if (origin) {
+        payload.redirect_url = `${origin}/pedido?order_nsu=${encodeURIComponent(orderNsu)}`;
+        payload.webhook_url = `${origin}/api/public/infinitepay/webhook`;
+      }
+
+      return payload;
     };
 
-    if (origin) {
-      payload.redirect_url = `${origin}/pedido?order_nsu=${encodeURIComponent(orderNsu)}`;
-      payload.webhook_url = `${origin}/api/public/infinitepay/webhook`;
+    const requestLink = async (withPhone: boolean) => {
+      const response = await fetch(`${INFINITEPAY_API}/links`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(buildPayload(withPhone)),
+      });
+      return { response, raw: await response.text() };
+    };
+
+    let { response, raw } = await requestLink(Boolean(phone));
+
+    // A InfinitePay recusa telefones fora do padrão com 422. Nesse caso
+    // repetimos sem o telefone: o pagamento é mais importante que o campo.
+    if (!response.ok && phone) {
+      console.error(`InfinitePay /links falhou [${response.status}]: ${raw}. Retentando sem telefone.`);
+      ({ response, raw } = await requestLink(false));
     }
 
-    const response = await fetch(`${INFINITEPAY_API}/links`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-
-    const raw = await response.text();
     if (!response.ok) {
       console.error(`InfinitePay /links falhou [${response.status}]: ${raw}`);
       throw new Error("Não foi possível gerar o link de pagamento. Tente novamente.");
     }
+
 
     let parsed: { url?: string; link?: string; payment_url?: string } = {};
     try {
