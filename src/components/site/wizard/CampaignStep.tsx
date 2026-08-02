@@ -143,7 +143,7 @@ export function CampaignStep({
         </div>
       </div>
 
-      <div className="flex flex-col gap-3 sm:flex-row">
+      <div className="flex flex-row-reverse items-stretch gap-3 sm:flex-row">
         {onBack ? (
           <Button
             type="button"
@@ -151,7 +151,7 @@ export function CampaignStep({
             size="lg"
             onClick={onBack}
             disabled={pending}
-            className="h-12"
+            className="h-14 w-1/3 shrink-0 sm:h-12 sm:w-auto"
           >
             Voltar
           </Button>
@@ -160,21 +160,22 @@ export function CampaignStep({
           type="submit"
           size="lg"
           disabled={pending}
-          className="bg-gradient-brand shadow-glow h-12 flex-1"
+          className="bg-gradient-brand shadow-glow h-14 min-w-0 flex-1 gap-2 px-3 text-sm leading-tight whitespace-normal sm:h-12 sm:px-6 sm:text-base"
         >
           {pending ? (
             <>
-              <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+              <Loader2 className="size-4 shrink-0 animate-spin" aria-hidden="true" />
               {pendingLabel}
             </>
           ) : (
             <>
-              <ShieldCheck className="size-4" aria-hidden="true" />
-              {submitLabel}
+              <ShieldCheck className="size-4 shrink-0" aria-hidden="true" />
+              <span className="min-w-0">{submitLabel}</span>
             </>
           )}
         </Button>
       </div>
+
 
       <p className="text-muted-foreground text-center text-xs">
         Seus dados ficam salvos no cadastro mesmo se você pagar depois.
