@@ -20,6 +20,12 @@ export interface SignupRecord {
   lastSeenAt: string;
   /** Landing page de origem do cadastro (home, salaode, barbea, terapi...). */
   source?: string;
+  /** Dados da campanha salvos antes do pagamento. */
+  profileUrl?: string;
+  region?: string;
+  competitor?: string;
+  /** Momento em que os dados da campanha foram salvos. */
+  profileSavedAt?: string;
 }
 
 const MAX_RECORDS = 1000;
