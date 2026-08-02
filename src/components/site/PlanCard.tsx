@@ -1,5 +1,5 @@
 import { Check } from "lucide-react";
-import type { ComponentProps } from "react";
+import type { ComponentProps, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { formatBRL, type Plan } from "@/lib/plans";
@@ -10,6 +10,12 @@ export interface PlanCardProps extends Omit<ComponentProps<"article">, "onSelect
   onSelect?: (planId: string) => void;
   /** Rótulo customizado do botão (ex.: "Cadastre-se grátis" na home). */
   ctaLabel?: string;
+  /**
+   * Ação exibida dentro do card logo abaixo do botão de seleção — usada no
+   * funil para o "Pagar agora" aparecer no plano escolhido, sem o cliente
+   * precisar rolar até o fim da página.
+   */
+  action?: ReactNode;
 }
 
 export function PlanCard({
@@ -17,9 +23,11 @@ export function PlanCard({
   selected,
   onSelect,
   ctaLabel,
+  action,
   className,
   ...props
 }: PlanCardProps) {
+
   return (
     <article
       className={cn(
@@ -78,6 +86,8 @@ export function PlanCard({
           {ctaLabel ?? (selected ? "Plano selecionado" : "Escolher este plano")}
         </Button>
       ) : null}
+
+      {action ? <div className="mt-3">{action}</div> : null}
     </article>
   );
 }

@@ -1,7 +1,7 @@
 import { ArrowRight, BellRing, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PlanCard } from "@/components/site/PlanCard";
-import { PLANS, formatBRL, getPlanById, type Plan } from "@/lib/plans";
+import { PLANS, formatBRL, type Plan } from "@/lib/plans";
 
 export interface PlanStepProps {
   selectedPlanId: string;
@@ -25,7 +25,6 @@ export function PlanStep({
   pending = false,
   ctaLabel = "Continuar com",
 }: PlanStepProps) {
-  const plan = getPlanById(selectedPlanId);
 
   return (
     <div className="space-y-6">
@@ -52,46 +51,50 @@ export function PlanStep({
             plan={item}
             selected={item.id === selectedPlanId}
             onSelect={onSelect}
+            action={
+              item.id === selectedPlanId ? (
+                <Button
+                  type="button"
+                  size="lg"
+                  onClick={onNext}
+                  disabled={pending}
+                  className="h-14 w-full min-w-0 gap-2 bg-[oklch(0.85_0.17_85)] px-3 text-sm leading-tight font-bold whitespace-normal text-[oklch(0.25_0.05_60)] shadow-lg hover:bg-[oklch(0.88_0.17_85)] sm:text-base"
+                >
+                  {pending ? (
+                    <>
+                      <Loader2 className="size-4 shrink-0 animate-spin" aria-hidden="true" />
+                      Gerando pagamento...
+                    </>
+                  ) : (
+                    <>
+                      <span className="min-w-0">
+                        {ctaLabel} {item.name} — {formatBRL(item.priceCents)}
+                      </span>
+                      <ArrowRight className="size-4 shrink-0" aria-hidden="true" />
+                    </>
+                  )}
+                </Button>
+              ) : null
+            }
           />
         ))}
       </div>
 
-      <div className="flex flex-row-reverse items-stretch gap-3 sm:flex-row">
-        {onBack ? (
+      {onBack ? (
+        <div className="flex">
           <Button
             type="button"
             variant="outline"
             size="lg"
             onClick={onBack}
             disabled={pending}
-            className="h-14 w-1/3 shrink-0 sm:h-12 sm:w-auto"
+            className="h-12 w-full sm:w-auto"
           >
             Voltar
           </Button>
-        ) : null}
-        <Button
-          type="button"
-          size="lg"
-          onClick={onNext}
-          disabled={!plan || pending}
-          className="bg-gradient-brand shadow-glow h-14 min-w-0 flex-1 gap-2 px-3 text-sm leading-tight whitespace-normal sm:h-12 sm:px-6 sm:text-base"
-        >
-          {pending ? (
-            <>
-              <Loader2 className="size-4 shrink-0 animate-spin" aria-hidden="true" />
-              Gerando pagamento...
-            </>
-          ) : (
-            <>
-              <span className="min-w-0">
-                {ctaLabel} {plan ? `${plan.name} — ${formatBRL(plan.priceCents)}` : "um plano"}
-              </span>
-              <ArrowRight className="size-4 shrink-0" aria-hidden="true" />
-            </>
-          )}
-        </Button>
-      </div>
-
+        </div>
+      ) : null}
     </div>
   );
 }
+
