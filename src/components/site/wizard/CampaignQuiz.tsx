@@ -84,20 +84,20 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending, askPhone = fal
     <div className="space-y-6">
       <div className="space-y-2">
         <div className="text-muted-foreground flex items-center justify-between text-xs font-semibold">
-          <span>{isSummary ? "Tudo pronto" : `Pergunta ${index + 1} de ${TOTAL_QUESTIONS}`}</span>
-          <span>{Math.round(((isSummary ? TOTAL_QUESTIONS : index) / TOTAL_QUESTIONS) * 100)}%</span>
+          <span>{isSummary ? "Tudo pronto" : `Pergunta ${index + 1} de ${totalQuestions}`}</span>
+          <span>{Math.round(((isSummary ? totalQuestions : index) / totalQuestions) * 100)}%</span>
         </div>
         <div className="bg-muted h-2 w-full overflow-hidden rounded-full">
           <div
             className="bg-gradient-brand h-full rounded-full transition-all duration-500"
             style={{
-              width: `${((isSummary ? TOTAL_QUESTIONS : index) / TOTAL_QUESTIONS) * 100}%`,
+              width: `${((isSummary ? totalQuestions : index) / totalQuestions) * 100}%`,
             }}
           />
         </div>
       </div>
 
-      {index === 0 ? (
+      {currentQuestion === "profile" ? (
         <Question
           icon={<Instagram className="size-5" aria-hidden="true" />}
           title="Qual é o seu Instagram?"
@@ -119,7 +119,7 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending, askPhone = fal
         </Question>
       ) : null}
 
-      {index === 1 ? (
+      {currentQuestion === "region" ? (
         <Question
           icon={<MapPin className="size-5" aria-hidden="true" />}
           title="De onde você quer o seu público?"
@@ -159,7 +159,7 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending, askPhone = fal
         </Question>
       ) : null}
 
-      {index === 2 ? (
+      {currentQuestion === "competitor" ? (
         <Question
           icon={<Target className="size-5" aria-hidden="true" />}
           title="Qual concorrente tem o público que você quer?"
@@ -181,7 +181,7 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending, askPhone = fal
         </Question>
       ) : null}
 
-      {index === 3 ? (
+      {currentQuestion === "phone" ? (
         <Question
           icon={<Phone className="size-5" aria-hidden="true" />}
           title="Qual o seu WhatsApp?"
@@ -227,7 +227,7 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending, askPhone = fal
         </Question>
       ) : null}
 
-      <div className="grid grid-cols-[1fr_2fr] items-center gap-3 sm:flex sm:flex-row">
+      <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,2fr)] items-stretch gap-3 sm:flex sm:flex-row">
         {index > 0 ? (
           <Button
             type="button"
@@ -235,7 +235,7 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending, askPhone = fal
             size="lg"
             onClick={back}
             disabled={pending}
-            className="h-12 w-full sm:w-auto"
+            className="h-14 w-full min-w-0 px-2 text-sm sm:h-12 sm:w-auto sm:px-6"
           >
             <ArrowLeft className="size-4" aria-hidden="true" />
             Voltar
@@ -248,7 +248,7 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending, askPhone = fal
           size="lg"
           onClick={isSummary ? onSubmit : next}
           disabled={pending}
-          className="bg-gradient-brand shadow-glow h-14 w-full flex-1 text-base font-bold sm:h-12"
+          className="bg-gradient-brand shadow-glow h-14 w-full min-w-0 flex-1 px-3 text-sm font-bold whitespace-normal sm:h-12 sm:px-6 sm:text-base"
         >
           {pending ? (
             <>
