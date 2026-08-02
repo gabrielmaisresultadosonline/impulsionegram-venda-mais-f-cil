@@ -24,6 +24,7 @@ import { formatBRL } from "@/lib/plans";
 import { sourceLabel } from "@/lib/traffic-source";
 import { PixelCard } from "@/components/admin/PixelCard";
 import { SignupsCard } from "@/components/admin/SignupsCard";
+import { EvolutionConfig } from "@/components/admin/EvolutionConfig";
 import {
   adminListOrders,
   adminLogin,
@@ -44,8 +45,8 @@ const TABS: ReadonlyArray<{ key: TabKey; label: string }> = [
   { key: "pago", label: "A entregar" },
   { key: "tentativa", label: "Tentativas" },
   { key: "entregue", label: "Entregues" },
-  { key: "todos", label: "Todos" },
   { key: "cadastros", label: "Cadastros" },
+  { key: "todos", label: "Todos" },
 ];
 
 export const Route = createFileRoute("/admin")({
@@ -266,7 +267,10 @@ function AdminDashboard({ credentials, onLogout }: AdminDashboardProps) {
           />
         </section>
 
-        <PixelCard credentials={credentials} className="mt-6" />
+        <div className="mt-6 grid gap-6 lg:grid-cols-2">
+          <PixelCard credentials={credentials} />
+          <EvolutionConfig credentials={credentials} />
+        </div>
 
         <nav className="mt-8 flex flex-wrap gap-2" aria-label="Filtrar pedidos">
           {TABS.map((item) => (
