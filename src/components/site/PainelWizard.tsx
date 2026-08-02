@@ -46,6 +46,7 @@ export function PainelWizard({
     ...EMPTY_CAMPAIGN,
     customerName: account.name,
     customerEmail: account.email,
+    customerPhone: account.phone ?? "",
   });
 
   const plan = getPlanById(selectedPlanId);
@@ -78,8 +79,9 @@ export function PainelWizard({
       ...current,
       customerName: current.customerName || account.name,
       customerEmail: current.customerEmail || account.email,
+      customerPhone: current.customerPhone || account.phone || "",
     }));
-  }, [account.email, account.name]);
+  }, [account.email, account.name, account.phone]);
 
   const patchCampaign = useCallback((patch: Partial<CampaignData>) => {
     setCampaign((current) => ({ ...current, ...patch }));
@@ -137,6 +139,7 @@ export function PainelWizard({
               data={campaign}
               onChange={patchCampaign}
               onSubmit={() => saveProfile.mutate()}
+              askPhone={!account.phone?.trim()}
               pending={saveProfile.isPending}
             />
           ) : (
