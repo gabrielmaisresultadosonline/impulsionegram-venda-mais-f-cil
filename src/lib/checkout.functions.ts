@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { buildProductName, getPlanById } from "./plans";
-import { safeOrigin } from "./checkout.server";
+import { normalizePhone, safeOrigin } from "./checkout.server";
 import { normalizeSource } from "./traffic-source";
 
 /**
