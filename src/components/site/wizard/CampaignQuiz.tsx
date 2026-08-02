@@ -216,7 +216,7 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending }: CampaignQuiz
         </Question>
       ) : null}
 
-      <div className="flex flex-col gap-3 sm:flex-row">
+      <div className="grid grid-cols-[1fr_2fr] items-center gap-3 sm:flex sm:flex-row">
         {index > 0 ? (
           <Button
             type="button"
@@ -224,18 +224,20 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending }: CampaignQuiz
             size="lg"
             onClick={back}
             disabled={pending}
-            className="h-12 sm:w-auto"
+            className="h-12 w-full sm:w-auto"
           >
             <ArrowLeft className="size-4" aria-hidden="true" />
             Voltar
           </Button>
-        ) : null}
+        ) : (
+          <div aria-hidden="true" className="hidden sm:block" />
+        )}
         <Button
           type="button"
           size="lg"
           onClick={isSummary ? onSubmit : next}
           disabled={pending}
-          className="bg-gradient-brand shadow-glow h-12 flex-1"
+          className="bg-gradient-brand shadow-glow h-14 w-full flex-1 text-base font-bold sm:h-12"
         >
           {pending ? (
             <>
