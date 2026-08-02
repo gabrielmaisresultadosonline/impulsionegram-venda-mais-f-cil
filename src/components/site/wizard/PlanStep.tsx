@@ -1,7 +1,7 @@
 import { ArrowRight, BellRing, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PlanCard } from "@/components/site/PlanCard";
-import { PLANS, formatBRL, getPlanById, type Plan } from "@/lib/plans";
+import { PLANS, formatBRL, type Plan } from "@/lib/plans";
 
 export interface PlanStepProps {
   selectedPlanId: string;
@@ -25,7 +25,6 @@ export function PlanStep({
   pending = false,
   ctaLabel = "Continuar com",
 }: PlanStepProps) {
-  const plan = getPlanById(selectedPlanId);
 
   return (
     <div className="space-y-6">
