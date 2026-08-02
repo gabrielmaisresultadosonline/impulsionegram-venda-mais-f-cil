@@ -12,6 +12,8 @@ export interface SignupRecord {
   /** E-mail é a chave natural do cadastro. */
   email: string;
   name: string;
+  /** WhatsApp informado no cadastro (obrigatório na home). */
+  phone?: string;
   createdAt: string;
   /** Quantas vezes o mesmo e-mail se cadastrou novamente. */
   attempts: number;
