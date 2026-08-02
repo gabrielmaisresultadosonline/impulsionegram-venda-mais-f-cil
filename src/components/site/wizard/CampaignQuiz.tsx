@@ -13,19 +13,29 @@ export interface CampaignQuizProps {
   /** Salva os dados e avança para a escolha do plano. */
   onSubmit: () => void;
   pending: boolean;
+  /**
+   * Quando `false` o quiz não pergunta o WhatsApp — ele já veio do cadastro.
+   * Só voltamos a perguntar em contas antigas que não guardaram o telefone.
+   */
+  askPhone?: boolean;
 }
-
-const TOTAL_QUESTIONS = 4;
 
 /**
  * Quiz de configuração da campanha: uma pergunta por tela.
  *
  * Perfil → região (CEP ou cidade/estado, apenas Brasil) → concorrente →
- * WhatsApp → confirmação. A confirmação repete a escolha do público antes
- * de liberar os planos.
+ * (WhatsApp, só se faltar no cadastro) → confirmação.
  */
-export function CampaignQuiz({ data, onChange, onSubmit, pending }: CampaignQuizProps) {
+export function CampaignQuiz({ data, onChange, onSubmit, pending, askPhone = false }: CampaignQuizProps) {
   const [index, setIndex] = useState(0);
+
+  /** Ordem das perguntas exibidas — o WhatsApp entra apenas quando necessário. */
+  const questions = useMemo(
+    () => (askPhone ? (["profile", "region", "competitor", "phone"] as const) : (["profile", "region", "competitor"] as const)),
+    [askPhone],
+  );
+  const totalQuestions = questions.length;
+  const currentQuestion = questions[index];
 
   const regionSummary = useMemo(() => {
     const value = data.regionValue.trim();
@@ -34,11 +44,11 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending }: CampaignQuiz
 
   /** Valida a pergunta atual antes de liberar o avanço. */
   const validate = (): boolean => {
-    if (index === 0 && data.profileUrl.trim().length < 3) {
+    if (currentQuestion === "profile" && data.profileUrl.trim().length < 3) {
       toast.error("Informe o @ ou o link do seu Instagram.");
       return false;
     }
-    if (index === 1) {
+    if (currentQuestion === "region") {
       const value = data.regionValue.trim();
       if (data.regionMode === "cep" && value.replace(/\D/g, "").length !== 8) {
         toast.error("Informe um CEP brasileiro válido (8 dígitos).");
@@ -49,11 +59,11 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending }: CampaignQuiz
         return false;
       }
     }
-    if (index === 2 && data.competitor.trim().length < 3) {
+    if (currentQuestion === "competitor" && data.competitor.trim().length < 3) {
       toast.error("Informe o Instagram do concorrente.");
       return false;
     }
-    if (index === 3 && data.customerPhone.replace(/\D/g, "").length < 10) {
+    if (currentQuestion === "phone" && data.customerPhone.replace(/\D/g, "").length < 10) {
       toast.error("Informe um WhatsApp válido com DDD.");
       return false;
     }
@@ -62,12 +72,13 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending }: CampaignQuiz
 
   const next = () => {
     if (!validate()) return;
-    setIndex((current) => Math.min(current + 1, TOTAL_QUESTIONS));
+    setIndex((current) => Math.min(current + 1, totalQuestions));
   };
 
   const back = () => setIndex((current) => Math.max(current - 1, 0));
 
-  const isSummary = index === TOTAL_QUESTIONS;
+  const isSummary = index === totalQuestions;
+
 
   return (
     <div className="space-y-6">
