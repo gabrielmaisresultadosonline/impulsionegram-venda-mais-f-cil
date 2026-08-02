@@ -97,3 +97,38 @@ export function listSignups(): SignupRecord[] {
   loadFromDisk();
   return [...registry.values()].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
 }
+
+/**
+ * Salva os dados da campanha no cadastro do cliente (antes do pagamento).
+ * Cria o cadastro caso ainda não exista, sem contar como nova tentativa.
+ */
+export function saveSignupProfile(input: {
+  name?: string;
+  email: string;
+  phone?: string;
+  profileUrl: string;
+  region: string;
+  competitor?: string;
+  source?: string;
+}): void {
+  loadFromDisk();
+  const email = input.email.trim().toLowerCase();
+  if (!email) return;
+  const now = new Date().toISOString();
+  const existing = registry.get(email);
+  registry.set(email, {
+    email,
+    name: input.name?.trim() || existing?.name || "",
+    phone: input.phone?.trim() || existing?.phone,
+    createdAt: existing?.createdAt ?? now,
+    attempts: existing?.attempts ?? 1,
+    lastSeenAt: now,
+    source: existing?.source ?? input.source ?? "home",
+    profileUrl: input.profileUrl.trim(),
+    region: input.region.trim(),
+    competitor: input.competitor?.trim() || existing?.competitor,
+    profileSavedAt: now,
+  });
+  prune();
+  persist();
+}
