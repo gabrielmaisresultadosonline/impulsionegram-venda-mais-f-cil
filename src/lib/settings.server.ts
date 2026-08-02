@@ -13,6 +13,13 @@ interface SiteSettings {
   visits: number;
   /** Contador de cadastros criados (lead). */
   signups: number;
+  // Evolution API
+  evolutionApiUrl?: string;
+  evolutionApiKey?: string;
+  evolutionInstance?: string;
+  openaiKey?: string;
+  aiPrompt?: string;
+  aiActive?: boolean;
 }
 
 /** Pixel padrão do projeto — pode ser sobrescrito no /admin ou pelo .env. */
@@ -40,6 +47,10 @@ export function getSettings(): SiteSettings {
 /** Aceita apenas dígitos (formato do Pixel ID) ou string vazia para remover. */
 export function setFacebookPixelId(pixelId: string): void {
   settings.facebookPixelId = pixelId;
+}
+
+export function updateEvolutionSettings(data: Partial<SiteSettings>) {
+  Object.assign(settings, data);
 }
 
 export function incrementVisits(): void {
