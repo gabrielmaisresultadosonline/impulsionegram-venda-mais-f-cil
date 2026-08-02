@@ -104,6 +104,8 @@ export const adminReplyTicket = createServerFn({ method: "POST" })
 export interface AdminSignup {
   email: string;
   name: string;
+  /** WhatsApp informado no cadastro (ou recuperado do pedido). */
+  phone?: string;
   createdAt: string;
   attempts: number;
   lastSeenAt: string;
