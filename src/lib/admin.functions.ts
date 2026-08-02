@@ -111,6 +111,11 @@ export interface AdminSignup {
   lastSeenAt: string;
   /** Origem do cadastro (home, salaode, barbea, terapi). */
   source?: string;
+  /** Dados da campanha salvos antes do pagamento. */
+  profileUrl?: string;
+  region?: string;
+  competitor?: string;
+  profileSavedAt?: string;
 }
 
 /**
@@ -140,6 +145,8 @@ export const adminListSignups = createServerFn({ method: "POST" })
         if (!existing.name) existing.name = order.customerName ?? "";
         if (!existing.phone && order.customerPhone) existing.phone = order.customerPhone;
         if (!existing.source && order.source) existing.source = order.source;
+        if (!existing.profileUrl && order.profileUrl) existing.profileUrl = order.profileUrl;
+        if (!existing.region && order.region) existing.region = order.region;
         continue;
       }
       map.set(email, {
@@ -150,6 +157,8 @@ export const adminListSignups = createServerFn({ method: "POST" })
         attempts: 1,
         lastSeenAt: order.createdAt,
         source: order.source ?? "home",
+        profileUrl: order.profileUrl,
+        region: order.region,
       });
     }
 
