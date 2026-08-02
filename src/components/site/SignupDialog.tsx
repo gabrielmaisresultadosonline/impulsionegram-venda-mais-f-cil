@@ -200,6 +200,18 @@ export function SignupDialog({
               />
             </div>
             <div className="space-y-2">
+              <Label htmlFor="signup-phone">WhatsApp *</Label>
+              <Input
+                id="signup-phone"
+                name="phone"
+                type="tel"
+                inputMode="tel"
+                placeholder="(69) 99999-9999"
+                maxLength={30}
+                required
+              />
+            </div>
+            <div className="space-y-2">
               <Label htmlFor="signup-password">Senha *</Label>
               <Input id="signup-password" name="password" type="password" minLength={6} required />
             </div>
