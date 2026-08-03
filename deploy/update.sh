@@ -61,12 +61,11 @@ if command -v docker >/dev/null 2>&1; then
     -e AUTHENTICATION_TYPE=apikey \
     -e AUTHENTICATION_API_KEY=popular-key-auto \
     -e AUTHENTICATION_EXPOSE_IN_FETCH_INSTANCES=true \
-    -e DATABASE_SAVE_DATA_INSTANCE=false \
-    -e DATABASE_SAVE_DATA_NEW_MESSAGE=false \
-    -e STORE_MESSAGES=true \
-    -e STORE_MESSAGE_UP=true \
-    -e STORE_CONTACTS=true \
-    -e STORE_CHATS=true \
+    -e DATABASE_ENABLED=false \
+    -e STORE_MESSAGES=false \
+    -e STORE_MESSAGE_UP=false \
+    -e STORE_CONTACTS=false \
+    -e STORE_CHATS=false \
     $IMAGE_NAME
 
   # Aguarda a API subir
