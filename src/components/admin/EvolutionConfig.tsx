@@ -215,7 +215,7 @@ export function EvolutionConfig({ credentials, className }: EvolutionConfigProps
                   <Loader2 className="size-12 animate-spin text-primary" />
                   <p>Gerando QR Code...</p>
                 </div>
-              ) : (qrQuery.data?.base64 || (!qrQuery.data?.connected && qrQuery.data?.base64 === null)) ? (
+              ) : (!qrQuery.data?.connected) ? (
                 <div className="space-y-4">
                   <div className="inline-block rounded-3xl bg-white p-4 shadow-xl">
                     <img
