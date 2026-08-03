@@ -24,6 +24,7 @@ import {
   adminGetEvolutionConfig,
   adminSaveEvolutionConfig,
   adminGetEvolutionQrCode,
+  adminInstallEvolutionLocal,
 } from "@/lib/evolution.functions";
 
 interface EvolutionConfigProps {
@@ -36,6 +37,8 @@ export function EvolutionConfig({ credentials, className }: EvolutionConfigProps
   const getBotConfig = useServerFn(adminGetEvolutionConfig);
   const saveBotConfig = useServerFn(adminSaveEvolutionConfig);
   const getQrCode = useServerFn(adminGetEvolutionQrCode);
+  const installLocal = useServerFn(adminInstallEvolutionLocal);
+  const [installing, setInstalling] = useState(false);
 
   const [form, setForm] = useState({
     apiUrl: "",
@@ -74,6 +77,19 @@ export function EvolutionConfig({ credentials, className }: EvolutionConfigProps
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
     saveMutation.mutate(form);
+  };
+
+  const handleInstallLocal = async () => {
+    try {
+      setInstalling(true);
+      await installLocal({ data: credentials });
+      queryClient.invalidateQueries({ queryKey: ["evolution-config"] });
+      toast.success("Instalação automática configurada!");
+    } catch (err: any) {
+      toast.error(err.message || "Erro na instalação.");
+    } finally {
+      setInstalling(false);
+    }
   };
 
   return (
@@ -182,9 +198,17 @@ export function EvolutionConfig({ credentials, className }: EvolutionConfigProps
           <TabsContent value="connect" className="p-6 focus-visible:outline-none">
             <div className="flex flex-col items-center justify-center space-y-4 py-8 text-center">
               {!form.apiUrl || !form.instanceName ? (
-                <div className="flex flex-col items-center gap-3 text-muted-foreground">
+                <div className="flex flex-col items-center gap-4 text-muted-foreground">
                   <WifiOff className="size-12 opacity-20" />
-                  <p>Configure a API e a Instância primeiro.</p>
+                  <p>Configure a API ou use a instalação automática direta.</p>
+                  <Button 
+                    onClick={handleInstallLocal} 
+                    disabled={installing}
+                    className="bg-primary/20 text-primary hover:bg-primary/30 border border-primary/50"
+                  >
+                    {installing ? <Loader2 className="mr-2 size-4 animate-spin" /> : <MessageSquare className="mr-2 size-4" />}
+                    Instalar Evolution Directo (Auto)
+                  </Button>
                 </div>
               ) : qrQuery.isLoading ? (
                 <div className="flex flex-col items-center gap-3">
