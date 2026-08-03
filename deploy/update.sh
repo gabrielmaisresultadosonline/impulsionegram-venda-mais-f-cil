@@ -37,14 +37,16 @@ npm ci || npm install
 
 log "Verificando dependência Evolution API (Docker)"
 if command -v docker >/dev/null 2>&1; then
-  # Remove container antigo se estiver em estado ruim
-  if docker ps -a --format '{{.Names}}' | grep -q "^evolution-api$"; then
-    log "Recriando container evolution-api para garantir última versão e configs..."
-    docker stop evolution-api || true
-    docker rm evolution-api || true
-  fi
+  # Limpeza agressiva: remove containers com hífen (-) ou underscore (_) que possam conflitar
+  for container in "evolution-api" "evolution_api"; do
+    if docker ps -a --format '{{.Names}}' | grep -q "^${container}$"; then
+      log "Removendo container antigo: ${container}..."
+      docker stop "${container}" || true
+      docker rm "${container}" || true
+    fi
+  done
 
-  log "Instalando Evolution API v2 via Docker..."
+  log "Instalando Evolution API v2 via Docker (Porta 8080)..."
   docker run -d --name evolution-api \
     --restart always \
     -p 8080:8080 \
@@ -62,7 +64,7 @@ if command -v docker >/dev/null 2>&1; then
   log "Aguardando Evolution API inicializar..."
   for i in {1..30}; do
     if curl -s -o /dev/null http://localhost:8080/instance/fetchInstances -H "apikey: popular-key-auto"; then
-      log "Evolution API está online e respondendo."
+      log "Evolution API está online e respondendo na porta 8080."
       break
     fi
     sleep 2

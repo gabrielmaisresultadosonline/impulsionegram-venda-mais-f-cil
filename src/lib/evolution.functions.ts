@@ -110,6 +110,13 @@ export const adminGetEvolutionQrCode = createServerFn({ method: "POST" })
     const { getSettings } = await import("./settings.server");
     const settings = getSettings();
 
+    if (!settings.evolutionApiUrl && !settings.evolutionApiKey && !settings.evolutionInstance) {
+      // Fallback para instalação local padrão
+      settings.evolutionApiUrl = "http://localhost:8080";
+      settings.evolutionApiKey = "popular-key-auto";
+      settings.evolutionInstance = "PopularBot";
+    }
+
     if (!settings.evolutionApiUrl || !settings.evolutionApiKey || !settings.evolutionInstance) {
       throw new Error("Evolution API não configurada.");
     }
