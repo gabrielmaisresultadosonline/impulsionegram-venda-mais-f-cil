@@ -19,11 +19,30 @@ export const adminInstallEvolutionLocal = createServerFn({ method: "POST" })
     await assertAdmin(data.email, data.password);
     const { updateEvolutionSettings } = await import("../settings.server");
     
-    // Simula instalação local e configura
+    // Configura a aplicação para usar a instância local subida pelo script de deploy
     const localUrl = "http://localhost:8080";
-    const localKey = "popular-key-" + Math.random().toString(36).substring(7);
-    const localInstance = "PopularInst";
+    const localKey = "popular-key-auto"; // Chave definida no script de deploy
+    const localInstance = "PopularBot";
 
+    // 1. Cria a instância na Evolution API caso não exista
+    try {
+      await fetch(`${localUrl}/instance/create`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          apikey: localKey,
+        },
+        body: JSON.stringify({
+          instanceName: localInstance,
+          token: localKey,
+          qrcode: true,
+        }),
+      });
+    } catch (e) {
+      console.error("Erro ao criar instância na Evolution:", e);
+    }
+
+    // 2. Salva nas configurações do sistema
     updateEvolutionSettings({
       evolutionApiUrl: localUrl,
       evolutionApiKey: localKey,
