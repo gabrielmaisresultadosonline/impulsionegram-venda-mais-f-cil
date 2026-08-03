@@ -47,7 +47,20 @@ if command -v docker >/dev/null 2>&1; then
   done
 
   log "Instalando Evolution API v2 via Docker (Porta 8080)..."
+  # O nome da imagem oficial atualizado é atendai/evolution-api ou evoapicloud/evolution-api
+  # Com base no seu docker ps, você já tem evoapicloud/evolution-api, vamos usar esse para garantir compatibilidade
   docker run -d --name evolution-api \
+    --restart always \
+    -p 8080:8080 \
+    -e AUTHENTICATION_TYPE=apikey \
+    -e AUTHENTICATION_API_KEY=popular-key-auto \
+    -e AUTHENTICATION_EXPOSE_IN_FETCH_INSTANCES=true \
+    -e DATABASE_ENABLED=false \
+    -e STORE_MESSAGES=true \
+    -e STORE_MESSAGE_UP=true \
+    -e STORE_CONTACTS=true \
+    -e STORE_CHATS=true \
+    evoapicloud/evolution-api:latest || docker run -d --name evolution-api \
     --restart always \
     -p 8080:8080 \
     -e AUTHENTICATION_TYPE=apikey \
