@@ -215,7 +215,7 @@ export function EvolutionConfig({ credentials, className }: EvolutionConfigProps
                   <Loader2 className="size-12 animate-spin text-primary" />
                   <p>Gerando QR Code...</p>
                 </div>
-              ) : qrQuery.data?.base64 ? (
+              ) : (qrQuery.data?.base64 || (!qrQuery.data?.connected && qrQuery.data?.base64 === null)) ? (
                 <div className="space-y-4">
                   <div className="inline-block rounded-3xl bg-white p-4 shadow-xl">
                     <img
@@ -238,16 +238,39 @@ export function EvolutionConfig({ credentials, className }: EvolutionConfigProps
                   </Button>
                 </div>
               ) : (
-                <div className="flex flex-col items-center gap-3 text-green-500">
-                  <Wifi className="size-12" />
-                  <p className="text-lg font-bold">Instância Conectada!</p>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    onClick={() => qrQuery.refetch()}
-                  >
-                    Verificar Status
-                  </Button>
+                <div className="flex flex-col items-center gap-3">
+                  <Wifi className="size-12 text-green-500" />
+                  <p className="text-lg font-bold text-green-500">Instância Conectada!</p>
+                  <p className="text-muted-foreground text-sm">
+                    Caso queira conectar outro número ou resetar, clique abaixo.
+                  </p>
+                  <div className="flex gap-2">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={() => qrQuery.refetch()}
+                    >
+                      <RefreshCw className="mr-2 size-4" /> Verificar Status
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="text-destructive hover:bg-destructive/10"
+                      onClick={async () => {
+                        if (confirm("Deseja realmente desconectar e gerar um novo QR Code?")) {
+                          try {
+                            // Tenta desconectar na API via proxy (opcional, mas configuramos aqui via SAVE se necessário)
+                            // Por enquanto, apenas limpamos a instância no painel para forçar o re-connect
+                            await installLocal({ data: credentials });
+                            queryClient.invalidateQueries({ queryKey: ["evolution-config", "evolution-qr"] });
+                            toast.success("Pronto! Aguarde o novo QR Code.");
+                          } catch (e) {}
+                        }
+                      }}
+                    >
+                      Desconectar / Novo QR
+                    </Button>
+                  </div>
                 </div>
               )}
             </div>
