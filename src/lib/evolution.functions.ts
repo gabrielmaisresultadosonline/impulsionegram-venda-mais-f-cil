@@ -1,6 +1,20 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
+// Helper para tratar a resposta da Evolution API que às vezes vem como HTML ou texto
+async function safeJsonParse(response: Response) {
+  const text = await response.text();
+  try {
+    return JSON.parse(text);
+  } catch (e) {
+    console.error("Evolution API retornou algo não-JSON:", text.substring(0, 100));
+    if (text.includes("<!DOCTYPE html>") || text.includes("<html")) {
+      throw new Error("Evolution API retornou erro HTML. Verifique se o container está rodando na porta 18080.");
+    }
+    throw new Error(`Resposta inválida da API: ${text.substring(0, 50)}...`);
+  }
+}
+
 const credentialsSchema = z.object({
   email: z.string().trim().email().max(160),
   password: z.string().min(1).max(200),
@@ -161,12 +175,9 @@ export const adminGetEvolutionQrCode = createServerFn({ method: "POST" })
         headers: { apikey: settings.evolutionApiKey },
       });
       
-      const statusText = await statusRes.text();
       let statusData: any = {};
-      try {
-        statusData = JSON.parse(statusText);
-      } catch (e) {
-        console.error("Evolution status parse error:", statusText);
+      if (statusRes.ok) {
+        statusData = await safeJsonParse(statusRes).catch(() => ({}));
       }
 
       if (statusData.instance?.state === "open") {
@@ -188,10 +199,11 @@ export const adminGetEvolutionQrCode = createServerFn({ method: "POST" })
         });
         
         if (!fallbackRes.ok) {
-           return { base64: null, connected: false, error: `Falha ao solicitar conexão (${response.status}). Tente resetar a instância.` };
+          const errData = await safeJsonParse(fallbackRes).catch(() => ({ message: "Falha na conexão" }));
+          return { base64: null, connected: false, error: errData.message || `Falha ao solicitar conexão (${response.status})` };
         }
         
-        const fallbackResult = await fallbackRes.json();
+        const fallbackResult = await safeJsonParse(fallbackRes);
         return { 
           base64: fallbackResult.base64 || fallbackResult.qrcode?.base64 || null, 
           code: fallbackResult.code || fallbackResult.qrcode?.code || null,
@@ -199,15 +211,7 @@ export const adminGetEvolutionQrCode = createServerFn({ method: "POST" })
         };
       }
 
-      const responseText = await response.text();
-      let result: any = {};
-      try {
-        result = JSON.parse(responseText);
-      } catch (e) {
-        console.error("Evolution connect parse error:", responseText);
-        return { base64: null, connected: false, error: "Resposta inválida da API (HTML recebido em vez de JSON)." };
-      }
-      
+      const result = await safeJsonParse(response);
       const base64 = result.base64 || result.qrcode?.base64 || null;
       const code = result.code || result.qrcode?.code || null;
       
