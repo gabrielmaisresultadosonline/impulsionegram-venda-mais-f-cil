@@ -37,8 +37,8 @@ npm ci || npm install
 
 log "Verificando dependência Evolution API (Docker)"
 if command -v docker >/dev/null 2>&1; then
-  # Limpeza agressiva: remove containers com hífen (-) ou underscore (_) que possam conflitar
-  for container in "evolution-api" "evolution_api"; do
+  # Limpeza total de containers antigos que possam conflitar
+  for container in "evolution-api" "evolution_api" "evolution_postgres" "evolution_redis"; do
     if docker ps -a --format '{{.Names}}' | grep -q "^${container}$"; then
       log "Removendo container antigo: ${container}..."
       docker stop "${container}" || true
@@ -46,9 +46,16 @@ if command -v docker >/dev/null 2>&1; then
     fi
   done
 
+  # Tenta liberar a porta 8080 caso algo esteja usando (ex: Nginx ou processo órfão)
+  if command -v fuser >/dev/null 2>&1; then
+    fuser -k 8080/tcp || true
+  fi
+
   log "Instalando Evolution API v2 via Docker (Porta 8080)..."
-  # Tenta usar a imagem que o usuário já tem (evoapicloud/evolution-api)
-  if docker run -d --name evolution-api \
+  # Usamos a imagem que já existe no seu servidor para evitar erro de download
+  IMAGE_NAME="evoapicloud/evolution-api:latest"
+  
+  docker run -d --name evolution-api \
     --restart always \
     -p 8080:8080 \
     -e AUTHENTICATION_TYPE=apikey \
@@ -59,26 +66,10 @@ if command -v docker >/dev/null 2>&1; then
     -e STORE_MESSAGE_UP=true \
     -e STORE_CONTACTS=true \
     -e STORE_CHATS=true \
-    evoapicloud/evolution-api:latest; then
-    log "Evolution API instalada com sucesso usando imagem evoapicloud."
-  else
-    log "Falha ao instalar com evoapicloud, tentando imagem oficial atendai..."
-    docker run -d --name evolution-api \
-      --restart always \
-      -p 8080:8080 \
-      -e AUTHENTICATION_TYPE=apikey \
-      -e AUTHENTICATION_API_KEY=popular-key-auto \
-      -e AUTHENTICATION_EXPOSE_IN_FETCH_INSTANCES=true \
-      -e DATABASE_ENABLED=false \
-      -e STORE_MESSAGES=true \
-      -e STORE_MESSAGE_UP=true \
-      -e STORE_CONTACTS=true \
-      -e STORE_CHATS=true \
-      atendai/evolution-api:latest || { log "ERRO: Não foi possível baixar ou rodar a imagem da Evolution API."; exit 1; }
-  fi
+    $IMAGE_NAME
 
   # Aguarda a API subir
-  log "Aguardando Evolution API inicializar..."
+  log "Aguardando Evolution API inicializar na porta 8080..."
   for i in {1..30}; do
     if curl -s -o /dev/null http://localhost:8080/instance/fetchInstances -H "apikey: popular-key-auto"; then
       log "Evolution API está online e respondendo na porta 8080."
