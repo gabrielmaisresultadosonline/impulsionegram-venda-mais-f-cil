@@ -200,7 +200,8 @@ export function EvolutionConfig({ credentials, className }: EvolutionConfigProps
               {!form.apiUrl || !form.instanceName ? (
                 <div className="flex flex-col items-center gap-4 text-muted-foreground">
                   <WifiOff className="size-12 opacity-20" />
-                  <p>Configure a API ou use a instalação automática direta.</p>
+                  <p className="text-sm">Configure a API ou use a instalação automática direta.</p>
+                  <p className="text-xs max-w-sm">Dica: Rodar <code>bash /var/www/acessarclick/deploy/update.sh</code> no terminal do servidor garante que o Docker está atualizado.</p>
                   <Button 
                     onClick={handleInstallLocal} 
                     disabled={installing}

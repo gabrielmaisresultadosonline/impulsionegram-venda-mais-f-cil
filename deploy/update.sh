@@ -37,24 +37,38 @@ npm ci || npm install
 
 log "Verificando dependência Evolution API (Docker)"
 if command -v docker >/dev/null 2>&1; then
-  # Verifica se o container existe
-  if ! docker ps -a --format '{{.Names}}' | grep -q "^evolution-api$"; then
-    log "Instalando Evolution API v2 via Docker..."
-    docker run -d --name evolution-api \
-      --restart always \
-      -p 8080:8080 \
-      -e AUTHENTICATION_API_KEY=popular-key-auto \
-      -e AUTHENTICATION_EXPOSE_IN_FETCH_INSTANCES=true \
-      atendai/evolution-api:latest || true
-  else
-    # Se já existe mas está parado, inicia
-    if ! docker ps --format '{{.Names}}' | grep -q "^evolution-api$"; then
-      log "Iniciando container evolution-api parado..."
-      docker start evolution-api || true
-    else
-      log "Evolution API já está em execução (Docker)."
-    fi
+  # Remove container antigo se estiver em estado ruim
+  if docker ps -a --format '{{.Names}}' | grep -q "^evolution-api$"; then
+    log "Recriando container evolution-api para garantir última versão e configs..."
+    docker stop evolution-api || true
+    docker rm evolution-api || true
   fi
+
+  log "Instalando Evolution API v2 via Docker..."
+  docker run -d --name evolution-api \
+    --restart always \
+    -p 8080:8080 \
+    -e AUTHENTICATION_TYPE=apikey \
+    -e AUTHENTICATION_API_KEY=popular-key-auto \
+    -e AUTHENTICATION_EXPOSE_IN_FETCH_INSTANCES=true \
+    -e DATABASE_ENABLED=false \
+    -e STORE_MESSAGES=true \
+    -e STORE_MESSAGE_UP=true \
+    -e STORE_CONTACTS=true \
+    -e STORE_CHATS=true \
+    atendai/evolution-api:latest
+
+  # Aguarda a API subir
+  log "Aguardando Evolution API inicializar..."
+  for i in {1..30}; do
+    if curl -s -o /dev/null http://localhost:8080/instance/fetchInstances -H "apikey: popular-key-auto"; then
+      log "Evolution API está online e respondendo."
+      break
+    fi
+    sleep 2
+  done
+else
+  log "DOCKER NÃO ENCONTRADO! A Evolution API não poderá ser instalada automaticamente."
 fi
 
 log "Gerando build de produção"
