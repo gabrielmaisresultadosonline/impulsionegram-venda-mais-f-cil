@@ -49,20 +49,16 @@ if command -v docker >/dev/null 2>&1; then
   fi
 
   log "Instalando Evolution API v2 via Docker (Porta 18080)..."
-  IMAGE_NAME="evoapicloud/evolution-api:latest"
+  IMAGE_NAME="atendai/evolution-api:v2.1.1"
   
-  # Simplificação máxima para evitar erro de Database Provider
-  # A Evolution v2 por padrão tenta usar o banco se as variáveis estiverem presentes
-  # Vamos deixar o banco habilitado com sqlite interno (padrão da imagem se não setar nada)
+  log "Instalando Evolution API v2 (atendai) via Docker (Porta 18080)..."
+  # Removendo DATABASE_CONNECTION_URI e DATABASE_PROVIDER para usar o comportamento interno padrão da imagem que já vem pré-configurado
   docker run -d --name evolution-api \
     --restart always \
     -p 18080:8080 \
     -e AUTHENTICATION_TYPE=apikey \
     -e AUTHENTICATION_API_KEY=popular-key-auto \
     -e AUTHENTICATION_EXPOSE_IN_FETCH_INSTANCES=true \
-    -e DATABASE_ENABLED=true \
-    -e DATABASE_PROVIDER=sqlite \
-    -e DATABASE_CONNECTION_URI="sqlite:/evolution/database.sqlite" \
     -e STORE_MESSAGES=false \
     -e STORE_MESSAGE_UP=false \
     -e STORE_CONTACTS=false \

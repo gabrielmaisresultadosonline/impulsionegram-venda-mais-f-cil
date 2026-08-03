@@ -26,31 +26,45 @@ export const adminInstallEvolutionLocal = createServerFn({ method: "POST" })
 
     // 1. Cria a instância na Evolution API caso não exista
     try {
-      // Tenta forçar a criação com parâmetros mais completos
-      await fetch(`${localUrl}/instance/create`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          apikey: localKey,
-        },
-        body: JSON.stringify({
-          instanceName: localInstance,
-          token: localKey,
-          qrcode: true,
-          integration: "WHATSAPP-BAILEYS",
-          number: ""
-        }),
+      // Tenta verificar se já existe antes
+      const checkRes = await fetch(`${localUrl}/instance/fetchInstances?instanceName=${localInstance}`, {
+        method: "GET",
+        headers: { apikey: localKey },
       });
       
-      // Aguarda e tenta forçar o connect para gerar o primeiro QR
-      setTimeout(async () => {
-        await fetch(`${localUrl}/instance/connect/${localInstance}`, {
-          method: "GET",
-          headers: { apikey: localKey }
-        }).catch(() => {});
-      }, 2000);
+      let exists = false;
+      if (checkRes.ok) {
+        const instances = await checkRes.json();
+        exists = Array.isArray(instances) && instances.some((i: any) => i.instanceName === localInstance);
+      }
+
+      if (!exists) {
+        // Tenta criar com parâmetros mínimos para evitar erros de validação da API
+        await fetch(`${localUrl}/instance/create`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            apikey: localKey,
+          },
+          body: JSON.stringify({
+            instanceName: localInstance,
+            token: localKey,
+            qrcode: true,
+          }),
+        });
+      }
+      
+      // Pequeno delay para a Evolution processar
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+      // Tenta forçar o connect para gerar o primeiro QR
+      await fetch(`${localUrl}/instance/connect/${localInstance}`, {
+        method: "GET",
+        headers: { apikey: localKey }
+      }).catch(() => {});
+
     } catch (e) {
-      console.error("Erro ao criar instância na Evolution:", e);
+      console.error("Erro ao configurar instância local na Evolution:", e);
     }
 
     // 2. Salva nas configurações do sistema
