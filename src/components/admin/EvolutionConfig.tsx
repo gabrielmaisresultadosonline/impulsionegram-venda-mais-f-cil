@@ -228,7 +228,7 @@ export function EvolutionConfig({ credentials, className }: EvolutionConfigProps
                   ) : (
                     <div className="flex flex-col items-center gap-3 py-10">
                       <QrCode className="size-12 opacity-20" />
-                      <p className="text-muted-foreground">
+                      <p className="max-w-xs text-muted-foreground break-words">
                         {qrQuery.data?.error || "QR Code expirado ou não gerado."}
                       </p>
                       <p className="text-xs text-muted-foreground">
