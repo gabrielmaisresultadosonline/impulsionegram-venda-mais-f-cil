@@ -217,13 +217,20 @@ export function EvolutionConfig({ credentials, className }: EvolutionConfigProps
                 </div>
               ) : (!qrQuery.data?.connected) ? (
                 <div className="space-y-4">
-                  <div className="inline-block rounded-3xl bg-white p-4 shadow-xl">
-                    <img
-                      src={qrQuery.data.base64}
-                      alt="WhatsApp QR Code"
-                      className="size-64"
-                    />
-                  </div>
+                  {qrQuery.data?.base64 ? (
+                    <div className="inline-block rounded-3xl bg-white p-4 shadow-xl">
+                      <img
+                        src={qrQuery.data.base64}
+                        alt="WhatsApp QR Code"
+                        className="size-64"
+                      />
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center gap-3 py-10">
+                      <QrCode className="size-12 opacity-20" />
+                      <p className="text-muted-foreground">QR Code expirado ou não gerado.</p>
+                    </div>
+                  )}
                   <div className="space-y-2">
                     <p className="font-bold">Escaneie o QR Code</p>
                     <p className="text-muted-foreground text-sm">Abra o WhatsApp {">"} Dispositivos Conectados</p>
