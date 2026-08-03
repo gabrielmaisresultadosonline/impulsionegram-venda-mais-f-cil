@@ -128,16 +128,47 @@ export const adminGetEvolutionQrCode = createServerFn({ method: "POST" })
         return { base64: null, connected: true };
       }
 
+      // IMPORTANTE: Para garantir que um NOVO QR Code seja gerado, tentamos forçar o logout ou desconexão se estiver em estado intermediário
+      // Ou simplesmente solicitamos o connect que a Evolution cuida de gerar o QR se não estiver conectado.
+
       // Se não estiver aberto, solicita o QR Code
       const response = await fetch(`${settings.evolutionApiUrl}/instance/connect/${settings.evolutionInstance}`, {
         method: "GET",
         headers: { apikey: settings.evolutionApiKey },
       });
 
-      if (!response.ok) return { base64: null };
+      if (!response.ok) {
+        // Se der erro no connect (ex: instância não existe), tentamos criar a instância novamente
+        await fetch(`${settings.evolutionApiUrl}/instance/create`, {
+          method: "POST",
+          headers: { 
+            "Content-Type": "application/json",
+            apikey: settings.evolutionApiKey 
+          },
+          body: JSON.stringify({
+            instanceName: settings.evolutionInstance,
+            token: settings.evolutionApiKey,
+            qrcode: true
+          })
+        });
+
+        // Tenta conectar novamente após criar
+        const retryResponse = await fetch(`${settings.evolutionApiUrl}/instance/connect/${settings.evolutionInstance}`, {
+          method: "GET",
+          headers: { apikey: settings.evolutionApiKey },
+        });
+        
+        if (!retryResponse.ok) return { base64: null, connected: false };
+        const result = await retryResponse.json();
+        return { base64: result.base64 || null, code: result.code || null, connected: false };
+      }
+
       const result = await response.json();
-      return { base64: result.base64 || null, code: result.code || null, connected: false };
+      // A Evolution às vezes retorna o QR no campo 'base64' ou dentro de 'qrcode.base64'
+      const base64 = result.base64 || result.qrcode?.base64 || null;
+      return { base64, code: result.code || null, connected: false };
     } catch (error) {
+      console.error("Evolution QR Error:", error);
       return { base64: null, connected: false };
     }
   });
