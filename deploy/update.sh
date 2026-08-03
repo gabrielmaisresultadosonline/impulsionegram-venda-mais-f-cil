@@ -57,7 +57,7 @@ if command -v docker >/dev/null 2>&1; then
   
   docker run -d --name evolution-api \
     --restart always \
-    -p 8080:8080 \
+    -p 18080:8080 \
     -e AUTHENTICATION_TYPE=apikey \
     -e AUTHENTICATION_API_KEY=popular-key-auto \
     -e AUTHENTICATION_EXPOSE_IN_FETCH_INSTANCES=true \
