@@ -308,6 +308,11 @@ function AdminDashboard({ credentials, onLogout }: AdminDashboardProps) {
                       <div>
                         <h3 className="text-base font-bold">{group.name || "Sem nome"}</h3>
                         <p className="text-muted-foreground text-xs break-all">{group.email}</p>
+                        {group.orders.find(o => o.customerPhone)?.customerPhone && (
+                          <p className="text-primary mt-1 text-xs font-semibold">
+                            WhatsApp: {group.orders.find(o => o.customerPhone)?.customerPhone}
+                          </p>
+                        )}
                       </div>
                       <p className="text-muted-foreground text-xs">
                         {group.orders.length} pedido(s)
