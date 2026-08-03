@@ -27,7 +27,7 @@ const TRUST_ITEMS = [
   { icon: Instagram, label: "Filtro por região" },
 ] as const;
 
-const DEFAULT_TITLE = ["Mais vendas,", "Mais Engajamento", "Mais Clientes"] as const;
+const DEFAULT_TITLE = ["Mais vendas,", "Mais engajamento", "Mais clientes"] as const;
 const DEFAULT_HIGHLIGHT = "Público filtrado por região e CEP no automático.";
 const DEFAULT_DESCRIPTION =
   "Basta uma configuração e você faz tudo direto pelo celular. Ganhe seguidores filtrados por cidade, região e pelo perfil do seu concorrente — sem esforço manual.";
