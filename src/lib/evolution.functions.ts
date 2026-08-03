@@ -184,29 +184,34 @@ export const adminGetEvolutionQrCode = createServerFn({ method: "POST" })
         return { base64: null, connected: true };
       }
 
-      // 4. Solicita o QR Code
-      // Tenta forçar a desconexão prévia se a requisição de connect falhar
+      // 4. Tenta forçar a desconexão para garantir um estado limpo antes de gerar QR
+      await fetch(`${baseUrl}/instance/logout/${settings.evolutionInstance}`, {
+        method: "DELETE",
+        headers: { apikey: settings.evolutionApiKey },
+      }).catch(() => {});
+
+      // 5. Solicita a conexão (isso gera o QR Code na Evolution v2)
       const response = await fetch(`${baseUrl}/instance/connect/${settings.evolutionInstance}`, {
         method: "GET",
         headers: { apikey: settings.evolutionApiKey },
       });
 
       if (!response.ok) {
-        // Se falhar o connect, tenta um fallback para qrcode direto (versões mais novas)
-        const fallbackRes = await fetch(`${baseUrl}/instance/qrcode/${settings.evolutionInstance}`, {
+        // Fallback para rota direta de qrcode se o connect falhar
+        const qrRes = await fetch(`${baseUrl}/instance/qrcode/${settings.evolutionInstance}`, {
           method: "GET",
           headers: { apikey: settings.evolutionApiKey },
         });
         
-        if (!fallbackRes.ok) {
-          const errData = await safeJsonParse(fallbackRes).catch(() => ({ message: "Falha na conexão" }));
-          return { base64: null, connected: false, error: errData.message || `Falha ao solicitar conexão (${response.status})` };
+        if (!qrRes.ok) {
+          const errData = await safeJsonParse(qrRes).catch(() => ({ message: "Erro ao gerar QR Code" }));
+          return { base64: null, connected: false, error: errData.message || `Status: ${qrRes.status}` };
         }
         
-        const fallbackResult = await safeJsonParse(fallbackRes);
+        const qrData = await safeJsonParse(qrRes);
         return { 
-          base64: fallbackResult.base64 || fallbackResult.qrcode?.base64 || null, 
-          code: fallbackResult.code || fallbackResult.qrcode?.code || null,
+          base64: qrData.base64 || qrData.qrcode?.base64 || null, 
+          code: qrData.code || qrData.qrcode?.code || null,
           connected: false 
         };
       }

@@ -20,7 +20,6 @@ REPO_URL="${REPO_URL:-https://github.com/gabrielmaisresultadosonline/impulsioneg
 if [[ -d .git ]]; then
   log "Baixando última versão do repositório"
   git fetch --all --prune
-  # Garante que usamos a branch main do GitHub (o repositório remoto usa main, não master).
   git reset --hard "origin/main" || git reset --hard "origin/$(git rev-parse --abbrev-ref HEAD)"
 else
   log "Pasta sem git — sincronizando código do GitHub (preserva .env)"
@@ -37,7 +36,6 @@ npm ci || npm install
 
 log "Verificando dependência Evolution API (Docker)"
 if command -v docker >/dev/null 2>&1; then
-  # Limpeza total de containers antigos que possam conflitar
   for container in "evolution-api" "evolution_api" "evolution_postgres" "evolution_redis"; do
     if docker ps -a --format '{{.Names}}' | grep -q "^${container}$"; then
       log "Removendo container antigo: ${container}..."
@@ -46,29 +44,31 @@ if command -v docker >/dev/null 2>&1; then
     fi
   done
 
-  # Tenta liberar a porta 18080 caso algo esteja usando
   if command -v fuser >/dev/null 2>&1; then
     fuser -k 18080/tcp || true
   fi
 
   log "Instalando Evolution API v2 via Docker (Porta 18080)..."
-  # Usamos a imagem que já existe no seu servidor para evitar erro de download
   IMAGE_NAME="evoapicloud/evolution-api:latest"
   
+  # Simplificação máxima para evitar erro de Database Provider
+  # A Evolution v2 por padrão tenta usar o banco se as variáveis estiverem presentes
+  # Vamos deixar o banco habilitado com sqlite interno (padrão da imagem se não setar nada)
   docker run -d --name evolution-api \
     --restart always \
     -p 18080:8080 \
     -e AUTHENTICATION_TYPE=apikey \
     -e AUTHENTICATION_API_KEY=popular-key-auto \
     -e AUTHENTICATION_EXPOSE_IN_FETCH_INSTANCES=true \
-    -e DATABASE_ENABLED=false \
+    -e DATABASE_ENABLED=true \
+    -e DATABASE_PROVIDER=sqlite \
+    -e DATABASE_CONNECTION_URI="sqlite:/evolution/database.sqlite" \
     -e STORE_MESSAGES=false \
     -e STORE_MESSAGE_UP=false \
     -e STORE_CONTACTS=false \
     -e STORE_CHATS=false \
     $IMAGE_NAME
 
-  # Aguarda a API subir
   log "Aguardando Evolution API inicializar na porta 18080..."
   for i in {1..30}; do
     if curl -s -o /dev/null http://localhost:18080/instance/fetchInstances -H "apikey: popular-key-auto"; then
