@@ -20,7 +20,7 @@ export const adminInstallEvolutionLocal = createServerFn({ method: "POST" })
     const { updateEvolutionSettings } = await import("../settings.server");
     
     // Configura a aplicação para usar a instância local subida pelo script de deploy
-    const localUrl = "http://localhost:8080";
+    const localUrl = "http://localhost:18080";
     const localKey = "popular-key-auto"; // Chave definida no script de deploy
     const localInstance = "PopularBot";
 

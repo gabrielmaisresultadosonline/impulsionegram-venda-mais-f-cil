@@ -112,7 +112,7 @@ export const adminGetEvolutionQrCode = createServerFn({ method: "POST" })
 
     if (!settings.evolutionApiUrl && !settings.evolutionApiKey && !settings.evolutionInstance) {
       // Fallback para instalação local padrão
-      settings.evolutionApiUrl = "http://localhost:8080";
+      settings.evolutionApiUrl = "http://localhost:18080";
       settings.evolutionApiKey = "popular-key-auto";
       settings.evolutionInstance = "PopularBot";
     }
