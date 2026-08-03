@@ -49,16 +49,20 @@ if command -v docker >/dev/null 2>&1; then
   fi
 
   log "Instalando Evolution API v2 via Docker (Porta 18080)..."
-  IMAGE_NAME="atendai/evolution-api:v2.1.1"
+  # Usar a imagem sem a tag atendai/ para evitar erro de pull access denied em algumas versões do Docker/VPS
+  # ou tentar a imagem estável 'evolutionapis/evolution-api:v2.1.1'
+  IMAGE_NAME="evolutionapis/evolution-api:v2.1.1"
   
-  log "Instalando Evolution API v2 (atendai) via Docker (Porta 18080)..."
-  # Removendo DATABASE_CONNECTION_URI e DATABASE_PROVIDER para usar o comportamento interno padrão da imagem que já vem pré-configurado
+  log "Instalando Evolution API v2 (evolutionapis) via Docker (Porta 18080)..."
   docker run -d --name evolution-api \
     --restart always \
     -p 18080:8080 \
     -e AUTHENTICATION_TYPE=apikey \
     -e AUTHENTICATION_API_KEY=popular-key-auto \
     -e AUTHENTICATION_EXPOSE_IN_FETCH_INSTANCES=true \
+    -e DATABASE_ENABLED=true \
+    -e DATABASE_PROVIDER=sqlite \
+    -e DATABASE_CONNECTION_URI="sqlite:/evolution/database.sqlite" \
     -e STORE_MESSAGES=false \
     -e STORE_MESSAGE_UP=false \
     -e STORE_CONTACTS=false \
