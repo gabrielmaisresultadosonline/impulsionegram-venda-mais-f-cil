@@ -26,7 +26,9 @@ export const adminInstallEvolutionLocal = createServerFn({ method: "POST" })
 
     // 1. Cria a instância na Evolution API caso não exista
     try {
-      // Tenta verificar se já existe antes
+      // Pequeno delay para garantir que a API subiu completamente se acabamos de rodar o script
+      await new Promise(resolve => setTimeout(resolve, 5000));
+
       const checkRes = await fetch(`${localUrl}/instance/fetchInstances?instanceName=${localInstance}`, {
         method: "GET",
         headers: { apikey: localKey },
@@ -39,7 +41,6 @@ export const adminInstallEvolutionLocal = createServerFn({ method: "POST" })
       }
 
       if (!exists) {
-        // Tenta criar com parâmetros mínimos para evitar erros de validação da API
         await fetch(`${localUrl}/instance/create`, {
           method: "POST",
           headers: {
@@ -50,14 +51,19 @@ export const adminInstallEvolutionLocal = createServerFn({ method: "POST" })
             instanceName: localInstance,
             token: localKey,
             qrcode: true,
+            // Versão 2 pode exigir habilitar eventos
+            events: ["QRCODE_UPDATED", "MESSAGES_UPSERT", "CONNECTION_UPDATE"]
           }),
         });
       }
       
-      // Pequeno delay para a Evolution processar
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Forçar logout para limpar estado e permitir novo login com QR
+      await fetch(`${localUrl}/instance/logout/${localInstance}`, {
+        method: "DELETE",
+        headers: { apikey: localKey }
+      }).catch(() => {});
 
-      // Tenta forçar o connect para gerar o primeiro QR
+      // Força o connect para gerar o primeiro QR
       await fetch(`${localUrl}/instance/connect/${localInstance}`, {
         method: "GET",
         headers: { apikey: localKey }
