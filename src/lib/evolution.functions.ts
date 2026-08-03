@@ -167,14 +167,29 @@ export const adminGetEvolutionQrCode = createServerFn({ method: "POST" })
       }
 
       // 4. Solicita o QR Code
+      // Tenta forçar a desconexão prévia se a requisição de connect falhar
       const response = await fetch(`${baseUrl}/instance/connect/${settings.evolutionInstance}`, {
         method: "GET",
         headers: { apikey: settings.evolutionApiKey },
       });
 
       if (!response.ok) {
-        // Fallback: se o connect falhar, tenta pegar via qrcode/base64 direto se disponível em alguns endpoints
-        return { base64: null, connected: false, error: "Falha ao solicitar conexão." };
+        // Se falhar o connect, tenta um fallback para qrcode direto (versões mais novas)
+        const fallbackRes = await fetch(`${baseUrl}/instance/qrcode/${settings.evolutionInstance}`, {
+          method: "GET",
+          headers: { apikey: settings.evolutionApiKey },
+        });
+        
+        if (!fallbackRes.ok) {
+           return { base64: null, connected: false, error: `Falha ao solicitar conexão (${response.status}). Tente resetar a instância.` };
+        }
+        
+        const fallbackResult = await fallbackRes.json();
+        return { 
+          base64: fallbackResult.base64 || fallbackResult.qrcode?.base64 || null, 
+          code: fallbackResult.code || fallbackResult.qrcode?.code || null,
+          connected: false 
+        };
       }
 
       const responseText = await response.text();
