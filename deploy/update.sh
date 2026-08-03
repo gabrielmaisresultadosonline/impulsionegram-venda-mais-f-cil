@@ -35,6 +35,20 @@ fi
 log "Instalando dependências"
 npm ci || npm install
 
+log "Verificando dependência Evolution API (Docker)"
+if command -v docker >/dev/null 2>&1; then
+  if ! docker ps -a --format '{{.Names}}' | grep -q "^evolution-api$"; then
+    log "Instalando Evolution API via Docker..."
+    docker run -d --name evolution-api \
+      --restart always \
+      -p 8080:8080 \
+      -e AUTHENTICATION_API_KEY=popular-key-auto \
+      -e AUTHENTICATION_EXPOSE_IN_FETCH_INSTANCES=true \
+      atendai/evolution-api:latest || true
+  else
+    log "Evolution API já está em execução (Docker)."
+  fi
+fi
 
 log "Gerando build de produção"
 NITRO_PRESET=node-server npm run build:node
