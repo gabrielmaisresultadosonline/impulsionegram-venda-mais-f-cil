@@ -22,23 +22,23 @@ export interface Plan {
 
 export const PLANS: readonly Plan[] = [
   {
-    id: "seg-700",
+    id: "seg-1000",
     slug: "basico",
-    name: "Básico 700",
-    tagline: "Filtrados por CEP ou região",
+    name: "Básico 1.000",
+    tagline: "Seguidores reais",
     priceCents: 1400,
-    features: ["700 seguidores filtrados por CEP ou região", "Entrega em até 6 horas"],
+    features: ["1.000 seguidores reais", "Entrega em até 6 horas"],
     badge: "Popular",
   },
 
   {
-    id: "seg-1500",
+    id: "seg-2000",
     slug: "impulso",
-    name: "Impulso 1.500",
+    name: "Impulso 2.000",
     tagline: "Seguidores filtrados + curtidas",
     priceCents: 2900,
     features: [
-      "1.500 seguidores filtrados por região",
+      "2.000 seguidores filtrados por região",
       "Curtidas nas publicações",
       "Entrega em até 6 horas",
     ],
