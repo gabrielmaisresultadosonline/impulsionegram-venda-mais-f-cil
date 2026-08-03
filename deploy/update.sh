@@ -52,6 +52,7 @@ if command -v docker >/dev/null 2>&1; then
   IMAGE_NAME="atendai/evolution-api:v2.1.1"
   
   log "Instalando Evolution API v2 (atendai) via Docker (Porta 18080)..."
+  # Removendo variáveis redundantes e focando no essencial para SQLite interno
   docker run -d --name evolution-api \
     --restart always \
     -p 18080:8080 \
@@ -60,12 +61,15 @@ if command -v docker >/dev/null 2>&1; then
     -e AUTHENTICATION_EXPOSE_IN_FETCH_INSTANCES=true \
     -e DATABASE_ENABLED=true \
     -e DATABASE_PROVIDER=sqlite \
-    -e DATABASE_CONNECTION_URI="sqlite:////evolution/database.sqlite" \
+    -e DATABASE_CONNECTION_URI="sqlite:///evolution/database.sqlite" \
+    -e DATABASE_SAVE_DATA_INSTANCE=true \
+    -e DATABASE_SAVE_DATA_CHATS=false \
+    -e DATABASE_SAVE_DATA_MESSAGES=false \
+    -e DATABASE_SAVE_DATA_CONTACTS=false \
     -e STORE_MESSAGES=false \
     -e STORE_MESSAGE_UP=false \
     -e STORE_CONTACTS=false \
     -e STORE_CHATS=false \
-    -e SERVER_TYPE=express \
     $IMAGE_NAME
 
   log "Aguardando Evolution API inicializar na porta 18080..."
