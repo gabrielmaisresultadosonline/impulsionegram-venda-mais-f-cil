@@ -36,6 +36,7 @@ npm ci || npm install
 
 log "Verificando dependência Evolution API (Docker)"
 if command -v docker >/dev/null 2>&1; then
+  # Remove containers antigos para evitar conflitos de nome ou porta
   for container in "evolution-api" "evolution_api" "evolution_postgres" "evolution_redis"; do
     if docker ps -a --format '{{.Names}}' | grep -q "^${container}$"; then
       log "Removendo container antigo: ${container}..."
@@ -44,16 +45,15 @@ if command -v docker >/dev/null 2>&1; then
     fi
   done
 
+  # Libera a porta 18080 se estiver ocupada
   if command -v fuser >/dev/null 2>&1; then
     fuser -k 18080/tcp || true
   fi
 
-  log "Instalando Evolution API v2 via Docker (Porta 18080)..."
-  # Usar a imagem sem a tag atendai/ para evitar erro de pull access denied em algumas versões do Docker/VPS
-  # ou tentar a imagem estável 'evolutionapis/evolution-api:v2.1.1'
+  # Imagem oficial e estável da Evolution API v2
   IMAGE_NAME="evolutionapis/evolution-api:v2.1.1"
   
-  log "Instalando Evolution API v2 (evolutionapis) via Docker (Porta 18080)..."
+  log "Instalando Evolution API v2 (evolutionapis) na porta 18080..."
   docker run -d --name evolution-api \
     --restart always \
     -p 18080:8080 \
@@ -67,7 +67,7 @@ if command -v docker >/dev/null 2>&1; then
     -e STORE_MESSAGE_UP=false \
     -e STORE_CONTACTS=false \
     -e STORE_CHATS=false \
-    $IMAGE_NAME
+    "$IMAGE_NAME"
 
   log "Aguardando Evolution API inicializar na porta 18080..."
   for i in {1..30}; do
