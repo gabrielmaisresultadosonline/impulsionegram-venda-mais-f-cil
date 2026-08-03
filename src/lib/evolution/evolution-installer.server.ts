@@ -26,6 +26,7 @@ export const adminInstallEvolutionLocal = createServerFn({ method: "POST" })
 
     // 1. Cria a instância na Evolution API caso não exista
     try {
+      // Tenta forçar a criação com parâmetros mais completos
       await fetch(`${localUrl}/instance/create`, {
         method: "POST",
         headers: {
@@ -36,8 +37,18 @@ export const adminInstallEvolutionLocal = createServerFn({ method: "POST" })
           instanceName: localInstance,
           token: localKey,
           qrcode: true,
+          integration: "WHATSAPP-BAILEYS",
+          number: ""
         }),
       });
+      
+      // Aguarda e tenta forçar o connect para gerar o primeiro QR
+      setTimeout(async () => {
+        await fetch(`${localUrl}/instance/connect/${localInstance}`, {
+          method: "GET",
+          headers: { apikey: localKey }
+        }).catch(() => {});
+      }, 2000);
     } catch (e) {
       console.error("Erro ao criar instância na Evolution:", e);
     }
