@@ -115,6 +115,20 @@ export const adminGetEvolutionQrCode = createServerFn({ method: "POST" })
     }
 
     try {
+      // Primeiro verifica o estado da instância
+      const statusRes = await fetch(`${settings.evolutionApiUrl}/instance/connectionState/${settings.evolutionInstance}`, {
+        method: "GET",
+        headers: { apikey: settings.evolutionApiKey },
+      });
+      
+      const statusData = await statusRes.json();
+      
+      // Se já estiver conectado, não pedimos o QR Code (retornamos base64 null)
+      if (statusData.instance?.state === "open") {
+        return { base64: null, connected: true };
+      }
+
+      // Se não estiver aberto, solicita o QR Code
       const response = await fetch(`${settings.evolutionApiUrl}/instance/connect/${settings.evolutionInstance}`, {
         method: "GET",
         headers: { apikey: settings.evolutionApiKey },
@@ -122,9 +136,9 @@ export const adminGetEvolutionQrCode = createServerFn({ method: "POST" })
 
       if (!response.ok) return { base64: null };
       const result = await response.json();
-      return { base64: result.base64 || null, code: result.code || null };
+      return { base64: result.base64 || null, code: result.code || null, connected: false };
     } catch (error) {
-      return { base64: null };
+      return { base64: null, connected: false };
     }
   });
 
