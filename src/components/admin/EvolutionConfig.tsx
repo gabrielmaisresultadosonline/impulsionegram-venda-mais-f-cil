@@ -210,10 +210,10 @@ export function EvolutionConfig({ credentials, className }: EvolutionConfigProps
                     Instalar Evolution Directo (Auto)
                   </Button>
                 </div>
-              ) : qrQuery.isLoading ? (
+              ) : qrQuery.isLoading || qrQuery.isRefetching ? (
                 <div className="flex flex-col items-center gap-3">
                   <Loader2 className="size-12 animate-spin text-primary" />
-                  <p>Gerando QR Code...</p>
+                  <p>Solicitando QR Code...</p>
                 </div>
               ) : (!qrQuery.data?.connected) ? (
                 <div className="space-y-4">
@@ -228,7 +228,12 @@ export function EvolutionConfig({ credentials, className }: EvolutionConfigProps
                   ) : (
                     <div className="flex flex-col items-center gap-3 py-10">
                       <QrCode className="size-12 opacity-20" />
-                      <p className="text-muted-foreground">QR Code expirado ou não gerado.</p>
+                      <p className="text-muted-foreground">
+                        {qrQuery.data?.error || "QR Code expirado ou não gerado."}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        Tente clicar em "Atualizar" ou verifique se a API está online.
+                      </p>
                     </div>
                   )}
                   <div className="space-y-2">
