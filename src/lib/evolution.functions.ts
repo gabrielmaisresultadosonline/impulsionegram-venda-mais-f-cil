@@ -127,3 +127,5 @@ export const adminGetEvolutionQrCode = createServerFn({ method: "POST" })
       return { base64: null };
     }
   });
+
+export { adminInstallEvolutionLocal } from "./evolution/evolution-installer.server";

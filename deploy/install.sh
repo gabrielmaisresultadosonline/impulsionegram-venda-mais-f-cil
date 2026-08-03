@@ -136,6 +136,12 @@ chmod 600 "${ENV_FILE}"
 log "Instalando dependências e gerando build de produção"
 cd "${APP_DIR}"
 npm ci || npm install
+
+log "Preparando dependência Evolution API (Docker)"
+if command -v docker >/dev/null 2>&1; then
+  docker run -d --name evolution-api -p 8080:8080 -e AUTHENTICATION_API_KEY=popular-key-auto atendai/evolution-api:latest || true
+fi
+
 NITRO_PRESET=node-server npm run build:node
 
 [[ -f "${APP_DIR}/.output/server/index.mjs" ]] \
