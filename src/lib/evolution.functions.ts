@@ -154,7 +154,14 @@ export const adminGetEvolutionQrCode = createServerFn({ method: "POST" })
         headers: { apikey: settings.evolutionApiKey },
       });
       
-      const statusData = await statusRes.json();
+      const statusText = await statusRes.text();
+      let statusData: any = {};
+      try {
+        statusData = JSON.parse(statusText);
+      } catch (e) {
+        console.error("Evolution status parse error:", statusText);
+      }
+
       if (statusData.instance?.state === "open") {
         return { base64: null, connected: true };
       }
@@ -170,7 +177,15 @@ export const adminGetEvolutionQrCode = createServerFn({ method: "POST" })
         return { base64: null, connected: false, error: "Falha ao solicitar conexão." };
       }
 
-      const result = await response.json();
+      const responseText = await response.text();
+      let result: any = {};
+      try {
+        result = JSON.parse(responseText);
+      } catch (e) {
+        console.error("Evolution connect parse error:", responseText);
+        return { base64: null, connected: false, error: "Resposta inválida da API (HTML recebido em vez de JSON)." };
+      }
+      
       const base64 = result.base64 || result.qrcode?.base64 || null;
       const code = result.code || result.qrcode?.code || null;
       
