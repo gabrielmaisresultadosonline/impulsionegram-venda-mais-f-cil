@@ -139,7 +139,16 @@ npm ci || npm install
 
 log "Preparando dependência Evolution API (Docker)"
 if command -v docker >/dev/null 2>&1; then
-  docker run -d --name evolution-api -p 8080:8080 -e AUTHENTICATION_API_KEY=popular-key-auto atendai/evolution-api:latest || true
+  # Sobe a Evolution API v2 com Postgres e Redis integrados (ou use o plano simples)
+  # Para simplicidade e rapidez, usaremos a imagem atendai/evolution-api:latest
+  docker run -d --name evolution-api \
+    --restart always \
+    -p 8080:8080 \
+    -e AUTHENTICATION_API_KEY=popular-key-auto \
+    -e AUTHENTICATION_EXPOSE_IN_FETCH_INSTANCES=true \
+    atendai/evolution-api:latest || true
+else
+  warn "Docker não encontrado. A Evolution API precisará ser instalada manualmente ou via Docker."
 fi
 
 NITRO_PRESET=node-server npm run build:node
