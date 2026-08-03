@@ -266,12 +266,20 @@ export function EvolutionConfig({ credentials, className }: EvolutionConfigProps
                       onClick={async () => {
                         if (confirm("Deseja realmente desconectar e gerar um novo QR Code?")) {
                           try {
-                            // Tenta desconectar na API via proxy (opcional, mas configuramos aqui via SAVE se necessário)
-                            // Por enquanto, apenas limpamos a instância no painel para forçar o re-connect
+                            setInstalling(true);
+                            // Força a reinstalação/reset da instância para garantir que limpe sessões antigas
                             await installLocal({ data: credentials });
-                            queryClient.invalidateQueries({ queryKey: ["evolution-config", "evolution-qr"] });
-                            toast.success("Pronto! Aguarde o novo QR Code.");
-                          } catch (e) {}
+                            
+                            // Limpa o cache para forçar refetch imediato
+                            await queryClient.invalidateQueries({ queryKey: ["evolution-qr"] });
+                            await queryClient.refetchQueries({ queryKey: ["evolution-qr"] });
+                            
+                            toast.success("Instância resetada! Gerando novo QR Code...");
+                          } catch (e: any) {
+                            toast.error("Erro ao resetar: " + e.message);
+                          } finally {
+                            setInstalling(false);
+                          }
                         }
                       }}
                     >
