@@ -37,8 +37,9 @@ npm ci || npm install
 
 log "Verificando dependência Evolution API (Docker)"
 if command -v docker >/dev/null 2>&1; then
+  # Verifica se o container existe
   if ! docker ps -a --format '{{.Names}}' | grep -q "^evolution-api$"; then
-    log "Instalando Evolution API via Docker..."
+    log "Instalando Evolution API v2 via Docker..."
     docker run -d --name evolution-api \
       --restart always \
       -p 8080:8080 \
@@ -46,7 +47,13 @@ if command -v docker >/dev/null 2>&1; then
       -e AUTHENTICATION_EXPOSE_IN_FETCH_INSTANCES=true \
       atendai/evolution-api:latest || true
   else
-    log "Evolution API já está em execução (Docker)."
+    # Se já existe mas está parado, inicia
+    if ! docker ps --format '{{.Names}}' | grep -q "^evolution-api$"; then
+      log "Iniciando container evolution-api parado..."
+      docker start evolution-api || true
+    else
+      log "Evolution API já está em execução (Docker)."
+    fi
   fi
 fi
 
