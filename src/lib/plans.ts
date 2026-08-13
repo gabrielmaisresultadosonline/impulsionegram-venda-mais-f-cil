@@ -1,5 +1,5 @@
 /**
- * Catálogo de planos do Impulsionegram.
+ * Catálogo de planos do POPULAR.
  *
  * IMPORTANTE (segurança): este módulo é a ÚNICA fonte de verdade dos preços.
  * O cliente envia apenas o `id` do plano; o servidor resolve o preço aqui.
