@@ -1,14 +1,12 @@
-import { useState, type ComponentProps } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { type ComponentProps } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Loader2, RefreshCw, UserRound, SendHorizontal } from "lucide-react";
+import { Loader2, RefreshCw, UserRound } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { adminListSignups, type AdminSignup } from "@/lib/admin.functions";
-import { adminSendEvolutionMessage } from "@/lib/evolution.functions";
 import { sourceLabel } from "@/lib/traffic-source";
-import { toast } from "sonner";
 
 export interface SignupsCardProps extends ComponentProps<"section"> {
   credentials: { email: string; password: string };
@@ -17,31 +15,12 @@ export interface SignupsCardProps extends ComponentProps<"section"> {
 /** Lista de contas criadas na home, com data e hora do cadastro. */
 export function SignupsCard({ credentials, className, ...props }: SignupsCardProps) {
   const listSignups = useServerFn(adminListSignups);
-  const sendMessage = useServerFn(adminSendEvolutionMessage);
-  const [sendingPhone, setSendingPhone] = useState<string | null>(null);
 
   const query = useQuery({
     queryKey: ["admin-signups"],
     queryFn: () => listSignups({ data: credentials }),
     refetchInterval: 30000,
   });
-
-  const sendMutation = useMutation({
-    mutationFn: (vars: { phone: string; name: string }) => 
-      sendMessage({ data: { ...vars, ...credentials } }),
-    onSuccess: () => {
-      toast.success("Mensagem de recuperação enviada!");
-    },
-    onError: (err: any) => {
-      toast.error(err.message || "Erro ao enviar mensagem.");
-    },
-    onSettled: () => setSendingPhone(null),
-  });
-
-  const handleStartConversation = (phone: string, name: string) => {
-    setSendingPhone(phone);
-    sendMutation.mutate({ phone, name });
-  };
 
   const signups: AdminSignup[] = query.data ?? [];
 
@@ -101,30 +80,14 @@ export function SignupsCard({ credentials, className, ...props }: SignupsCardPro
               <Field label="WhatsApp">
                 <div className="flex items-center gap-2">
                   {signup.phone ? (
-                    <>
-                      <a
-                        href={`https://wa.me/${signup.phone.replace(/\D/g, "")}`}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-primary hover:underline"
-                      >
-                        {signup.phone}
-                      </a>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="size-8 text-primary hover:bg-primary/10"
-                        onClick={() => handleStartConversation(signup.phone!, signup.name)}
-                        disabled={sendingPhone === signup.phone}
-                        title="Enviar mensagem de recuperação (Evolution API)"
-                      >
-                        {sendingPhone === signup.phone ? (
-                          <Loader2 className="size-4 animate-spin" />
-                        ) : (
-                          <SendHorizontal className="size-4" />
-                        )}
-                      </Button>
-                    </>
+                    <a
+                      href={`https://wa.me/${signup.phone.replace(/\D/g, "")}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-primary hover:underline"
+                    >
+                      {signup.phone}
+                    </a>
                   ) : (
                     "—"
                   )}
