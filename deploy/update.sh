@@ -32,7 +32,7 @@ else
 fi
 
 log "Instalando dependências"
-npm ci || npm install
+npm install
 
 log "Removendo Evolution API (se existir)"
 if command -v docker >/dev/null 2>&1; then
@@ -55,5 +55,5 @@ chown -R "${APP_USER}:${APP_USER}" "${APP_DIR}"
 log "Reiniciando serviço"
 systemctl restart "${APP_NAME}"
 sleep 3
-systemctl is-active --quiet "${APP_NAME}" && log "Site atualizado com sucesso." \
+systemctl is-active --quiet "${APP_NAME}" && log "✅ Deploy concluído" \
   || { journalctl -u "${APP_NAME}" -n 40 --no-pager; exit 1; }
