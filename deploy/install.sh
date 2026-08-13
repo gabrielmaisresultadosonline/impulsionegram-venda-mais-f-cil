@@ -2,18 +2,6 @@
 # =============================================================================
 #  POPULAR / acessar.click — Instalador completo para VPS Ubuntu 24.04 LTS
 # =============================================================================
-#  Este script é ISOLADO: ele NÃO altera nada de outros sites do mesmo VPS.
-#   - Cria apenas /var/www/acessarclick
-#   - Cria apenas o serviço systemd  acessarclick.service
-#   - Cria apenas o vhost nginx      /etc/nginx/sites-available/acessarclick
-#   - Usa uma porta local exclusiva  (padrão 3009)
-#   - Só emite SSL para os domínios informados
-#
-#  Uso (como root):
-#     bash install.sh
-#     bash install.sh --repo https://github.com/usuario/repo.git
-#     bash install.sh --port 3011 --domain acessar.click
-# =============================================================================
 set -Eeuo pipefail
 
 # ----------------------------- Configuração ---------------------------------
@@ -47,23 +35,19 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-
 log()  { printf '\n\033[1;36m==> %s\033[0m\n' "$*"; }
 warn() { printf '\033[1;33m[aviso] %s\033[0m\n' "$*"; }
 die()  { printf '\033[1;31m[erro] %s\033[0m\n' "$*" >&2; exit 1; }
 
 [[ "$(id -u)" -eq 0 ]] || die "Execute como root:  sudo bash install.sh"
 
-# Senha do admin: usa a informada ou gera uma aleatória forte.
 [[ -n "${ADMIN_PASSWORD}" ]] || ADMIN_PASSWORD="$(openssl rand -base64 18 | tr -d '/+=' | cut -c1-20)"
 
-# --------------------- 1. Checagem de conflito de porta ----------------------
 log "Verificando se a porta ${APP_PORT} está livre"
 if ss -ltn "sport = :${APP_PORT}" 2>/dev/null | grep -q LISTEN; then
   die "A porta ${APP_PORT} já está em uso por outro projeto. Rode novamente com --port 3010 (ou outra livre)."
 fi
 
-# --------------------- 2. Dependências do sistema ----------------------------
 log "Instalando dependências base (nginx, git, curl, certbot)"
 export DEBIAN_FRONTEND=noninteractive
 apt-get update -y
@@ -76,12 +60,10 @@ if ! command -v node >/dev/null 2>&1 || [[ "$(node -v | sed 's/v\([0-9]*\).*/\1/
 fi
 node -v && npm -v
 
-# --------------------- 3. Usuário e pasta isolados ---------------------------
 log "Criando usuário de sistema e pasta ${APP_DIR}"
 id -u "${APP_USER}" >/dev/null 2>&1 || useradd --system --create-home --shell /usr/sbin/nologin "${APP_USER}"
 mkdir -p "${APP_DIR}"
 
-# --------------------- 4. Código-fonte ---------------------------------------
 if [[ -n "${REPO_URL}" ]]; then
   log "Clonando/atualizando código de ${REPO_URL}"
   if [[ -d "${APP_DIR}/.git" ]]; then
@@ -92,12 +74,9 @@ if [[ -n "${REPO_URL}" ]]; then
     git clone "${REPO_URL}" "${APP_DIR}"
   fi
 else
-  [[ -f "${APP_DIR}/package.json" ]] || die "Sem --repo informado e ${APP_DIR}/package.json não existe.
-Envie o código antes, por exemplo:
-  rsync -av --exclude node_modules --exclude .output ./ root@SEU_IP:${APP_DIR}/"
+  [[ -f "${APP_DIR}/package.json" ]] || die "Sem --repo informado e ${APP_DIR}/package.json não existe."
 fi
 
-# --------------------- 5. Variáveis de ambiente ------------------------------
 ENV_FILE="${APP_DIR}/.env"
 if [[ ! -f "${ENV_FILE}" ]]; then
   log "Gerando ${ENV_FILE}"
@@ -105,23 +84,15 @@ if [[ ! -f "${ENV_FILE}" ]]; then
 NODE_ENV=production
 PORT=${APP_PORT}
 HOST=127.0.0.1
-
-# ---- Acesso ao painel /admin (troque quando quiser) ----
 ADMIN_EMAIL=${ADMIN_EMAIL}
 ADMIN_LOGIN_PASSWORD=${ADMIN_PASSWORD}
-# Compatibilidade com a versão antiga (login só por senha)
 ADMIN_PASSWORD=${ADMIN_PASSWORD}
-
-# ---- Meta / Facebook (Pixel + API de Conversões) ----
 FACEBOOK_PIXEL_ID=${FB_PIXEL_ID}
 FACEBOOK_CAPI_TOKEN=${FB_CAPI_TOKEN}
-# Preencha só durante testes no "Testar eventos" do Gerenciador:
-# FACEBOOK_TEST_EVENT_CODE=
 EOF
   echo "  >>> LOGIN ADMIN: ${ADMIN_EMAIL} / ${ADMIN_PASSWORD}"
 else
-  log ".env já existe — atualizando apenas as chaves do Meta"
-  # Reescreve/insere as chaves do Meta sem tocar no resto do arquivo.
+  log ".env já existe — atualizando chaves do Meta"
   sed -i '/^FACEBOOK_PIXEL_ID=/d;/^FACEBOOK_CAPI_TOKEN=/d' "${ENV_FILE}"
   {
     echo "FACEBOOK_PIXEL_ID=${FB_PIXEL_ID}"
@@ -130,39 +101,21 @@ else
 fi
 chmod 600 "${ENV_FILE}"
 
-
-
-# --------------------- 6. Build de produção (Node) ---------------------------
 log "Instalando dependências e gerando build de produção"
 cd "${APP_DIR}"
 npm ci || npm install
 
-log "Preparando dependência Evolution API (Docker)"
-if command -v docker >/dev/null 2>&1; then
-  # Sobe a Evolution API v2 com Postgres e Redis integrados (ou use o plano simples)
-  # Para simplicidade e rapidez, usaremos a imagem atendai/evolution-api:latest
-  docker run -d --name evolution-api \
-    --restart always \
-    -p 8080:8080 \
-    -e AUTHENTICATION_API_KEY=popular-key-auto \
-    -e AUTHENTICATION_EXPOSE_IN_FETCH_INSTANCES=true \
-    atendai/evolution-api:latest || true
-else
-  warn "Docker não encontrado. A Evolution API precisará ser instalada manualmente ou via Docker."
-fi
-
 NITRO_PRESET=node-server npm run build:node
 
 [[ -f "${APP_DIR}/.output/server/index.mjs" ]] \
-  || die "Build não gerou .output/server/index.mjs. Verifique os logs acima."
+  || die "Build não gerou .output/server/index.mjs."
 
 chown -R "${APP_USER}:${APP_USER}" "${APP_DIR}"
 
-# --------------------- 7. Serviço systemd isolado ----------------------------
 log "Criando serviço systemd ${APP_NAME}.service"
 cat > "/etc/systemd/system/${APP_NAME}.service" <<EOF
 [Unit]
-Description=POPULAR (acessar.click) — TanStack Start server
+Description=POPULAR (acessar.click)
 After=network.target
 
 [Service]
@@ -175,7 +128,6 @@ Environment=NODE_ENV=production
 ExecStart=/usr/bin/node ${APP_DIR}/.output/server/index.mjs
 Restart=always
 RestartSec=3
-# Isolamento: só enxerga a própria pasta
 NoNewPrivileges=true
 PrivateTmp=true
 ProtectSystem=full
@@ -196,7 +148,6 @@ sleep 3
 systemctl is-active --quiet "${APP_NAME}" \
   || { journalctl -u "${APP_NAME}" -n 40 --no-pager; die "Serviço não subiu."; }
 
-# --------------------- 8. Vhost nginx exclusivo ------------------------------
 log "Configurando nginx para ${DOMAIN}"
 SERVER_NAMES="${DOMAIN}${WWW_DOMAIN:+ ${WWW_DOMAIN}}"
 cat > "/etc/nginx/sites-available/${APP_NAME}" <<EOF
@@ -228,12 +179,10 @@ ln -sfn "/etc/nginx/sites-available/${APP_NAME}" "/etc/nginx/sites-enabled/${APP
 nginx -t
 systemctl reload nginx
 
-# --------------------- 9. Firewall (sem quebrar o resto) ---------------------
 if ufw status | grep -q "Status: active"; then
   ufw allow 'Nginx Full' >/dev/null 2>&1 || true
 fi
 
-# --------------------- 10. SSL Let's Encrypt ---------------------------------
 log "Emitindo certificado SSL para ${SERVER_NAMES}"
 CERTBOT_DOMAINS=(-d "${DOMAIN}")
 [[ -n "${WWW_DOMAIN}" ]] && CERTBOT_DOMAINS+=(-d "${WWW_DOMAIN}")
@@ -244,32 +193,17 @@ if certbot --nginx "${CERTBOT_DOMAINS[@]}" --agree-tos --redirect --non-interact
   systemctl reload nginx
   log "SSL ativo — https://${DOMAIN}"
 else
-  warn "Certbot falhou. Provável causa: DNS do domínio ainda não aponta para este VPS."
-  warn "Aponte o A record de ${DOMAIN} (e www) para o IP deste servidor e rode depois:"
-  warn "  certbot --nginx -d ${DOMAIN}${WWW_DOMAIN:+ -d ${WWW_DOMAIN}} --agree-tos --redirect"
+  warn "Certbot falhou."
 fi
 
 systemctl enable certbot.timer >/dev/null 2>&1 || true
 
-# --------------------- Final -------------------------------------------------
 cat <<EOF
-
 ============================================================
  INSTALAÇÃO CONCLUÍDA
 ============================================================
  Site        : https://${DOMAIN}
  Pasta       : ${APP_DIR}
- Serviço     : systemctl status ${APP_NAME}
- Logs        : journalctl -u ${APP_NAME} -f
- Porta local : 127.0.0.1:${APP_PORT}
  Admin       : https://${DOMAIN}/admin
- Login admin : ${ADMIN_EMAIL} / ${ADMIN_PASSWORD}
- Env / senha : ${APP_DIR}/.env
-
- Atualizar o site depois de mudar o código:
-   bash ${APP_DIR}/deploy/update.sh
-
- Webhook InfinitePay:
-   https://${DOMAIN}/api/public/infinitepay/webhook
 ============================================================
 EOF
