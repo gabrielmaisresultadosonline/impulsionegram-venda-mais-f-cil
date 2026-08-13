@@ -31,8 +31,8 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending, askPhone = fal
 
   /** Ordem das perguntas exibidas — o WhatsApp entra apenas quando necessário. */
   const questions = useMemo(
-    () => (askPhone ? (["profile", "region", "competitor", "phone"] as const) : (["profile", "region", "competitor"] as const)),
-    [askPhone],
+    () => (["profile", "region", "competitor"] as const),
+    [],
   );
   const totalQuestions = questions.length;
   const currentQuestion = questions[index];
@@ -61,10 +61,6 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending, askPhone = fal
     }
     if (currentQuestion === "competitor" && data.competitor.trim().length < 3) {
       toast.error("Informe o Instagram do concorrente.");
-      return false;
-    }
-    if (currentQuestion === "phone" && data.customerPhone.replace(/\D/g, "").length < 10) {
-      toast.error("Informe um WhatsApp válido com DDD.");
       return false;
     }
     return true;
@@ -181,28 +177,6 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending, askPhone = fal
         </Question>
       ) : null}
 
-      {currentQuestion === "phone" ? (
-        <Question
-          icon={<Phone className="size-5" aria-hidden="true" />}
-          title="Qual o seu WhatsApp?"
-          description="Só usamos para avisar sobre a entrega do seu engajamento."
-        >
-          <Label htmlFor="quiz-phone" className="sr-only">
-            WhatsApp com DDD
-          </Label>
-          <Input
-            id="quiz-phone"
-            autoFocus
-            value={data.customerPhone}
-            onChange={(event) => onChange({ customerPhone: event.target.value })}
-            onKeyDown={(event) => event.key === "Enter" && next()}
-            placeholder="(69) 99999-9999"
-            inputMode="tel"
-            maxLength={30}
-            className="h-12 text-base"
-          />
-        </Question>
-      ) : null}
 
       {isSummary ? (
         <Question

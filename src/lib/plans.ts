@@ -1,5 +1,5 @@
 /**
- * Catálogo de planos do Impulsionegram.
+ * Catálogo de planos do POPULAR.
  *
  * IMPORTANTE (segurança): este módulo é a ÚNICA fonte de verdade dos preços.
  * O cliente envia apenas o `id` do plano; o servidor resolve o preço aqui.
@@ -48,7 +48,7 @@ export const PLANS: readonly Plan[] = [
     slug: "autoridade",
     name: "Autoridade 5.000",
     tagline: "Máxima visibilidade e alcance",
-    priceCents: 9700,
+    priceCents: 5700,
     features: [
       "5.000 seguidores",
       "5 mil alcance em 60% dos posts/reels",

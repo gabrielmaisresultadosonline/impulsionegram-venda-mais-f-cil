@@ -29,7 +29,7 @@ export const Route = createFileRoute("/whats")({
 });
 
 const PHONE = "5551974001588";
-const MESSAGE = "Estou no site CRESCIMENTO Instagram, gostaria de tirar algumas dúvidas";
+const MESSAGE = "Estou no site Mais Vendas, gostaria de tirar algumas dúvidas";
 
 function WhatsPage() {
   useEffect(() => {
