@@ -54,6 +54,20 @@ chown -R "${APP_USER}:${APP_USER}" "${APP_DIR}"
 
 log "Reiniciando serviço"
 systemctl restart "${APP_NAME}"
+
+# Garantir que a configuração do Nginx seja reaplicada com isolamento de host
+if [[ -f "/etc/nginx/sites-available/${APP_NAME}" ]]; then
+  log "Reforçando isolamento de domínio no Nginx"
+  # Captura o domínio principal do arquivo de serviço ou .env
+  MAIN_DOMAIN="acessar.click"
+  
+  # Adiciona bloco de verificação de host se não existir
+  if ! grep -q "if (\$host !=" "/etc/nginx/sites-available/${APP_NAME}"; then
+    sed -i "/server_name/a \ \n    if (\$host != \"${MAIN_DOMAIN}\") {\n        return 444;\n    }" "/etc/nginx/sites-available/${APP_NAME}"
+    nginx -t && systemctl reload nginx
+  fi
+fi
+
 sleep 3
 systemctl is-active --quiet "${APP_NAME}" && log "✅ Deploy concluído" \
   || { journalctl -u "${APP_NAME}" -n 40 --no-pager; exit 1; }
