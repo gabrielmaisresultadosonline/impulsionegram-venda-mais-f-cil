@@ -103,7 +103,7 @@ chmod 600 "${ENV_FILE}"
 
 log "Instalando dependências e gerando build de produção"
 cd "${APP_DIR}"
-npm ci || npm install
+npm install
 
 NITRO_PRESET=node-server npm run build:node
 
@@ -200,7 +200,7 @@ systemctl enable certbot.timer >/dev/null 2>&1 || true
 
 cat <<EOF
 ============================================================
- INSTALAÇÃO CONCLUÍDA
+ ✅ Instalação Concluída
 ============================================================
  Site        : https://${DOMAIN}
  Pasta       : ${APP_DIR}
