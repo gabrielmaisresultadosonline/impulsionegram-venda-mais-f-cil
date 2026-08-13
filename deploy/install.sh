@@ -156,6 +156,12 @@ server {
     listen [::]:80;
     server_name ${SERVER_NAMES};
 
+    # Adicionando verificação estrita de host para evitar que o site
+    # responda por outros domínios apontados para o mesmo IP da VPS.
+    if (\$host != "${DOMAIN}") {
+        return 444;
+    }
+
     client_max_body_size 20m;
 
     access_log /var/log/nginx/${APP_NAME}.access.log;
