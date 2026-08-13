@@ -34,53 +34,16 @@ fi
 log "Instalando dependências"
 npm ci || npm install
 
-log "Verificando dependência Evolution API (Docker)"
+log "Removendo Evolution API (se existir)"
 if command -v docker >/dev/null 2>&1; then
-  # Remove containers antigos para evitar conflitos de nome ou porta
   for container in "evolution-api" "evolution_api" "evolution_postgres" "evolution_redis"; do
     if docker ps -a --format '{{.Names}}' | grep -q "^${container}$"; then
-      log "Removendo container antigo: ${container}..."
+      log "Removendo container: ${container}..."
       docker stop "${container}" || true
       docker rm "${container}" || true
     fi
   done
-
-  # Libera a porta 18080 se estiver ocupada
-  if command -v fuser >/dev/null 2>&1; then
-    fuser -k 18080/tcp || true
-  fi
-
-  # Imagem oficial e estável da Evolution API v2 (atendai)
-  IMAGE_NAME="atendai/evolution-api:v2.1.1"
-
-  log "Instalando Evolution API v2 na porta 18080 (Vinculada ao 127.0.0.1 para isolamento e segurança)..."
-  # O vínculo com 127.0.0.1 garante que a API NÃO seja acessível externamente pelo IP do servidor,
-  # protegendo outros domínios no mesmo VPS Hostinger.
-  docker run -d --name evolution-api \
-    --restart always \
-    -p 127.0.0.1:18080:8080 \
-    -e AUTHENTICATION_TYPE=apikey \
-    -e AUTHENTICATION_API_KEY=popular-key-auto \
-    -e AUTHENTICATION_EXPOSE_IN_FETCH_INSTANCES=true \
-    -e DATABASE_ENABLED=true \
-    -e DATABASE_PROVIDER=sqlite \
-    -e DATABASE_CONNECTION_URI="sqlite:/evolution/database.sqlite" \
-    -e STORE_MESSAGES=false \
-    -e STORE_MESSAGE_UP=false \
-    -e STORE_CONTACTS=false \
-    -e STORE_CHATS=false \
-    "$IMAGE_NAME"
-
-  log "Aguardando Evolution API inicializar na porta 18080..."
-  for i in {1..30}; do
-    if curl -s -o /dev/null http://localhost:18080/instance/fetchInstances -H "apikey: popular-key-auto"; then
-      log "Evolution API está online e respondendo na porta 18080."
-      break
-    fi
-    sleep 2
-  done
-else
-  log "DOCKER NÃO ENCONTRADO! A Evolution API não poderá ser instalada automaticamente."
+  docker volume rm evolution_data || true
 fi
 
 log "Gerando build de produção"
