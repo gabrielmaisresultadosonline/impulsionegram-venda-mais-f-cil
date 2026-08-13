@@ -271,10 +271,6 @@ function AdminDashboard({ credentials, onLogout }: AdminDashboardProps) {
           <PixelCard credentials={credentials} />
         </div>
         
-        <div className="glass-panel mt-6 rounded-2xl p-4 border border-primary/20 bg-primary/5">
-          <p className="text-xs text-muted-foreground">
-        </div>
-
         <nav className="mt-8 flex flex-wrap gap-2" aria-label="Filtrar pedidos">
           {TABS.map((item) => (
             <button
