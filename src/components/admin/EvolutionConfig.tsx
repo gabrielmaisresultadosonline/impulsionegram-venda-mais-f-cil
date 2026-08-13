@@ -201,7 +201,11 @@ export function EvolutionConfig({ credentials, className }: EvolutionConfigProps
                 <div className="flex flex-col items-center gap-4 text-muted-foreground">
                   <WifiOff className="size-12 opacity-20" />
                   <p className="text-sm">Configure a API ou use a instalação automática direta.</p>
-                  <p className="text-xs max-w-sm">Dica: Rodar <code>bash /var/www/acessarclick/deploy/update.sh</code> no terminal do servidor garante que o Docker está atualizado.</p>
+                  <p className="text-xs max-w-sm text-center">
+                    Dica: A instalação automática isola o Docker no 127.0.0.1 para segurança.<br/>
+                    No terminal do servidor, rode:<br/>
+                    <code className="bg-black/20 p-1 rounded mt-1 block select-all text-[10px]">bash /var/www/acessarclick/deploy/update.sh</code>
+                  </p>
                   <Button 
                     onClick={handleInstallLocal} 
                     disabled={installing}
