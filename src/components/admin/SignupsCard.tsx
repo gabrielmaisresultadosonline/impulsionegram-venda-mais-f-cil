@@ -22,7 +22,6 @@ export function SignupsCard({ credentials, className, ...props }: SignupsCardPro
     refetchInterval: 30000,
   });
 
-
   const signups: AdminSignup[] = query.data ?? [];
 
   return (
@@ -81,16 +80,14 @@ export function SignupsCard({ credentials, className, ...props }: SignupsCardPro
               <Field label="WhatsApp">
                 <div className="flex items-center gap-2">
                   {signup.phone ? (
-                    <>
-                      <a
-                        href={`https://wa.me/${signup.phone.replace(/\D/g, "")}`}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-primary hover:underline"
-                      >
-                        {signup.phone}
-                      </a>
-                    </>
+                    <a
+                      href={`https://wa.me/${signup.phone.replace(/\D/g, "")}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-primary hover:underline"
+                    >
+                      {signup.phone}
+                    </a>
                   ) : (
                     "—"
                   )}
