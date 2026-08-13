@@ -53,7 +53,9 @@ if command -v docker >/dev/null 2>&1; then
   # Imagem oficial e estável da Evolution API v2 (atendai)
   IMAGE_NAME="atendai/evolution-api:v2.1.1"
 
-  log "Instalando Evolution API v2 na porta 18080 (Vinculada ao 127.0.0.1 para segurança)..."
+  log "Instalando Evolution API v2 na porta 18080 (Vinculada ao 127.0.0.1 para isolamento e segurança)..."
+  # O vínculo com 127.0.0.1 garante que a API NÃO seja acessível externamente pelo IP do servidor,
+  # protegendo outros domínios no mesmo VPS Hostinger.
   docker run -d --name evolution-api \
     --restart always \
     -p 127.0.0.1:18080:8080 \
