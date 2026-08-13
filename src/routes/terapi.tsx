@@ -128,7 +128,7 @@ function TherapyPage() {
       <footer className="border-t border-border px-4 py-8">
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-3">
           <p className="text-center text-xs text-muted-foreground">
-            POPULAR · Parceiro oficial da Meta · Pagamentos processados pela InfinitePay ·
+            Pagamentos processados pela InfinitePay ·
             Resultados iniciam em até 6 horas após a aprovação.
           </p>
           <div className="flex items-center gap-4 text-xs">
