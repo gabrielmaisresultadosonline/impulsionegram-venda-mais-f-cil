@@ -55,17 +55,36 @@ chown -R "${APP_USER}:${APP_USER}" "${APP_DIR}"
 log "Reiniciando serviço"
 systemctl restart "${APP_NAME}"
 
-# Garantir que a configuração do Nginx seja reaplicada com isolamento de host
+# Reforçar isolamento total no Nginx
 if [[ -f "/etc/nginx/sites-available/${APP_NAME}" ]]; then
-  log "Reforçando isolamento de domínio no Nginx"
-  # Captura o domínio principal do arquivo de serviço ou .env
+  log "Aplicando isolamento estrito de domínio e limpando conflitos"
   MAIN_DOMAIN="acessar.click"
+  WWW_DOMAIN="www.acessar.click"
   
-  # Adiciona bloco de verificação de host se não existir
-  if ! grep -q "if (\$host !=" "/etc/nginx/sites-available/${APP_NAME}"; then
-    sed -i "/server_name/a \ \n    if (\$host != \"${MAIN_DOMAIN}\") {\n        return 444;\n    }" "/etc/nginx/sites-available/${APP_NAME}"
-    nginx -t && systemctl reload nginx
-  fi
+  cat > "/etc/nginx/sites-available/${APP_NAME}" <<EOF
+server {
+    listen 80;
+    listen [::]:80;
+    server_name ${MAIN_DOMAIN} ${WWW_DOMAIN};
+
+    if (\$host !~* ^(${MAIN_DOMAIN}|${WWW_DOMAIN})\$) {
+        return 444;
+    }
+
+    client_max_body_size 20m;
+    location / {
+        proxy_pass http://127.0.0.1:3009;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade \$http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
+    }
+}
+EOF
+  nginx -t && systemctl reload nginx
 fi
 
 sleep 3
