@@ -50,15 +50,13 @@ if command -v docker >/dev/null 2>&1; then
     fuser -k 18080/tcp || true
   fi
 
-  # Imagem oficial e estável da Evolution API v2 (usando davidsfarias/evolution-api se o repositório principal falhar)
+  # Imagem oficial e estável da Evolution API v2 (atendai)
   IMAGE_NAME="atendai/evolution-api:v2.1.1"
-  # Se falhar o pull, tentaremos outra imagem pública conhecida se necessário no futuro
 
-  
-  log "Instalando Evolution API v2 (evolutionapis) na porta 18080..."
+  log "Instalando Evolution API v2 na porta 18080 (Vinculada ao 127.0.0.1 para segurança)..."
   docker run -d --name evolution-api \
     --restart always \
-    -p 18080:8080 \
+    -p 127.0.0.1:18080:8080 \
     -e AUTHENTICATION_TYPE=apikey \
     -e AUTHENTICATION_API_KEY=popular-key-auto \
     -e AUTHENTICATION_EXPOSE_IN_FETCH_INSTANCES=true \
