@@ -31,8 +31,8 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending, askPhone = fal
 
   /** Ordem das perguntas exibidas — o WhatsApp entra apenas quando necessário. */
   const questions = useMemo(
-    () => (askPhone ? (["profile", "region", "competitor", "phone"] as const) : (["profile", "region", "competitor"] as const)),
-    [askPhone],
+    () => (["profile", "region", "competitor"] as const),
+    [],
   );
   const totalQuestions = questions.length;
   const currentQuestion = questions[index];

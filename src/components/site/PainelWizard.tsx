@@ -139,7 +139,7 @@ export function PainelWizard({
               data={campaign}
               onChange={patchCampaign}
               onSubmit={() => saveProfile.mutate()}
-              askPhone={!account.phone?.trim()}
+              askPhone={false}
               pending={saveProfile.isPending}
             />
           ) : (
