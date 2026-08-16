@@ -49,10 +49,10 @@ export function PlanStep({
           <PlanCard
             key={item.id}
             plan={item}
-            selected={item.id === selectedPlanId}
-            onSelect={onSelect}
+            selected={item.id === selectedPlanId && !item.unavailable}
+            onSelect={item.unavailable ? undefined : onSelect}
             action={
-              item.id === selectedPlanId ? (
+              item.id === selectedPlanId && !item.unavailable ? (
                 <Button
                   type="button"
                   size="lg"
