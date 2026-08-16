@@ -494,7 +494,11 @@ function OrderCard({ order, busy, sendingPixel, onDeliver, onReopen, onSendPixel
             disabled={busy}
             onClick={onDeliver}
           >
-            {busy ? <Loader2 className="size-4 animate-spin" /> : <CheckCircle2 className="size-4" />}
+            {busy ? (
+              <Loader2 className="size-4 animate-spin" />
+            ) : (
+              <CheckCircle2 className="size-4" />
+            )}
             Marcar entregue
           </Button>
         ) : order.status === "entregue" ? (
@@ -520,24 +524,9 @@ function OrderCard({ order, busy, sendingPixel, onDeliver, onReopen, onSendPixel
             Enviar Pixel (Purchase)
           </Button>
         )}
-      </div>
-          <Button onClick={onDeliver} disabled={busy} className="bg-gradient-brand">
-            {busy ? (
-              <Loader2 className="size-4 animate-spin" aria-hidden="true" />
-            ) : (
-              <CheckCircle2 className="size-4" aria-hidden="true" />
-            )}
-            Marcar como entregue
-          </Button>
-        ) : null}
-        {order.status === "entregue" ? (
-          <Button variant="outline" onClick={onReopen} disabled={busy}>
-            <Undo2 className="size-4" aria-hidden="true" />
-            Reabrir pedido
-          </Button>
-        ) : null}
+
         {order.receiptUrl ? (
-          <Button asChild variant="outline">
+          <Button asChild variant="outline" size="sm">
             <a href={order.receiptUrl} target="_blank" rel="noopener noreferrer">
               Comprovante
             </a>
