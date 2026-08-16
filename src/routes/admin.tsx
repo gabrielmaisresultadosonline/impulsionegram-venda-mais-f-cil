@@ -269,7 +269,9 @@ function AdminDashboard({ credentials, onLogout }: AdminDashboardProps) {
 
         <div className="mt-6 grid gap-6 lg:grid-cols-2">
           <PixelCard credentials={credentials} />
+          <ManualPurchaseCard credentials={credentials} />
         </div>
+
         
         <nav className="mt-8 flex flex-wrap gap-2" aria-label="Filtrar pedidos">
           {TABS.map((item) => (
