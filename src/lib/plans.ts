@@ -18,6 +18,11 @@ export interface Plan {
   readonly features: readonly string[];
   readonly highlight?: boolean;
   readonly badge?: string;
+  /**
+   * Quando true, o plano é exibido apenas de forma informativa: não pode ser
+   * selecionado nem enviado ao checkout (alta demanda / esgotado).
+   */
+  readonly unavailable?: boolean;
 }
 
 export const PLANS: readonly Plan[] = [
@@ -28,7 +33,8 @@ export const PLANS: readonly Plan[] = [
     tagline: "Seguidores reais",
     priceCents: 1400,
     features: ["1.000 seguidores reais", "Entrega em até 6 horas"],
-    badge: "Popular",
+    badge: "Indisponível",
+    unavailable: true,
   },
 
   {
