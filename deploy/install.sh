@@ -151,13 +151,9 @@ systemctl is-active --quiet "${APP_NAME}" \
 log "Configurando nginx para ${DOMAIN}"
 SERVER_NAMES="${DOMAIN}${WWW_DOMAIN:+ ${WWW_DOMAIN}}"
 cat > "/etc/nginx/sites-available/${APP_NAME}" <<EOF
-# Bloco para recusar qualquer acesso que nao venha pelos dominios oficiais
-server {
-    listen 80 default_server;
-    listen [::]:80 default_server;
-    server_name _;
-    return 444;
-}
+# Vhost exclusivo do dominio (nao usa default_server para nao conflitar
+# com outros sites do VPS)
+
 
 server {
     listen 80;
