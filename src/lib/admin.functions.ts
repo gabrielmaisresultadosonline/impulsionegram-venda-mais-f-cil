@@ -205,7 +205,10 @@ export const adminSendPurchaseEvent = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<{ ok: boolean }> => {
     await assertAdmin(data.email, data.password);
     const { sendCapiEvent } = await import("./capi.server");
-    return sendCapiEvent({
+
+    // Tentamos obter o token dinâmico das configurações (PixelId)
+    // embora o sendCapiEvent use process.env para o token de acesso.
+    const result = await sendCapiEvent({
       eventName: "Purchase",
       eventId: `manual-${data.orderId}`,
       email: data.buyerEmail,
@@ -213,6 +216,43 @@ export const adminSendPurchaseEvent = createServerFn({ method: "POST" })
       value: data.value,
       contentName: data.contentName,
       orderId: data.orderId,
+    });
+
+    if (!result.ok) {
+      console.error(
+        `[Admin] Meta recusou evento manual para ${data.buyerEmail}. Verifique FACEBOOK_CAPI_TOKEN no servidor.`,
+      );
+    }
+
+    return result;
+  });
+
+const quickPurchaseSchema = passwordSchema.extend({
+  orderNsu: z.string().trim().min(1),
+});
+
+/**
+ * Atalho para enviar o evento de compra direto de um pedido existente no admin.
+ */
+export const adminQuickSendPurchase = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) => quickPurchaseSchema.parse(data))
+  .handler(async ({ data }): Promise<{ ok: boolean }> => {
+    await assertAdmin(data.email, data.password);
+    const repo = await import("./orders-repo.server");
+    const { sendCapiEvent } = await import("./capi.server");
+
+    const orders = repo.listOrders();
+    const order = orders.find((o) => o.orderNsu === data.orderNsu);
+    if (!order) throw new Error("Pedido não encontrado.");
+
+    return sendCapiEvent({
+      eventName: "Purchase",
+      eventId: `quick-${order.orderNsu}`,
+      email: order.customerEmail,
+      phone: order.customerPhone || undefined,
+      value: order.priceCents / 100,
+      contentName: order.planName,
+      orderId: order.orderNsu,
     });
   });
 
