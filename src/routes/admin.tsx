@@ -24,6 +24,8 @@ import { formatBRL } from "@/lib/plans";
 import { sourceLabel } from "@/lib/traffic-source";
 import { PixelCard } from "@/components/admin/PixelCard";
 import { SignupsCard } from "@/components/admin/SignupsCard";
+import { ManualPurchaseCard } from "@/components/admin/ManualPurchaseCard";
+
 import {
   adminListOrders,
   adminLogin,
