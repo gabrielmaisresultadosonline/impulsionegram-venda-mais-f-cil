@@ -18,6 +18,11 @@ export interface Plan {
   readonly features: readonly string[];
   readonly highlight?: boolean;
   readonly badge?: string;
+  /**
+   * Quando true, o plano é exibido apenas de forma informativa: não pode ser
+   * selecionado nem enviado ao checkout (alta demanda / esgotado).
+   */
+  readonly unavailable?: boolean;
 }
 
 export const PLANS: readonly Plan[] = [
