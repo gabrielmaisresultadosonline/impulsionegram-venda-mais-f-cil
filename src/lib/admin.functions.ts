@@ -182,3 +182,37 @@ export const adminSetPixel = createServerFn({ method: "POST" })
     setFacebookPixelId(data.pixelId);
     return getSettings();
   });
+
+const manualPurchaseSchema = passwordSchema.extend({
+  /** E-mail do comprador — melhora a correspondência do evento no Meta. */
+  buyerEmail: z.string().trim().email("E-mail do comprador inválido").max(160),
+  buyerPhone: z.string().trim().max(40).optional(),
+  value: z.coerce.number().nonnegative().max(1_000_000),
+  contentName: z.string().trim().max(160).optional(),
+  /** Identificador do pedido; também é usado como event_id (deduplicação). */
+  orderId: z.string().trim().min(1).max(120),
+});
+
+/**
+ * Reenvia manualmente um evento Purchase pela API de Conversões do Meta.
+ *
+ * Uso: quando uma venda real não foi contabilizada no Facebook (bloqueador,
+ * aba fechada antes do disparo). O `event_id` é derivado do orderId, então
+ * reenviar o mesmo pedido não duplica a conversão no Meta.
+ */
+export const adminSendPurchaseEvent = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) => manualPurchaseSchema.parse(data))
+  .handler(async ({ data }): Promise<{ ok: boolean }> => {
+    await assertAdmin(data.email, data.password);
+    const { sendCapiEvent } = await import("./capi.server");
+    return sendCapiEvent({
+      eventName: "Purchase",
+      eventId: `manual-${data.orderId}`,
+      email: data.buyerEmail,
+      phone: data.buyerPhone,
+      value: data.value,
+      contentName: data.contentName,
+      orderId: data.orderId,
+    });
+  });
+
