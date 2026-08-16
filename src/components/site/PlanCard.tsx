@@ -16,6 +16,12 @@ export interface PlanCardProps extends Omit<ComponentProps<"article">, "onSelect
    * precisar rolar até o fim da página.
    */
   action?: ReactNode;
+  /**
+   * Quando true, planos marcados como `unavailable` ficam bloqueados (cinza,
+   * sem seleção). Usado apenas no funil interno (painel do cliente). Nas
+   * landing pages públicas o plano continua sendo exibido normalmente.
+   */
+  enforceUnavailable?: boolean;
 }
 
 export function PlanCard({
@@ -24,11 +30,14 @@ export function PlanCard({
   onSelect,
   ctaLabel,
   action,
+  enforceUnavailable = false,
   className,
   ...props
 }: PlanCardProps) {
   // Plano bloqueado: nunca pode ficar "selecionado" nem disparar onSelect.
-  const blocked = plan.unavailable === true;
+  const blocked = plan.unavailable === true && enforceUnavailable;
+  // Fora do funil interno o selo de indisponibilidade nunca aparece.
+  const badge = plan.unavailable === true && !blocked ? undefined : plan.badge;
   const isSelected = selected === true && !blocked;
 
   return (
@@ -46,14 +55,14 @@ export function PlanCard({
       )}
       {...props}
     >
-      {plan.badge ? (
+      {badge ? (
         <span
           className={cn(
             "absolute -top-3 left-6 rounded-full px-3 py-1 text-[11px] font-bold tracking-wide uppercase",
             blocked ? "bg-muted-foreground text-background" : "bg-primary-foreground text-primary",
           )}
         >
-          {plan.badge}
+          {badge}
         </span>
       ) : null}
 

@@ -49,6 +49,7 @@ export function PlanStep({
           <PlanCard
             key={item.id}
             plan={item}
+            enforceUnavailable
             selected={item.id === selectedPlanId && !item.unavailable}
             onSelect={item.unavailable ? undefined : onSelect}
             action={
