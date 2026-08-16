@@ -31,6 +31,7 @@ import {
   adminLogin,
   
   adminUpdateOrder,
+  adminQuickSendPurchase,
   type AdminOrder,
 } from "@/lib/admin.functions";
 
@@ -161,6 +162,7 @@ function AdminDashboard({ credentials, onLogout }: AdminDashboardProps) {
   const [tab, setTab] = useState<TabKey>("pago");
   const listOrders = useServerFn(adminListOrders);
   const updateOrder = useServerFn(adminUpdateOrder);
+  const quickSendPurchase = useServerFn(adminQuickSendPurchase);
   const queryClient = useQueryClient();
 
   const ordersQuery = useQuery({
@@ -179,6 +181,18 @@ function AdminDashboard({ credentials, onLogout }: AdminDashboardProps) {
       );
     },
     onError: (error: Error) => toast.error(error.message || "Não foi possível atualizar."),
+  });
+
+  const quickPurchaseMutation = useMutation({
+    mutationFn: (orderNsu: string) => quickSendPurchase({ data: { orderNsu, ...credentials } }),
+    onSuccess: (result) => {
+      if (result.ok) {
+        toast.success("Evento de compra enviado com sucesso.");
+      } else {
+        toast.error("O Meta não confirmou o evento. Verifique as credenciais no servidor.");
+      }
+    },
+    onError: (error: Error) => toast.error(error.message || "Falha ao enviar evento."),
   });
 
   const orders = useMemo<AdminOrder[]>(() => ordersQuery.data ?? [], [ordersQuery.data]);
@@ -370,8 +384,10 @@ function AdminDashboard({ credentials, onLogout }: AdminDashboardProps) {
                   key={order.orderNsu}
                   order={order}
                   busy={mutation.isPending && mutation.variables?.orderNsu === order.orderNsu}
+                  sendingPixel={quickPurchaseMutation.isPending && quickPurchaseMutation.variables === order.orderNsu}
                   onDeliver={() => mutation.mutate({ orderNsu: order.orderNsu, action: "entregue" })}
                   onReopen={() => mutation.mutate({ orderNsu: order.orderNsu, action: "reabrir" })}
+                  onSendPixel={() => quickPurchaseMutation.mutate(order.orderNsu)}
                 />
               ))
             )}
@@ -407,11 +423,13 @@ function StatCard({ icon, label, value, highlight }: StatCardProps) {
 interface OrderCardProps {
   order: AdminOrder;
   busy: boolean;
+  sendingPixel: boolean;
   onDeliver: () => void;
   onReopen: () => void;
+  onSendPixel: () => void;
 }
 
-function OrderCard({ order, busy, onDeliver, onReopen }: OrderCardProps) {
+function OrderCard({ order, busy, sendingPixel, onDeliver, onReopen, onSendPixel }: OrderCardProps) {
   return (
     <article className="glass-panel rounded-2xl p-5">
       <div className="flex flex-wrap items-start justify-between gap-4">
@@ -468,25 +486,47 @@ function OrderCard({ order, busy, onDeliver, onReopen }: OrderCardProps) {
         </div>
       ) : null}
 
-      <div className="mt-5 flex flex-wrap gap-2">
+      <div className="mt-5 flex flex-wrap items-center gap-2">
         {order.status === "pago" ? (
-          <Button onClick={onDeliver} disabled={busy} className="bg-gradient-brand">
+          <Button
+            size="sm"
+            className="bg-green-600 hover:bg-green-700"
+            disabled={busy}
+            onClick={onDeliver}
+          >
             {busy ? (
-              <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+              <Loader2 className="size-4 animate-spin" />
             ) : (
-              <CheckCircle2 className="size-4" aria-hidden="true" />
+              <CheckCircle2 className="size-4" />
             )}
-            Marcar como entregue
+            Marcar entregue
           </Button>
-        ) : null}
-        {order.status === "entregue" ? (
-          <Button variant="outline" onClick={onReopen} disabled={busy}>
-            <Undo2 className="size-4" aria-hidden="true" />
+        ) : order.status === "entregue" ? (
+          <Button variant="outline" size="sm" disabled={busy} onClick={onReopen}>
+            {busy ? <Loader2 className="size-4 animate-spin" /> : <Undo2 className="size-4" />}
             Reabrir pedido
           </Button>
         ) : null}
+
+        {order.paidAt && (
+          <Button
+            variant="secondary"
+            size="sm"
+            className="border-primary/20 hover:bg-primary/10 border"
+            disabled={sendingPixel}
+            onClick={onSendPixel}
+          >
+            {sendingPixel ? (
+              <Loader2 className="size-4 animate-spin" />
+            ) : (
+              <RefreshCw className="size-4" />
+            )}
+            Enviar Pixel (Purchase)
+          </Button>
+        )}
+
         {order.receiptUrl ? (
-          <Button asChild variant="outline">
+          <Button asChild variant="outline" size="sm">
             <a href={order.receiptUrl} target="_blank" rel="noopener noreferrer">
               Comprovante
             </a>

@@ -56,11 +56,24 @@ async function hashPii(value: string | undefined): Promise<string | undefined> {
  * derrubar um cadastro ou um checkout. Erros ficam apenas no log do servidor.
  */
 export async function sendCapiEvent(input: CapiEventInput): Promise<{ ok: boolean }> {
-  const token = process.env.FACEBOOK_CAPI_TOKEN;
-  const pixelId = process.env.FACEBOOK_PIXEL_ID;
+  // Tenta obter do env ou das configurações persistidas (Admin)
+  let token = process.env.FACEBOOK_CAPI_TOKEN;
+  let pixelId = process.env.FACEBOOK_PIXEL_ID;
+
+  if (!token || !pixelId) {
+    const { getSettings } = await import("./settings.server");
+    const settings = getSettings();
+    // O token de acesso geralmente não é salvo nas configurações da UI por segurança,
+    // mas o Pixel ID sim. Se o token não estiver no env, CAPI falhará.
+    if (!pixelId) pixelId = settings.facebookPixelId;
+  }
+
   const testCode = process.env.FACEBOOK_TEST_EVENT_CODE;
 
-  if (!token || !pixelId) return { ok: false };
+  if (!token || !pixelId) {
+    console.error(`[CAPI] Configuração ausente: Token=${!!token}, Pixel=${!!pixelId}`);
+    return { ok: false };
+  }
 
   const userData: Record<string, unknown> = {};
   const hashedEmail = await hashPii(input.email);
