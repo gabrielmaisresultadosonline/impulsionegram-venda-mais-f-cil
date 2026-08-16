@@ -58,6 +58,10 @@ export const createCheckoutLink = createServerFn({ method: "POST" })
     if (!plan) {
       throw new Error("Plano inválido.");
     }
+    // Defesa no servidor: planos bloqueados nunca geram link de pagamento.
+    if (plan.unavailable) {
+      throw new Error("Plano indisponível no momento, devido à alta demanda.");
+    }
 
     const orderNsu = `IMP-${Date.now()}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
     const origin = safeOrigin(data.origin);
