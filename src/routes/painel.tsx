@@ -55,22 +55,30 @@ function PainelPage() {
     return PLANS;
   }, [isSalon, isBarber, isTherapy, isDelivery]);
 
+  // Planos que realmente podem ser escolhidos (exclui os bloqueados/indisponíveis).
+  const selectablePlans = useMemo(
+    () => availablePlans.filter((p) => !p.unavailable),
+    [availablePlans],
+  );
+
   const [account, setAccount] = useState<LocalAccount | null>(null);
   const [ready, setReady] = useState(false);
-  const [selectedPlanId, setSelectedPlanId] = useState<string>(availablePlans[1]?.id ?? availablePlans[0]?.id);
+  const [selectedPlanId, setSelectedPlanId] = useState<string>(
+    selectablePlans[1]?.id ?? selectablePlans[0]?.id,
+  );
 
   useEffect(() => {
     const stored = getAccount();
     setAccount(stored);
     const plan = getPlanSelection();
     const preferredId = plan || selectedPlanId;
-    const validPlan = availablePlans.find((p) => p.id === preferredId);
-    setSelectedPlanId(validPlan ? validPlan.id : availablePlans[0]?.id);
+    const validPlan = selectablePlans.find((p) => p.id === preferredId);
+    setSelectedPlanId(validPlan ? validPlan.id : selectablePlans[0]?.id);
     setReady(true);
-  }, [availablePlans]);
+  }, [selectablePlans]);
 
   const handleSelectPlan = (planId: string) => {
-    const validPlan = availablePlans.find((p) => p.id === planId);
+    const validPlan = selectablePlans.find((p) => p.id === planId);
     if (!validPlan) return;
     setSelectedPlanId(validPlan.id);
     savePlanSelection(validPlan.id);
