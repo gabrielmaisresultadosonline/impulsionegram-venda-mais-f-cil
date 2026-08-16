@@ -89,13 +89,12 @@ server {
 server {
     listen 443 ssl;
     listen [::]:443 ssl;
-    http2 on;
     server_name ${MAIN_DOMAIN} ${WWW_DOMAIN};
 
     ssl_certificate ${CERT_DIR}/fullchain.pem;
     ssl_certificate_key ${CERT_DIR}/privkey.pem;
-    include /etc/letsencrypt/options-ssl-nginx.conf;
-    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_prefer_server_ciphers off;
 
     if (\$host !~* ^(${MAIN_DOMAIN}|${WWW_DOMAIN})\$) { return 444; }
 
