@@ -33,7 +33,8 @@ export const PLANS: readonly Plan[] = [
     tagline: "Seguidores reais",
     priceCents: 1400,
     features: ["1.000 seguidores reais", "Entrega em até 6 horas"],
-    badge: "Popular",
+    badge: "Indisponível",
+    unavailable: true,
   },
 
   {
