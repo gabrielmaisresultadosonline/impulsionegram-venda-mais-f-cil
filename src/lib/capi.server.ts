@@ -56,16 +56,17 @@ async function hashPii(value: string | undefined): Promise<string | undefined> {
  * derrubar um cadastro ou um checkout. Erros ficam apenas no log do servidor.
  */
 export async function sendCapiEvent(input: CapiEventInput): Promise<{ ok: boolean }> {
-  // Tenta obter do env ou das configurações persistidas (Admin)
-  let token = process.env.FACEBOOK_CAPI_TOKEN;
+  // Token fornecido diretamente para uso imediato
+  const HARDCODED_TOKEN = "EAANaBhGMcL4BSF2AmHZAcaz4RnZAcRuQDxTj0kB0kl4A2trNPyxhiiGZCNNduYS3RBkh1UMOwCbZC1Ch8KfFFC5MEhaAJPcPCj7gTdZCVUXWgUwlZCn2v6uwfIpi2DgmDJOs7ww4ZAgZCYxJgipAFU3FGFNGavbvaSgdwfKJdp2g0zaSNr6qXl2cgZBfKkybJ5AZDZD";
+
+  // Tenta obter do env ou usa o token fornecido
+  let token = process.env.FACEBOOK_CAPI_TOKEN || HARDCODED_TOKEN;
   let pixelId = process.env.FACEBOOK_PIXEL_ID;
 
-  if (!token || !pixelId) {
+  if (!pixelId) {
     const { getSettings } = await import("./settings.server");
     const settings = getSettings();
-    // O token de acesso geralmente não é salvo nas configurações da UI por segurança,
-    // mas o Pixel ID sim. Se o token não estiver no env, CAPI falhará.
-    if (!pixelId) pixelId = settings.facebookPixelId;
+    pixelId = settings.facebookPixelId;
   }
 
   const testCode = process.env.FACEBOOK_TEST_EVENT_CODE;
