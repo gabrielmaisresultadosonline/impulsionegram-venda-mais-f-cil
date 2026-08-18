@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { buildProductName, getPlanById } from "./plans";
+import { buildProductName, getOrderBumpById, getPlanById } from "./plans";
 import { normalizePhone, safeOrigin } from "./checkout.server";
 import { normalizeSource } from "./traffic-source";
 
@@ -40,6 +40,8 @@ const createCheckoutSchema = z.object({
   origin: z.string().trim().url().max(300),
   /** Landing page de origem do funil, usada nos relatórios do admin. */
   source: z.string().trim().max(40).optional(),
+  /** Order bumps opcionais escolhidos no popup "turbine seu plano". */
+  bumpIds: z.array(z.string().trim().max(64)).max(10).optional(),
 });
 
 export type CreateCheckoutInput = z.input<typeof createCheckoutSchema>;
@@ -69,6 +71,13 @@ export const createCheckoutLink = createServerFn({ method: "POST" })
     // para reconhecer a venda no webhook mesmo sem o NSU.
     const productName = buildProductName(plan, data.customerEmail);
 
+    // Preço dos bumps também vem do catálogo do servidor, nunca do cliente.
+    const bumps = (data.bumpIds ?? [])
+      .map((id) => getOrderBumpById(id))
+      .filter((bump): bump is NonNullable<typeof bump> => bump !== undefined);
+    const bumpsCents = bumps.reduce((total, bump) => total + bump.priceCents, 0);
+    const totalCents = plan.priceCents + bumpsCents;
+
     const phone = normalizePhone(data.customerPhone ?? "");
 
     const buildPayload = (withPhone: boolean): Record<string, unknown> => {
@@ -81,6 +90,11 @@ export const createCheckoutLink = createServerFn({ method: "POST" })
             price: plan.priceCents,
             description: productName,
           },
+          ...bumps.map((bump) => ({
+            quantity: 1,
+            price: bump.priceCents,
+            description: bump.name,
+          })),
         ],
         customer: {
           name: data.customerName,
@@ -141,7 +155,12 @@ export const createCheckoutLink = createServerFn({ method: "POST" })
       orderNsu,
       planId: plan.id,
       planName: plan.name,
-      priceCents: plan.priceCents,
+      priceCents: totalCents,
+      bumps: bumps.map((bump) => ({
+        id: bump.id,
+        name: bump.name,
+        priceCents: bump.priceCents,
+      })),
       customerName: data.customerName,
       customerEmail: data.customerEmail,
       customerPhone: data.customerPhone ?? "",

@@ -36,6 +36,8 @@ export interface OrderRecord {
   region: string;
   competitor: string;
   posts: string[];
+  /** Order bumps ("turbine seu plano") comprados junto com o plano. */
+  bumps?: { id: string; name: string; priceCents: number }[];
   /** Nome do produto na InfinitePay: prefixo do plano + e-mail do cliente. */
   productName?: string;
   /** Landing page de origem do pedido (home, salaode, barbea, terapi). */
