@@ -5,11 +5,12 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { createCheckoutLink } from "@/lib/checkout.functions";
 import { saveCampaignProfile } from "@/lib/profile.functions";
-import { getPlanById, type Plan } from "@/lib/plans";
+import { getPlanById, sumOrderBumps, type Plan } from "@/lib/plans";
 import { saveOrder } from "@/lib/order-storage";
 import type { LocalAccount } from "@/lib/account-storage";
 import { StepIndicator } from "./wizard/StepIndicator";
 import { PlanStep } from "./wizard/PlanStep";
+import { OrderBumpDialog } from "./wizard/OrderBumpDialog";
 import { CampaignQuiz } from "./wizard/CampaignQuiz";
 import { EMPTY_CAMPAIGN, formatRegion, type CampaignData } from "./wizard/types";
 
@@ -48,6 +49,9 @@ export function PainelWizard({
     customerEmail: account.email,
     customerPhone: account.phone ?? "",
   });
+
+  const [bumpOpen, setBumpOpen] = useState(false);
+  const [selectedBumps, setSelectedBumps] = useState<string[]>([]);
 
   const plan = getPlanById(selectedPlanId);
   const createLink = useServerFn(createCheckoutLink);
@@ -100,6 +104,7 @@ export function PainelWizard({
           customerPhone: campaign.customerPhone.trim(),
           origin: window.location.origin,
           source,
+          bumpIds: selectedBumps,
         },
       }),
     onSuccess: (result) => {
@@ -109,7 +114,7 @@ export function PainelWizard({
         orderNsu: result.orderNsu,
         planId: plan.id,
         planName: plan.name,
-        priceCents: plan.priceCents,
+        priceCents: plan.priceCents + sumOrderBumps(selectedBumps),
         customerName: campaign.customerName.trim(),
         customerEmail: campaign.customerEmail.trim(),
         customerPhone: campaign.customerPhone.trim(),
@@ -146,15 +151,34 @@ export function PainelWizard({
             <PlanStep
               plans={availablePlans}
               selectedPlanId={selectedPlanId}
-              onSelect={onSelectPlan}
+              onSelect={(planId) => {
+                onSelectPlan(planId);
+                setBumpOpen(true);
+              }}
               onBack={() => setStep(0)}
-              onNext={() => mutation.mutate()}
+              onNext={() => setBumpOpen(true)}
               pending={mutation.isPending}
-              ctaLabel="Pagar agora —"
+              ctaLabel="Continuar com"
             />
           )}
         </div>
       </div>
+
+      <OrderBumpDialog
+        open={bumpOpen}
+        onOpenChange={setBumpOpen}
+        plan={plan}
+        selectedBumps={selectedBumps}
+        onToggleBump={(bumpId) =>
+          setSelectedBumps((current) =>
+            current.includes(bumpId)
+              ? current.filter((id) => id !== bumpId)
+              : [...current, bumpId],
+          )
+        }
+        onConfirm={() => mutation.mutate()}
+        pending={mutation.isPending}
+      />
     </section>
   );
 }
