@@ -33,8 +33,6 @@ export const PLANS: readonly Plan[] = [
     tagline: "Seguidores reais",
     priceCents: 1400,
     features: ["1.000 seguidores reais", "Entrega em até 6 horas"],
-    badge: "Indisponível",
-    unavailable: true,
   },
 
   {
@@ -119,6 +117,44 @@ export const DELIVERY_PLAN_IDS: readonly string[] = [
   "marketing-completo",
   "trimestral-10k",
 ] as const;
+
+/** Item opcional de "turbine seu plano" (order bump) exibido após escolher o plano. */
+export interface OrderBump {
+  readonly id: string;
+  readonly name: string;
+  readonly description: string;
+  readonly priceCents: number;
+}
+
+export const ORDER_BUMPS: readonly OrderBump[] = [
+  {
+    id: "bump-stories",
+    name: "+1.000 alcance nos stories",
+    description: "Mais pessoas vendo seus stories todos os dias.",
+    priceCents: 700,
+  },
+  {
+    id: "bump-curtidas",
+    name: "1.000 curtidas nos últimos 3 posts",
+    description: "Curtidas divididas nas 3 publicações mais recentes.",
+    priceCents: 900,
+  },
+  {
+    id: "bump-reels",
+    name: "1.000 visualizações nos reels",
+    description: "Visualizações divididas nos 3 reels mais recentes.",
+    priceCents: 700,
+  },
+] as const;
+
+export function getOrderBumpById(id: string): OrderBump | undefined {
+  return ORDER_BUMPS.find((bump) => bump.id === id);
+}
+
+/** Soma segura dos bumps escolhidos (ids desconhecidos são ignorados). */
+export function sumOrderBumps(ids: readonly string[]): number {
+  return ids.reduce((total, id) => total + (getOrderBumpById(id)?.priceCents ?? 0), 0);
+}
 
 export function getPlanById(id: string): Plan | undefined {
   return PLANS.find((plan) => plan.id === id);

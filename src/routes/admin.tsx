@@ -464,6 +464,24 @@ function OrderCard({ order, busy, sendingPixel, onDeliver, onReopen, onSendPixel
         />
       </dl>
 
+      {order.bumps && order.bumps.length > 0 ? (
+        <div className="border-primary/30 bg-primary/5 mt-4 rounded-xl border p-4">
+          <p className="text-muted-foreground text-xs tracking-wide uppercase">
+            Order bumps ({order.bumps.length})
+          </p>
+          <ul className="mt-2 space-y-1 text-sm">
+            {order.bumps.map((bump) => (
+              <li key={bump.id} className="flex justify-between gap-3">
+                <span className="min-w-0 break-words">{bump.name}</span>
+                <span className="shrink-0 font-semibold">{formatBRL(bump.priceCents)}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : (
+        <p className="text-muted-foreground mt-4 text-xs">Sem order bumps neste pedido.</p>
+      )}
+
       {order.posts.length > 0 ? (
         <div className="border-border mt-4 rounded-xl border p-4">
           <p className="text-muted-foreground text-xs tracking-wide uppercase">
