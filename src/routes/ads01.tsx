@@ -8,6 +8,11 @@ import { Button } from "@/components/ui/button";
 import { getAdsPlans } from "@/lib/plans";
 import { trackSiteEvent } from "@/lib/pixel.functions";
 
+/**
+ * Rota para a landing page focada em anúncios (/ads01).
+ */
+
+
 export const Route = createFileRoute("/ads01")({
   head: () => ({
     meta: [
