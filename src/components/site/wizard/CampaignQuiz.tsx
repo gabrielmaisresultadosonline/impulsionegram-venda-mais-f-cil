@@ -31,7 +31,7 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending, askPhone = fal
 
   /** Ordem das perguntas exibidas — o WhatsApp entra apenas quando necessário. */
   const questions = useMemo(
-    () => (["adLink", "profile", "region", "competitor"] as const),
+    () => (["adLink", "region", "competitor"] as const),
     [],
   );
   const totalQuestions = questions.length;
@@ -124,27 +124,6 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending, askPhone = fal
         </Question>
       ) : null}
 
-      {currentQuestion === "profile" ? (
-        <Question
-          icon={<Instagram className="size-5" aria-hidden="true" />}
-          title="Link ou @ do seu Instagram"
-          description="Siga para a próxima etapa."
-        >
-          <Label htmlFor="quiz-profile" className="sr-only">
-            @seu.perfil ou instagram.com/seu.perfil
-          </Label>
-          <Input
-            id="quiz-profile"
-            autoFocus
-            value={data.profileUrl}
-            onChange={(event) => onChange({ profileUrl: event.target.value })}
-            onKeyDown={(event) => event.key === "Enter" && next()}
-            placeholder="@seu.perfil ou instagram.com/seu.perfil"
-            maxLength={200}
-            className="h-12 text-base"
-          />
-        </Question>
-      ) : null}
 
       {currentQuestion === "region" ? (
         <Question
@@ -222,8 +201,7 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending, askPhone = fal
             </p>
             <p className="text-base font-semibold text-balance mt-3">
               Público <span className="text-gradient-brand">{regionSummary}</span> para o link{" "}
-
-              <span className="text-gradient-brand break-all">{data.profileUrl.trim()}</span>.
+              <span className="text-gradient-brand break-all">{data.adLink.trim()}</span>.
             </p>
             <p className="text-muted-foreground text-sm">
               Referência de público: <strong>{data.competitor.trim()}</strong>
