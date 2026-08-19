@@ -97,15 +97,41 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending, askPhone = fal
         </div>
       </div>
 
-      {currentQuestion === "profile" ? (
+      {currentQuestion === "adLink" ? (
         <Question
           icon={<Instagram className="size-5" aria-hidden="true" />}
           title="Manda o link da sua propaganda?"
           description="A mesma que você quer anunciar no Instagram/Facebook."
+        >
+          <Label htmlFor="quiz-ad-link" className="sr-only">
+            link da sua publicação no instagram, vamos usar o instagram para anunciar apartir de agora.
+          </Label>
+          <div className="space-y-4">
+            <p className="text-sm font-medium">
+              coloque link da publicação que vamos anunciar.
+            </p>
+            <Input
+              id="quiz-ad-link"
+              autoFocus
+              value={data.adLink}
+              onChange={(event) => onChange({ adLink: event.target.value })}
+              onKeyDown={(event) => event.key === "Enter" && next()}
+              placeholder="Apenas link de publicação"
+              maxLength={500}
+              className="h-12 text-base"
+            />
+          </div>
+        </Question>
+      ) : null}
 
+      {currentQuestion === "profile" ? (
+        <Question
+          icon={<Instagram className="size-5" aria-hidden="true" />}
+          title="Link ou @ do seu Instagram"
+          description="Siga para a próxima etapa."
         >
           <Label htmlFor="quiz-profile" className="sr-only">
-            Link ou @ do seu Instagram
+            @seu.perfil ou instagram.com/seu.perfil
           </Label>
           <Input
             id="quiz-profile"
