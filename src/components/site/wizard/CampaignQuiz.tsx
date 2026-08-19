@@ -149,14 +149,14 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending, askPhone = fal
       {currentQuestion === "region" ? (
         <Question
           icon={<MapPin className="size-5" aria-hidden="true" />}
-          title="De onde você quer o seu público?"
-          description="Trabalhamos apenas com público brasileiro. Escolha por CEP ou localização com raio mínimo de 40km."
+          title="Qual localização do nosso anuncio?"
+          description="Aonde quer que mostramos seu anuncio. Vamos colocar um raio de km em volta da sua localização de no mínimo 40km, podendo ser mais, mas nunca menos."
         >
           <div className="grid gap-2 sm:grid-cols-2">
             {(
               [
                 { value: "cep", label: "Por CEP" },
-                { value: "cidade", label: "Mapa (Raio 40km+)" },
+                { value: "cidade", label: "Por Cidade" },
               ] satisfies { value: RegionMode; label: string }[]
             ).map((mode) => (
               <Button
@@ -171,19 +171,18 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending, askPhone = fal
             ))}
           </div>
           <Label htmlFor="quiz-region" className="sr-only">
-            {data.regionMode === "cep" ? "CEP" : "Cidade e raio"}
+            {data.regionMode === "cep" ? "CEP" : "Cidade"}
           </Label>
           <Input
             id="quiz-region"
             value={data.regionValue}
             onChange={(event) => onChange({ regionValue: event.target.value })}
             onKeyDown={(event) => event.key === "Enter" && next()}
-            placeholder={data.regionMode === "cep" ? "76800-000" : "Sua cidade (Raio mín. 40km)"}
+            placeholder={data.regionMode === "cep" ? "76800-000" : "Sua cidade (Ex.: São Paulo - SP)"}
             inputMode={data.regionMode === "cep" ? "numeric" : "text"}
             maxLength={120}
             className="h-12 text-base"
           />
-
         </Question>
       ) : null}
 
