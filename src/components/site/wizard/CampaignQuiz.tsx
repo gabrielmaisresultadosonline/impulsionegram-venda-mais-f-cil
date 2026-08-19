@@ -104,10 +104,13 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending, askPhone = fal
           description="A mesma que você quer anunciar no Instagram/Facebook."
         >
           <Label htmlFor="quiz-ad-link" className="sr-only">
-            link da sua publicação no instagram, vamos usar o instagram para anunciar apartir de agora.
+            Qual é o link da sua publicação no instagram, essa vamos usar para fazer a propaganda/anúncio
           </Label>
           <div className="space-y-4">
             <p className="text-sm font-medium">
+              link da sua publicação no instagram, vamos usar o instagram para anunciar apartir de agora.
+            </p>
+            <p className="text-xs text-muted-foreground">
               coloque link da publicação que vamos anunciar.
             </p>
             <Input
