@@ -47,13 +47,17 @@ function PainelPage() {
   const isBarber = source === "barbea";
   const isTherapy = source === "terapi";
   const isDelivery = source === "delivery";
+  const isAds = source === "ads01";
   const availablePlans = useMemo(() => {
     if (isSalon) return getSalonPlans();
     if (isBarber) return getBarberPlans();
     if (isTherapy) return getTherapyPlans();
     if (isDelivery) return getDeliveryPlans();
+    if (isAds) return getAdsPlans();
     return PLANS;
-  }, [isSalon, isBarber, isTherapy, isDelivery]);
+  }, [isSalon, isBarber, isTherapy, isDelivery, isAds]);
+
+
 
   // Planos que realmente podem ser escolhidos (exclui os bloqueados/indisponíveis).
   const selectablePlans = useMemo(
