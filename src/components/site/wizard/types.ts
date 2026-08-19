@@ -4,6 +4,7 @@ export type RegionMode = "cidade" | "cep";
 
 export interface CampaignData {
   profileUrl: string;
+  adLink: string;
   regionMode: RegionMode;
   regionValue: string;
   competitor: string;
@@ -14,6 +15,7 @@ export interface CampaignData {
 
 export const EMPTY_CAMPAIGN: CampaignData = {
   profileUrl: "",
+  adLink: "",
   regionMode: "cidade",
   regionValue: "",
   competitor: "",

@@ -31,7 +31,7 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending, askPhone = fal
 
   /** Ordem das perguntas exibidas — o WhatsApp entra apenas quando necessário. */
   const questions = useMemo(
-    () => (["profile", "region", "competitor"] as const),
+    () => (["adLink", "profile", "region", "competitor"] as const),
     [],
   );
   const totalQuestions = questions.length;
@@ -44,6 +44,10 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending, askPhone = fal
 
   /** Valida a pergunta atual antes de liberar o avanço. */
   const validate = (): boolean => {
+    if (currentQuestion === "adLink" && data.adLink.trim().length < 10) {
+      toast.error("Informe o link da publicação (propaganda) que vamos anunciar.");
+      return false;
+    }
     if (currentQuestion === "profile" && data.profileUrl.trim().length < 3) {
       toast.error("Informe o @ ou o link do seu Instagram.");
       return false;
