@@ -48,10 +48,6 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending, askPhone = fal
       toast.error("Informe o link da publicação (propaganda) que vamos anunciar.");
       return false;
     }
-    if (currentQuestion === "profile" && data.profileUrl.trim().length < 3) {
-      toast.error("Informe o @ ou o link do seu Instagram.");
-      return false;
-    }
     if (currentQuestion === "region") {
       const value = data.regionValue.trim();
       if (data.regionMode === "cep" && value.replace(/\D/g, "").length !== 8) {
