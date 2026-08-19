@@ -17,7 +17,9 @@ import {
   getDeliveryPlans,
   getSalonPlans,
   getTherapyPlans,
+  getAdsPlans,
 } from "@/lib/plans";
+
 
 export const Route = createFileRoute("/painel")({
   head: () => ({
@@ -61,9 +63,10 @@ function PainelPage() {
 
   // Planos que realmente podem ser escolhidos (exclui os bloqueados/indisponíveis).
   const selectablePlans = useMemo(
-    () => availablePlans.filter((p) => !p.unavailable),
+    () => availablePlans.filter((p: any) => !p.unavailable),
     [availablePlans],
   );
+
 
   const [account, setAccount] = useState<LocalAccount | null>(null);
   const [ready, setReady] = useState(false);
@@ -76,14 +79,16 @@ function PainelPage() {
     setAccount(stored);
     const plan = getPlanSelection();
     const preferredId = plan || selectedPlanId;
-    const validPlan = selectablePlans.find((p) => p.id === preferredId);
+    const validPlan = selectablePlans.find((p: any) => p.id === preferredId);
     setSelectedPlanId(validPlan ? validPlan.id : selectablePlans[0]?.id);
+
     setReady(true);
   }, [selectablePlans]);
 
   const handleSelectPlan = (planId: string) => {
-    const validPlan = selectablePlans.find((p) => p.id === planId);
+    const validPlan = selectablePlans.find((p: any) => p.id === planId);
     if (!validPlan) return;
+
     setSelectedPlanId(validPlan.id);
     savePlanSelection(validPlan.id);
   };

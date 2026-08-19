@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as Ads01RouteImport } from './routes/ads01'
 import { Route as BarbeaRouteImport } from './routes/barbea'
 import { Route as DeliveryRouteImport } from './routes/delivery'
 import { Route as PainelRouteImport } from './routes/painel'
@@ -28,6 +29,11 @@ const IndexRoute = IndexRouteImport.update({
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Ads01Route = Ads01RouteImport.update({
+  id: '/ads01',
+  path: '/ads01',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BarbeaRoute = BarbeaRouteImport.update({
@@ -75,6 +81,7 @@ const ApiPublicInfinitepayWebhookRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/ads01': typeof Ads01Route
   '/barbea': typeof BarbeaRoute
   '/delivery': typeof DeliveryRoute
   '/painel': typeof PainelRoute
@@ -87,6 +94,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/ads01': typeof Ads01Route
   '/barbea': typeof BarbeaRoute
   '/delivery': typeof DeliveryRoute
   '/painel': typeof PainelRoute
@@ -100,6 +108,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/ads01': typeof Ads01Route
   '/barbea': typeof BarbeaRoute
   '/delivery': typeof DeliveryRoute
   '/painel': typeof PainelRoute
@@ -114,6 +123,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/ads01'
     | '/barbea'
     | '/delivery'
     | '/painel'
@@ -126,6 +136,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/admin'
+    | '/ads01'
     | '/barbea'
     | '/delivery'
     | '/painel'
@@ -138,6 +149,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/admin'
+    | '/ads01'
     | '/barbea'
     | '/delivery'
     | '/painel'
@@ -151,6 +163,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
+  Ads01Route: typeof Ads01Route
   BarbeaRoute: typeof BarbeaRoute
   DeliveryRoute: typeof DeliveryRoute
   PainelRoute: typeof PainelRoute
@@ -175,6 +188,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ads01': {
+      id: '/ads01'
+      path: '/ads01'
+      fullPath: '/ads01'
+      preLoaderRoute: typeof Ads01RouteImport
       parentRoute: typeof rootRouteImport
     }
     '/barbea': {
@@ -239,6 +259,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
+  Ads01Route: Ads01Route,
   BarbeaRoute: BarbeaRoute,
   DeliveryRoute: DeliveryRoute,
   PainelRoute: PainelRoute,
