@@ -96,8 +96,9 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending, askPhone = fal
       {currentQuestion === "profile" ? (
         <Question
           icon={<Instagram className="size-5" aria-hidden="true" />}
-          title="Qual é o seu Instagram?"
-          description="É nesse perfil que o engajamento vai aparecer."
+          title="Manda o link da sua propaganda?"
+          description="A mesma que você quer anunciar no Instagram/Facebook."
+
         >
           <Label htmlFor="quiz-profile" className="sr-only">
             Link ou @ do seu Instagram
@@ -119,13 +120,13 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending, askPhone = fal
         <Question
           icon={<MapPin className="size-5" aria-hidden="true" />}
           title="De onde você quer o seu público?"
-          description="Trabalhamos apenas com público brasileiro. Escolha por CEP ou cidade/estado."
+          description="Trabalhamos apenas com público brasileiro. Escolha por CEP ou localização com raio mínimo de 40km."
         >
           <div className="grid gap-2 sm:grid-cols-2">
             {(
               [
                 { value: "cep", label: "Por CEP" },
-                { value: "cidade", label: "Por cidade / estado" },
+                { value: "cidade", label: "Mapa (Raio 40km+)" },
               ] satisfies { value: RegionMode; label: string }[]
             ).map((mode) => (
               <Button
@@ -140,18 +141,19 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending, askPhone = fal
             ))}
           </div>
           <Label htmlFor="quiz-region" className="sr-only">
-            {data.regionMode === "cep" ? "CEP" : "Cidade e estado"}
+            {data.regionMode === "cep" ? "CEP" : "Cidade e raio"}
           </Label>
           <Input
             id="quiz-region"
             value={data.regionValue}
             onChange={(event) => onChange({ regionValue: event.target.value })}
             onKeyDown={(event) => event.key === "Enter" && next()}
-            placeholder={data.regionMode === "cep" ? "76800-000" : "Porto Velho - RO"}
+            placeholder={data.regionMode === "cep" ? "76800-000" : "Sua cidade (Raio mín. 40km)"}
             inputMode={data.regionMode === "cep" ? "numeric" : "text"}
             maxLength={120}
             className="h-12 text-base"
           />
+
         </Question>
       ) : null}
 
@@ -181,13 +183,17 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending, askPhone = fal
       {isSummary ? (
         <Question
           icon={<PartyPopper className="size-5" aria-hidden="true" />}
-          title="OK, já entendemos!"
-          description=""
+          title="É isso que precisa?"
+          description="Confirme os dados da sua campanha de anúncios."
+
         >
           <div className="border-primary/30 bg-primary/5 space-y-3 rounded-2xl border p-5">
             <p className="text-base font-semibold text-balance">
-              Você precisa de público{" "}
-              <span className="text-gradient-brand">{regionSummary}</span> para o perfil{" "}
+              Esta campanha vai gerar novos clientes, públicos quentes e conversões direto para seu WhatsApp.
+            </p>
+            <p className="text-base font-semibold text-balance mt-3">
+              Público <span className="text-gradient-brand">{regionSummary}</span> para o link{" "}
+
               <span className="text-gradient-brand break-all">{data.profileUrl.trim()}</span>.
             </p>
             <p className="text-muted-foreground text-sm">

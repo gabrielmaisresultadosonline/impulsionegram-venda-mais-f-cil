@@ -92,7 +92,57 @@ export const PLANS: readonly Plan[] = [
     ],
     badge: "Mais economia",
   },
+  {
+    id: "ads-10k",
+    slug: "ads10",
+    name: "Alcance 10.000",
+    tagline: "Alcance mensal de contas reais",
+    priceCents: 9700,
+    features: [
+      "Alcance de 10.000 contas mensal",
+      "Gestão de anúncios inclusa",
+      "Valor pago à Meta incluso",
+      "Público qualificado",
+    ],
+  },
+  {
+    id: "ads-50k",
+    slug: "ads50",
+    name: "Alcance 50.000",
+    tagline: "Alcance mensal de contas reais",
+    priceCents: 14700,
+    features: [
+      "Alcance de 50.000 contas mensal",
+      "Gestão de anúncios inclusa",
+      "Valor pago à Meta incluso",
+      "Público qualificado",
+    ],
+    highlight: true,
+  },
+  {
+    id: "ads-100k",
+    slug: "ads100",
+    name: "Alcance 100.000",
+    tagline: "Alcance mensal massivo",
+    priceCents: 59700,
+    features: [
+      "Alcance de 100.000 contas mensal",
+      "Gestão de anúncios inclusa",
+      "Valor pago à Meta incluso",
+      "Escala máxima de resultados",
+    ],
+    badge: "VIP",
+  },
 ] as const;
+
+/** Planos exibidos no funil de anúncios (/ads01). */
+export const ADS_PLAN_IDS: readonly string[] = ["ads-10k", "ads-50k", "ads-100k"] as const;
+
+/** Retorna apenas os planos disponíveis para o funil de anúncios. */
+export function getAdsPlans(): readonly Plan[] {
+  return ADS_PLAN_IDS.map((id) => getPlanById(id)).filter((p): p is Plan => p !== undefined);
+}
+
 
 /** Planos exibidos no funil de salão de beleza (/salaode). */
 export const SALON_PLAN_IDS: readonly string[] = [
