@@ -122,6 +122,7 @@ export const HOME_PLAN_IDS: readonly string[] = [
   "basic-1000",
   "impulso-2000",
   "autoridade-5000",
+  "marketing-completo-up",
   "marketing-completo",
 ] as const;
 
