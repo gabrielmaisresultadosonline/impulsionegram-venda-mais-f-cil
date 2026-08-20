@@ -27,6 +27,7 @@ const instagramField = z
   .trim()
   .max(200, "Valor muito longo")
   .optional()
+  .nullable()
   .or(z.literal(""));
 
 const createCheckoutSchema = z.object({
@@ -43,7 +44,7 @@ const createCheckoutSchema = z.object({
   source: z.string().trim().max(40).optional(),
   /** Order bumps opcionais escolhidos no popup "turbine seu plano". */
   bumpIds: z.array(z.string().trim().max(64)).max(10).optional(),
-  adLink: z.string().trim().url("Link inválido").max(500),
+  adLink: z.string().trim().max(500).optional().nullable().or(z.literal("")),
 });
 
 export type CreateCheckoutInput = z.input<typeof createCheckoutSchema>;
