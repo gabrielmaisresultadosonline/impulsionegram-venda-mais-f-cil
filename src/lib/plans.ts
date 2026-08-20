@@ -99,10 +99,6 @@ export function getHomePlans(): readonly Plan[] {
   return HOME_PLAN_IDS.map((id) => getPlanById(id)).filter((p): p is Plan => p !== undefined);
 }
 
-/** Retorna apenas os planos disponíveis para o funil de anúncios. */
-export function getAdsPlans(): readonly Plan[] {
-  return ADS_PLAN_IDS.map((id) => getPlanById(id)).filter((p): p is Plan => p !== undefined);
-}
 
 /** Planos exibidos no funil de salão de beleza (/salaode). */
 export const SALON_PLAN_IDS: readonly string[] = [...HOME_PLAN_IDS] as const;
