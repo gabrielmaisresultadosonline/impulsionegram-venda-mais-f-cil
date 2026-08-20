@@ -7,6 +7,7 @@ import { PlanCard } from "@/components/site/PlanCard";
 import { Button } from "@/components/ui/button";
 import { getAdsPlans } from "@/lib/plans";
 import { trackSiteEvent } from "@/lib/pixel.functions";
+import metaPartnerAsset from "@/assets/meta-partner.png.asset.json";
 
 /**
  * Landing Page Principal (Funil de ADS).
@@ -129,7 +130,12 @@ function Index() {
 
       <SignupDialog open={signupOpen} onOpenChange={setSignupOpen} source="home" />
       <footer className="border-t border-border px-4 py-8">
-        <div className="mx-auto flex max-w-6xl flex-col items-center gap-3">
+        <div className="mx-auto flex max-w-6xl flex-col items-center gap-6">
+          <img 
+            src={metaPartnerAsset.url} 
+            alt="Meta Business Partner" 
+            className="h-6 w-auto object-contain opacity-70 grayscale hover:grayscale-0 transition-all duration-300"
+          />
           <p className="text-center text-xs text-muted-foreground">
             Pagamentos processados pela InfinitePay ·
             Resultados iniciam em até 6 horas após a aprovação.
