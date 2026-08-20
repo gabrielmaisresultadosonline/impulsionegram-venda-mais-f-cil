@@ -119,7 +119,7 @@ function AdsLandingPage() {
         </div>
       </section>
 
-      <SignupDialog open={signupOpen} onOpenChange={setSignupOpen} source="home" />
+      <SignupDialog open={signupOpen} onOpenChange={setSignupOpen} source="ads01" />
 
       <footer className="border-t border-border px-4 py-8">
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-3">
