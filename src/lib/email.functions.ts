@@ -121,7 +121,7 @@ export const sendWelcomeEmail = createServerFn({ method: "POST" })
         html: htmlContent,
       });
 
-      saveEmailLog({
+      await saveEmailLog({
         orderNsu: data.orderNsu || "welcome-only",
         customerEmail: email,
         customerName: name,

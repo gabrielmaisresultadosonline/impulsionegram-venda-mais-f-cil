@@ -67,9 +67,9 @@ export const sendMessageToAI = createServerFn({ method: "POST" })
         readByAdmin: false
       });
     } else {
-      let vChat = getVisitorChat(data.visitor.email);
+      let vChat = await getVisitorChat(data.visitor.email);
       if (!vChat) {
-        vChat = {
+        await saveVisitorChat({
           visitorId: crypto.randomUUID(),
           name: data.visitor.name,
           email: data.visitor.email,
@@ -77,16 +77,16 @@ export const sendMessageToAI = createServerFn({ method: "POST" })
           messages: [],
           lastMessageAt: new Date().toISOString(),
           source: "home"
-        };
-        saveVisitorChat(vChat);
+        });
       }
-      addVisitorMessage(data.visitor.email, { author: "user", text: data.message });
+      await addVisitorMessage(data.visitor.email, { author: "user", text: data.message });
     }
 
     // 2. Recuperar histórico da conversa para contexto
+    const visitorChat = !customerOrder ? await getVisitorChat(data.visitor.email) : null;
     const chatHistory = customerOrder 
-      ? (customerOrder.messages || []).slice(-10) // Últimas 10 mensagens
-      : (getVisitorChat(data.visitor.email)?.messages || []).slice(-10);
+      ? (customerOrder.messages || []).slice(-10)
+      : (visitorChat?.messages || []).slice(-10);
 
     const formattedHistory = chatHistory.map((m: any) => ({
       role: m.author === "user" || m.author === "customer" ? "user" : (m.author === "admin" ? "assistant" : "assistant"),
@@ -125,7 +125,7 @@ export const sendMessageToAI = createServerFn({ method: "POST" })
 
       // 3. Persistir resposta da I.A
       if (customerOrder) {
-        addMessageToOrder(customerOrder.orderNsu, { 
+        await addMessageToOrder(customerOrder.orderNsu, { 
           author: "ai", 
           text: aiText,
           id: crypto.randomUUID(),
@@ -133,7 +133,7 @@ export const sendMessageToAI = createServerFn({ method: "POST" })
           readByAdmin: false
         });
       } else {
-        addVisitorMessage(data.visitor.email, { author: "ai", text: aiText });
+        await addVisitorMessage(data.visitor.email, { author: "ai", text: aiText });
       }
 
       return { text: aiText };
@@ -148,7 +148,16 @@ export const adminListAllChats = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     if (!isAdminCredentials(data.email, data.password)) throw new Error("Não autorizado");
     
-    const visitors = listVisitorChats();
+    const visitorsResult = await listVisitorChats();
+    const visitors = (visitorsResult || []).map((c: any) => ({
+      id: c.email,
+      name: c.name,
+      email: c.email,
+      phone: c.phone,
+      messages: c.messages,
+      lastMessageAt: c.lastMessageAt,
+      type: 'visitor' as const
+    }));
     const allOrders = await listOrders();
     
     const customers = allOrders
@@ -178,7 +187,7 @@ export const adminSendMessage = createServerFn({ method: "POST" })
     if (!isAdminCredentials(data.email, data.password)) throw new Error("Não autorizado");
 
     if (data.type === 'customer') {
-      addMessageToOrder(data.chatId, {
+      await addMessageToOrder(data.chatId, {
         author: "admin",
         text: data.text,
         id: crypto.randomUUID(),
@@ -186,7 +195,7 @@ export const adminSendMessage = createServerFn({ method: "POST" })
         readByAdmin: true
       });
     } else {
-      addVisitorMessage(data.chatId, { author: "admin", text: data.text });
+      await addVisitorMessage(data.chatId, { author: "admin", text: data.text });
     }
 
     return { success: true };
