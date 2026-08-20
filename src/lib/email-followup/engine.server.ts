@@ -1,6 +1,8 @@
 import fs from "node:fs";
 import { saveEmailLog } from "./logs-repo.server";
 import { OrderRecord, markPaid } from "../orders-repo.server";
+import { SignupRecord, listSignups } from "../signups-repo.server";
+
 
 export interface FollowupConfig {
   type: 'followup_50m' | 'followup_4h' | 'followup_16h' | 'followup_last_4h';
