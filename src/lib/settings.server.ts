@@ -1,3 +1,5 @@
+import fs from "node:fs";
+
 /**
  * Configurações operacionais do painel (lado servidor).
  *
