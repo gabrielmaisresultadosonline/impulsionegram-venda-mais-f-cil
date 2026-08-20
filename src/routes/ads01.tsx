@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { PLANS } from "@/lib/plans";
 import { trackSiteEvent } from "@/lib/pixel.functions";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/ads01")({
   head: () => ({
     meta: [
       {

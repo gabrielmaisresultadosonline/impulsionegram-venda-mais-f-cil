@@ -13,7 +13,7 @@ import { trackSiteEvent } from "@/lib/pixel.functions";
  */
 
 
-export const Route = createFileRoute("/ads01")({
+export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       {
