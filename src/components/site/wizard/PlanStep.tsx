@@ -23,7 +23,7 @@ export function PlanStep({
   onNext = () => {},
   plans = PLANS,
   pending = false,
-  ctaLabel = "Continuar com",
+  ctaLabel = "Comprar agora",
 }: PlanStepProps) {
 
   return (

@@ -129,7 +129,7 @@ export function PlanCard({
                 : "",
           )}
         >
-          {ctaLabel ?? (isSelected ? "Plano selecionado" : "Escolher este plano")}
+          {ctaLabel ?? (isSelected ? "Comprar agora" : "Escolher este plano")}
         </Button>
       ) : null}
 
