@@ -55,6 +55,7 @@ function PainelPage() {
     if (isBarber) return getBarberPlans();
     if (isTherapy) return getTherapyPlans();
     if (isDelivery) return getDeliveryPlans();
+    // No painel geral, mostramos apenas os planos de seguidores configurados no catálogo global
     return PLANS;
   }, [isSalon, isBarber, isTherapy, isDelivery]);
 
