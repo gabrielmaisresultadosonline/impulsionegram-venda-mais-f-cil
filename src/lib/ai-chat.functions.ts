@@ -10,7 +10,7 @@ export const getAISettings = createServerFn({ method: "POST" })
   .validator((data: unknown) => z.object({ email: z.string(), password: z.string() }).parse(data))
   .handler(async ({ data }) => {
     if (!isAdminCredentials(data.email, data.password)) throw new Error("Não autorizado");
-    const settings = getSettings();
+    const settings = await getSettings();
     return {
       openaiKey: settings.openaiKey || "",
       aiPrompt: settings.aiPrompt || "",
@@ -49,7 +49,7 @@ export const sendMessageToAI = createServerFn({ method: "POST" })
     })
   }).parse(data))
   .handler(async ({ data }) => {
-    const settings = getSettings();
+    const settings = await getSettings();
     if (!settings.aiActive || !settings.openaiKey) {
       return { text: "Olá! Nosso agente I.A está descansando no momento. Como posso ajudar?" };
     }
