@@ -19,14 +19,14 @@ export const sendWelcomeEmail = createServerFn({ method: "POST" })
   )
   .handler(async ({ data }) => {
     const { name, email } = data;
-    console.log(`[sendWelcomeEmail] Iniciando envio para ${email}`);
+    console.log(`[sendWelcomeEmail] Servidor processando envio para: ${email}`);
 
     // Lemos do process.env dentro do handler (padrão TanStack Start)
     const user = process.env["SMTP_USER"];
     const pass = process.env["SMTP_PASS"];
 
     if (!user || !pass) {
-      console.error("[sendWelcomeEmail] Configurações de SMTP ausentes");
+      console.error("[sendWelcomeEmail] Erro: SMTP_USER ou SMTP_PASS não configurados");
       return { success: false, error: "SMTP configuration missing" };
     }
 
@@ -113,14 +113,14 @@ export const sendWelcomeEmail = createServerFn({ method: "POST" })
       </html>
       `;
 
-      console.log(`[sendWelcomeEmail] Enviando e-mail para ${email} via ${user}...`);
+      console.log(`[sendWelcomeEmail] Conectando ao SMTP para enviar para ${email}...`);
       const info = await transporter.sendMail({
         from: `"Acessar I.A Support" <${user}>`,
         to: email,
         subject: `Bem-vindo à Acessar I.A, ${firstName}! 🚀`,
         html: htmlContent,
       });
-      console.log(`[sendWelcomeEmail] E-mail enviado com sucesso: ${info.messageId}`);
+      console.log(`[sendWelcomeEmail] E-mail enviado com sucesso para ${email}. ID: ${info.messageId}`);
 
       saveEmailLog({
         orderNsu: data.orderNsu || "welcome-only",

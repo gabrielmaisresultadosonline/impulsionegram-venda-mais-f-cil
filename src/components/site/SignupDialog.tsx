@@ -97,7 +97,7 @@ export function SignupDialog({
         phone,
         value: plan ? plan.priceCents / 100 : undefined,
       });
-      void trackSiteEvent({ data: { type: "signup", name, email, phone, source } });
+      await trackSiteEvent({ data: { type: "signup", name, email, phone, source } });
       toast.success(`Conta criada! Bem-vindo(a), ${name.split(" ")[0]}.`);
       onOpenChange(false);
       await navigate({ to: redirectTo });

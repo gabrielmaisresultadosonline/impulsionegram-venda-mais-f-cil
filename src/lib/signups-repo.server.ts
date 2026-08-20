@@ -112,6 +112,7 @@ export async function recordSignup(input: {
     console.log(`[recordSignup] Resultado do envio para ${email}:`, result);
   } catch (err) {
     console.error(`[recordSignup] Erro fatal ao enviar e-mail para ${email}:`, err);
+    // Não deixamos o erro do e-mail travar o fluxo do cadastro, mas registramos o erro.
   }
 }
 
