@@ -21,6 +21,7 @@ if [[ -d .git ]]; then
   log "Baixando última versão do repositório"
   git fetch --all --prune
   git reset --hard "origin/main" || git reset --hard "origin/$(git rev-parse --abbrev-ref HEAD)"
+  git checkout HEAD -- .data/ || true
 else
   log "Pasta sem git — sincronizando código do GitHub (preserva .env)"
   rm -rf /tmp/${APP_NAME}-src
