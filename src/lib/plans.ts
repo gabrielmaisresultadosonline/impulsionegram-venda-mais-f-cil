@@ -138,9 +138,6 @@ export const HOME_PLAN_IDS: readonly string[] = [
   "impulso-2000",
   "autoridade-5000",
   "marketing-completo",
-  "ads-10k",
-  "ads-50k",
-  "ads-100k",
 ] as const;
 
 export function getHomePlans(): readonly Plan[] {
