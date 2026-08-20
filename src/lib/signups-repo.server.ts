@@ -102,7 +102,8 @@ export async function recordSignup(input: {
   // Dispara o e-mail de boas-vindas IMEDIATAMENTE após o registro do cadastro no servidor
   try {
     const { sendWelcomeEmail } = await import("./email.functions");
-    await sendWelcomeEmail({ 
+    console.log(`[recordSignup] Tentando enviar e-mail de boas-vindas para ${email}`);
+    const emailResult = await sendWelcomeEmail({ 
       data: { 
         name: input.name.trim() || existing?.name || "", 
         email, 
@@ -110,8 +111,9 @@ export async function recordSignup(input: {
         orderNsu: `lead:${email}` 
       } 
     });
+    console.log(`[recordSignup] Resultado do envio para ${email}:`, emailResult);
   } catch (err) {
-    console.error(`[recordSignup] Erro ao enviar e-mail de boas-vindas para ${email}:`, err);
+    console.error(`[recordSignup] Erro fatal ao chamar sendWelcomeEmail para ${email}:`, err);
   }
 }
 

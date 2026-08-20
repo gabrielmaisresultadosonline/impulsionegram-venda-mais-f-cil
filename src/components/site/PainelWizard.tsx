@@ -131,14 +131,8 @@ export function PainelWizard({
         createdAt: new Date().toISOString(),
       });
 
-      // Envio de e-mail de boas-vindas com o NSU para log correto
-      void sendWelcomeEmail({ 
-        data: { 
-          name: campaign.customerName.trim(), 
-          email: campaign.customerEmail.trim(),
-          orderNsu: result.orderNsu 
-        } 
-      }).catch(() => {});
+      // O e-mail de boas-vindas já foi disparado no cadastro inicial.
+      // Se fosse um novo pedido de cliente antigo, poderíamos disparar um e-mail de confirmação de pedido aqui.
 
       // Pagamento em nova aba; a aba atual acompanha o status em tempo real.
       window.open(result.paymentUrl, "_blank", "noopener,noreferrer");
