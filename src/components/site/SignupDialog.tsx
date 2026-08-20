@@ -88,16 +88,8 @@ export function SignupDialog({
       saveAccount(created);
       if (selectedPlanId) savePlanSelection(selectedPlanId);
       
-      // Envio de e-mail de boas-vindas em background
-      void sendWelcomeEmail({ 
-        data: { 
-          name, 
-          email, 
-          orderNsu: `lead:${email}` 
-        } 
-      }).catch(err => {
-        console.error("Falha silenciosa no envio de e-mail:", err);
-      });
+      // O e-mail de boas-vindas agora é disparado pelo servidor via trackSiteEvent -> recordSignup
+      // para garantir que o envio aconteça de forma centralizada e confiável.
 
       trackPixelEvent("Lead", {
         contentName: plan?.name,
