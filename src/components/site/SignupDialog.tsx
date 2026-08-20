@@ -19,7 +19,7 @@ import {
   savePlanSelection,
   type LocalAccount,
 } from "@/lib/account-storage";
-import { sendWelcomeEmail } from "@/lib/email.functions";
+import { sendWelcomeEmail, sendPasswordRecoveryEmail } from "@/lib/email.functions";
 import { formatBRL, getPlanById } from "@/lib/plans";
 import { trackPixelEvent } from "./FacebookPixel";
 import { trackSiteEvent } from "@/lib/pixel.functions";
@@ -35,7 +35,7 @@ export interface SignupDialogProps {
   source?: string;
 }
 
-type DialogMode = "signup" | "login";
+type DialogMode = "signup" | "login" | "forgot-password";
 
 /**
  * Popup de cadastro/login acionado pelos CTAs "Cadastre-se grátis" da home.
@@ -141,19 +141,50 @@ export function SignupDialog({
     }
   };
 
+  const handleForgotPassword = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const email = String(form.get("email") ?? "").trim();
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return toast.error("E-mail inválido.");
+
+    setSaving(true);
+    try {
+      const result = await sendPasswordRecoveryEmail({ data: { email } });
+      if (result.success) {
+        toast.success("E-mail de recuperação enviado com sucesso!");
+        setMode("login");
+      } else if (result.error === "NOT_FOUND") {
+        toast.error("Não encontramos nenhum cadastro com esse e-mail.");
+      } else {
+        toast.error("Erro ao enviar e-mail. Tente novamente mais tarde.");
+      }
+    } catch {
+      toast.error("Erro técnico. Tente novamente.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="text-2xl font-extrabold">
-            {mode === "signup" ? "Cadastre-se grátis" : "Entrar na conta"}
+            {mode === "signup" 
+              ? "Cadastre-se grátis" 
+              : mode === "login" 
+              ? "Entrar na conta"
+              : "Recuperar senha"}
           </DialogTitle>
           <DialogDescription>
             {mode === "signup"
               ? plan
                 ? `Plano em destaque: ${plan.name} — ${formatBRL(plan.priceCents)}. Você confirma tudo no painel antes de pagar.`
                 : "Crie sua conta em segundos. Você escolhe o plano e confirma tudo no painel antes de pagar."
-              : "Acesse seu painel para escolher planos, acompanhar pedidos e configurar campanhas."}
+              : mode === "login"
+              ? "Acesse seu painel para escolher planos, acompanhar pedidos e configurar campanhas."
+              : "Informe seu e-mail de cadastro para receber as instruções de recuperação."}
           </DialogDescription>
         </DialogHeader>
 
