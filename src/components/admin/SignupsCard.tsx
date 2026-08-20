@@ -138,10 +138,14 @@ export function SignupsCard({ credentials, className, ...props }: SignupsCardPro
                     toast.promise(promise, {
                       loading: 'Reenviando e-mail...',
                       success: (res) => {
+                        console.log('[SignupsCard] Resposta do reenvio:', res);
                         if (res.success) return 'E-mail de boas-vindas reenviado!';
-                        throw new Error(res.error || 'Erro desconhecido');
+                        throw new Error(res.error || 'Erro desconhecido ao enviar');
                       },
-                      error: (err) => `Falha: ${err.message}`
+                      error: (err) => {
+                        console.error('[SignupsCard] Erro capturado no toast:', err);
+                        return `Falha: ${err.message}`;
+                      }
                     });
                   }}
                 >

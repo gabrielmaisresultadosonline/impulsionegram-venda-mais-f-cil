@@ -2,7 +2,54 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import type { OrderRecord } from "./orders-repo.server";
 export { adminListEmailLogs } from "./email-admin.functions";
-export { adminResendWelcomeEmail } from "./email-manual.functions";
+export const adminResendWelcomeEmail = createServerFn({ method: "POST" })
+  .validator((data: any) =>
+    (async () => {
+      const { z } = await import("zod");
+      return z.object({
+        adminEmail: z.string().email(),
+        adminPassword: z.string(),
+        customerEmail: z.string().email(),
+      }).parse(data);
+    })()
+  )
+  .handler(async ({ data }) => {
+    console.log(`[adminResendWelcomeEmail] Iniciando reenvio para ${data.customerEmail} solicitado por ${data.adminEmail}`);
+    try {
+      const { isAdminCredentials } = await import("./settings.server");
+      const { listSignups } = await import("./signups-repo.server");
+      const { sendTransactionalEmail } = await import("./transactional-emails.functions");
+
+      if (!isAdminCredentials(data.adminEmail, data.adminPassword)) {
+        console.warn(`[adminResendWelcomeEmail] Tentativa não autorizada por ${data.adminEmail}`);
+        throw new Error("Não autorizado: credenciais de administrador inválidas.");
+      }
+
+      const signups = listSignups();
+      const lead = signups.find(s => s.email.toLowerCase() === data.customerEmail.toLowerCase());
+
+      if (!lead) {
+        console.warn(`[adminResendWelcomeEmail] Lead não encontrado: ${data.customerEmail}`);
+        return { success: false, error: "Cadastro não encontrado." };
+      }
+
+      console.log(`[adminResendWelcomeEmail] Lead encontrado: ${lead.name}. Chamando sendTransactionalEmail...`);
+      const result = await sendTransactionalEmail({
+        data: {
+          type: "welcome",
+          name: lead.name,
+          email: lead.email,
+          orderNsu: `manual-welcome:${Date.now()}`
+        }
+      });
+
+      console.log(`[adminResendWelcomeEmail] Resultado do envio para ${data.customerEmail}:`, result);
+      return { success: result.success, error: result.error };
+    } catch (err: any) {
+      console.error("[adminResendWelcomeEmail] Erro fatal no handler:", err);
+      return { success: false, error: `Erro interno no servidor: ${err.message || String(err)}` };
+    }
+  });
 
 
 /**
