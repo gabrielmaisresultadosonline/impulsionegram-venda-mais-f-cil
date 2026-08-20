@@ -38,9 +38,9 @@ export function OrderBumpDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[90vh] w-[calc(100vw-1.5rem)] max-w-lg overflow-y-auto rounded-3xl p-0 sm:w-full">
         <div className="bg-gradient-brand text-primary-foreground rounded-t-3xl px-5 py-5 text-center sm:px-7">
-          <DialogTitle className="flex items-center justify-center gap-2 text-lg font-extrabold sm:text-xl">
+          <DialogTitle className="flex items-center justify-center gap-2 text-lg font-extrabold sm:text-xl uppercase">
             <Rocket className="size-5 shrink-0" aria-hidden="true" />
-            Você pode turbinar seu plano!
+            VOCÊ PODE TURBINAR SEU PLANO
           </DialogTitle>
           <DialogDescription className="text-primary-foreground/85 mt-1 text-sm">
             Adicione extras ao seu plano e potencialize os resultados.
