@@ -7,7 +7,7 @@ export interface PlanStepProps {
   selectedPlanId: string;
   onSelect: (planId: string) => void;
   onBack?: () => void;
-  onNext: () => void;
+  onNext?: () => void;
   /** Planos a exibir. Padrão: todos os planos. */
   plans?: readonly Plan[];
   /** Ação em andamento (geração do link de pagamento). */
