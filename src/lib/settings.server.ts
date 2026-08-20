@@ -1,3 +1,5 @@
+import fs from "node:fs";
+
 /**
  * Configurações operacionais do painel (lado servidor).
  *
@@ -29,14 +31,40 @@ const DEFAULT_PIXEL_ID = "1055141180794602";
 const DEFAULT_ADMIN_EMAIL = "mro@gmail.com";
 const DEFAULT_ADMIN_PASSWORD = "Ga145523@";
 
+const DATA_DIR = process.env.ORDERS_DATA_DIR ?? ".data";
+const SETTINGS_FILE = `${DATA_DIR}/site_settings.json`;
 
 const settings: SiteSettings = {
   facebookPixelId: "",
   visits: 0,
   signups: 0,
+  openaiKey: "",
+  aiPrompt: "",
+  aiActive: false,
 };
 
+let loaded = false;
+
+function load(): void {
+  if (loaded) return;
+  loaded = true;
+  try {
+    if (!fs.existsSync(SETTINGS_FILE)) return;
+    const raw = fs.readFileSync(SETTINGS_FILE, "utf8");
+    const parsed = JSON.parse(raw);
+    Object.assign(settings, parsed);
+  } catch {}
+}
+
+function persist(): void {
+  try {
+    fs.mkdirSync(DATA_DIR, { recursive: true });
+    fs.writeFileSync(SETTINGS_FILE, JSON.stringify(settings), "utf8");
+  } catch {}
+}
+
 export function getSettings(): SiteSettings {
+  load();
   // O .env tem prioridade na primeira leitura; depois vale o que o admin salvar.
   const pixelId =
     settings.facebookPixelId || process.env.FACEBOOK_PIXEL_ID || DEFAULT_PIXEL_ID;
@@ -46,19 +74,27 @@ export function getSettings(): SiteSettings {
 
 /** Aceita apenas dígitos (formato do Pixel ID) ou string vazia para remover. */
 export function setFacebookPixelId(pixelId: string): void {
+  load();
   settings.facebookPixelId = pixelId;
+  persist();
 }
 
 export function updateEvolutionSettings(data: Partial<SiteSettings>) {
+  load();
   Object.assign(settings, data);
+  persist();
 }
 
 export function incrementVisits(): void {
+  load();
   settings.visits += 1;
+  persist();
 }
 
 export function incrementSignups(): void {
+  load();
   settings.signups += 1;
+  persist();
 }
 
 /**

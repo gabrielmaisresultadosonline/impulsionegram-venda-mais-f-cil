@@ -100,8 +100,9 @@ export const sendMessageToAI = createServerFn({ method: "POST" })
       });
 
       if (!response.ok) {
-        console.error("AI Gateway error:", await response.text());
-        return { text: "Desculpe, tive um probleminha técnico. Pode repetir?" };
+        const errorText = await response.text();
+        console.error("AI Gateway error:", response.status, errorText);
+        return { text: `Erro técnico (OpenAI ${response.status}). Verifique seu token no admin.` };
       }
 
       const result = await response.json();
