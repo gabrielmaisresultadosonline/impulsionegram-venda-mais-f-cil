@@ -9,7 +9,7 @@ export function ChannelPositionSection() {
             Canais e <span className="text-gradient-brand">Posicionamentos</span>
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            A Acessar I.A utiliza os posicionamentos elegíveis da Meta automaticamente, priorizando as oportunidades disponíveis entre Instagram e Facebook.
+            A Acessar I.A utiliza os posicionamentos elegíveis da Meta automaticamente, priorizando o crescimento orgânico e pago no seu Instagram.
           </p>
         </div>
 
@@ -54,7 +54,7 @@ export function ChannelPositionSection() {
               <div className="bg-blue-500/10 p-2 rounded-lg">
                 <Facebook className="text-blue-500 size-6" />
               </div>
-              <h3 className="text-xl font-bold">Facebook</h3>
+              <h3 className="text-xl font-bold">Meta Ads</h3>
             </div>
             <ul className="space-y-3 text-sm text-muted-foreground">
               <li className="flex items-center gap-2">
@@ -85,14 +85,14 @@ export function ChannelPositionSection() {
               <div className="bg-green-500/10 p-2 rounded-lg">
                 <MessageSquare className="text-green-500 size-6" />
               </div>
-              <h3 className="text-xl font-bold">WhatsApp</h3>
+              <h3 className="text-xl font-bold">Engajamento</h3>
             </div>
             <div className="space-y-4">
               <p className="text-sm text-muted-foreground leading-relaxed">
-                O WhatsApp é o <span className="text-foreground font-semibold">destino principal</span> das conversões.
+                O Instagram é o <span className="text-foreground font-semibold">foco principal</span> dos resultados.
               </p>
               <div className="bg-primary/5 border border-primary/10 rounded-xl p-4 text-xs text-muted-foreground italic">
-                "Anúncio no Instagram/Facebook → Clique → Conversa instantânea no WhatsApp."
+                "Crescimento Automático → Público Qualificado → Mais Popularidade no Instagram."
               </div>
               <p className="text-xs text-muted-foreground">
                 Priorizamos a geração de conversas diretas para o seu negócio.
@@ -113,7 +113,7 @@ export function ChannelPositionSection() {
               </div>
               <h3 className="text-2xl font-bold">Inteligência Artificial Parceira da Meta</h3>
               <p className="text-muted-foreground leading-relaxed">
-                Nossa tecnologia utiliza algoritmos avançados para identificar as melhores oportunidades em tempo real. Como <span className="text-foreground font-semibold underline decoration-primary/30">Meta Business Partner</span>, temos acesso a integrações profundas que garantem que seu anúncio apareça para quem realmente quer comprar.
+                Nossa tecnologia utiliza algoritmos avançados para identificar as melhores oportunidades em tempo real. Como <span className="text-foreground font-semibold underline decoration-primary/30">Meta Business Partner</span>, temos acesso a integrações profundas que garantem que seu perfil cresça com o público certo.
               </p>
             </div>
 
@@ -131,13 +131,19 @@ export function ChannelPositionSection() {
                     <div className="size-4 rounded bg-primary flex items-center justify-center">
                       <CheckCircle2 className="text-white size-3" />
                     </div>
-                    <span>Facebook</span>
+                    <span>Meta Ads</span>
                   </div>
                   <div className="flex items-center gap-2 text-sm">
                     <div className="size-4 rounded bg-primary flex items-center justify-center">
                       <CheckCircle2 className="text-white size-3" />
                     </div>
-                    <span>WhatsApp</span>
+                    <span>Público de Concorrentes</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm">
+                    <div className="size-4 rounded bg-primary flex items-center justify-center">
+                      <CheckCircle2 className="text-white size-3" />
+                    </div>
+                    <span>Visualizações</span>
                   </div>
                 </div>
               </div>
