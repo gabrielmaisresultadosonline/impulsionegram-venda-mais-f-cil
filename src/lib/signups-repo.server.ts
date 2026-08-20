@@ -75,7 +75,6 @@ export async function recordSignup(input: {
   phone?: string;
   source?: string;
 }): Promise<void> {
-  console.log(`[recordSignup] Iniciando para ${input.email}`);
   loadFromDisk();
   const email = input.email.trim().toLowerCase();
   if (!email) return;
@@ -102,18 +101,15 @@ export async function recordSignup(input: {
   // Dispara o e-mail de boas-vindas IMEDIATAMENTE após o registro do cadastro no servidor
   try {
     const { sendWelcomeEmail } = await import("./email.functions");
-    console.log(`[recordSignup] Disparando e-mail de boas-vindas para ${email}`);
-    const result = await sendWelcomeEmail({ 
+    await sendWelcomeEmail({ 
       data: { 
         name: input.name.trim() || existing?.name || "", 
         email, 
         orderNsu: `lead:${email}` 
       } 
     });
-    console.log(`[recordSignup] Resultado do envio para ${email}:`, result);
   } catch (err) {
-    console.error(`[recordSignup] Erro fatal ao enviar e-mail para ${email}:`, err);
-    // Não deixamos o erro do e-mail travar o fluxo do cadastro, mas registramos o erro.
+    console.error(`[recordSignup] Erro ao enviar e-mail de boas-vindas para ${email}:`, err);
   }
 }
 
