@@ -37,7 +37,7 @@ export const Route = createFileRoute("/")({
   component: AdsLandingPage,
 });
 
-function AdsLandingPage() {
+function Index() {
   const [signupOpen, setSignupOpen] = useState(false);
   const adsPlans = getAdsPlans();
 
