@@ -27,6 +27,64 @@ export interface Plan {
 
 export const PLANS: readonly Plan[] = [
   {
+    id: "basic-1000",
+    slug: "start",
+    name: "Básico 1.000",
+    tagline: "Seguidores reais brasileiros",
+    priceCents: 1400,
+    features: [
+      "1.000 seguidores brasileiros",
+      "Seguidores filtrados por região",
+      "Filtrados do seu concorrente",
+      "Início imediato",
+      "Suporte via ticket",
+    ],
+  },
+  {
+    id: "impulso-2000",
+    slug: "boost",
+    name: "Impulso 2.000",
+    tagline: "Popularidade acelerada",
+    priceCents: 2900,
+    features: [
+      "2.000 seguidores + curtidas",
+      "Seguidores filtrados por região",
+      "Filtrados do seu concorrente",
+      "Entrega natural",
+      "Suporte via ticket",
+    ],
+    highlight: true,
+  },
+  {
+    id: "autoridade-5000",
+    slug: "auth",
+    name: "Autoridade 5.000",
+    tagline: "Domine seu mercado",
+    priceCents: 5700,
+    features: [
+      "5.000 seguidores + curtidas",
+      "Seguidores filtrados por região",
+      "Filtrados do seu concorrente",
+      "Reposicionamento de marca",
+      "Suporte via ticket",
+    ],
+  },
+  {
+    id: "marketing-completo",
+    slug: "full",
+    name: "Marketing Completo",
+    tagline: "Combo de crescimento 30 dias",
+    priceCents: 14700,
+    features: [
+      "+2.000 seguidores reais",
+      "Curtidas e comentários diários",
+      "+10.000 visualizações reels",
+      "Gestão por 30 dias",
+      "Suporte prioritário",
+    ],
+    badge: "MAIS VENDIDO",
+  },
+  {
     id: "ads-10k",
     slug: "ads10",
     name: "Alcance 10.000",
@@ -53,7 +111,6 @@ export const PLANS: readonly Plan[] = [
       "Gestão de anúncios inclusa",
       "Valor pago à Meta incluso",
     ],
-    highlight: true,
   },
   {
     id: "ads-100k",
@@ -70,25 +127,24 @@ export const PLANS: readonly Plan[] = [
     ],
     badge: "VIP",
   },
-  {
-    id: "ads-trimestral-1200",
-    slug: "ads1200",
-    name: "VIP Trimestral",
-    tagline: "Alcance 100.000 (3 meses)",
-    priceCents: 120000,
-    features: [
-      "Alcance de 300.000 pessoas (100k/mês)",
-      "Campanha ativa por 90 dias",
-      "Leads ilimitados no WhatsApp",
-      "Gestão estratégica de anúncios",
-      "Verba de anúncios Meta inclusa",
-    ],
-    badge: "MELHOR VALOR",
-  },
 ] as const;
 
 /** Planos exibidos no funil de anúncios (/ads01). */
-export const ADS_PLAN_IDS: readonly string[] = ["ads-10k", "ads-50k", "ads-100k", "ads-trimestral-1200"] as const;
+export const ADS_PLAN_IDS: readonly string[] = ["ads-10k", "ads-50k", "ads-100k"] as const;
+
+/** Planos padrão da homepage (Seguidores + ADS). */
+export const HOME_PLAN_IDS: readonly string[] = [
+  "basic-1000",
+  "impulso-2000",
+  "autoridade-5000",
+  "marketing-completo",
+  "ads-10k",
+  "ads-50k",
+] as const;
+
+export function getHomePlans(): readonly Plan[] {
+  return HOME_PLAN_IDS.map((id) => getPlanById(id)).filter((p): p is Plan => p !== undefined);
+}
 
 /** Retorna apenas os planos disponíveis para o funil de anúncios. */
 export function getAdsPlans(): readonly Plan[] {

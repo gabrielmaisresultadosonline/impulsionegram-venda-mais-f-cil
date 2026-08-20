@@ -5,7 +5,7 @@ import { Hero } from "@/components/site/Hero";
 import { SignupDialog } from "@/components/site/SignupDialog";
 import { PlanCard } from "@/components/site/PlanCard";
 import { Button } from "@/components/ui/button";
-import { getAdsPlans } from "@/lib/plans";
+import { getHomePlans } from "@/lib/plans";
 import { trackSiteEvent } from "@/lib/pixel.functions";
 
 import { TestimonialsSection } from "@/components/site/TestimonialsSection";
@@ -44,7 +44,7 @@ export const Route = createFileRoute("/")({
 function Index() {
   const navigate = useNavigate();
   const [signupOpen, setSignupOpen] = useState(false);
-  const adsPlans = getAdsPlans();
+  const plans = getHomePlans();
 
   useEffect(() => {
     void trackSiteEvent({ data: { type: "pageview", source: "home" } });
@@ -113,7 +113,7 @@ function Index() {
           </p>
 
           <div className="mt-12 flex flex-wrap justify-center gap-6">
-            {adsPlans.map((plan) => (
+            {plans.map((plan) => (
               <PlanCard
                 key={plan.id}
                 plan={plan}
