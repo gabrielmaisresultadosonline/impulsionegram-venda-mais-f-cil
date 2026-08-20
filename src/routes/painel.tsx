@@ -17,7 +17,7 @@ import {
   getDeliveryPlans,
   getSalonPlans,
   getTherapyPlans,
-  getAdsPlans,
+  
 } from "@/lib/plans";
 
 
