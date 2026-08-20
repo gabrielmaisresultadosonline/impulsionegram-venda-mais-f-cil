@@ -16,6 +16,7 @@ import { Route as BarbeaRouteImport } from './routes/barbea'
 import { Route as DeliveryRouteImport } from './routes/delivery'
 import { Route as PainelRouteImport } from './routes/painel'
 import { Route as PedidoRouteImport } from './routes/pedido'
+import { Route as RecuperarRouteImport } from './routes/recuperar'
 import { Route as SalaodeRouteImport } from './routes/salaode'
 import { Route as TerapiRouteImport } from './routes/terapi'
 import { Route as WhatsRouteImport } from './routes/whats'
@@ -56,6 +57,11 @@ const PedidoRoute = PedidoRouteImport.update({
   path: '/pedido',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RecuperarRoute = RecuperarRouteImport.update({
+  id: '/recuperar',
+  path: '/recuperar',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SalaodeRoute = SalaodeRouteImport.update({
   id: '/salaode',
   path: '/salaode',
@@ -86,6 +92,7 @@ export interface FileRoutesByFullPath {
   '/delivery': typeof DeliveryRoute
   '/painel': typeof PainelRoute
   '/pedido': typeof PedidoRoute
+  '/recuperar': typeof RecuperarRoute
   '/salaode': typeof SalaodeRoute
   '/terapi': typeof TerapiRoute
   '/whats': typeof WhatsRoute
@@ -99,6 +106,7 @@ export interface FileRoutesByTo {
   '/delivery': typeof DeliveryRoute
   '/painel': typeof PainelRoute
   '/pedido': typeof PedidoRoute
+  '/recuperar': typeof RecuperarRoute
   '/salaode': typeof SalaodeRoute
   '/terapi': typeof TerapiRoute
   '/whats': typeof WhatsRoute
@@ -113,6 +121,7 @@ export interface FileRoutesById {
   '/delivery': typeof DeliveryRoute
   '/painel': typeof PainelRoute
   '/pedido': typeof PedidoRoute
+  '/recuperar': typeof RecuperarRoute
   '/salaode': typeof SalaodeRoute
   '/terapi': typeof TerapiRoute
   '/whats': typeof WhatsRoute
@@ -128,6 +137,7 @@ export interface FileRouteTypes {
     | '/delivery'
     | '/painel'
     | '/pedido'
+    | '/recuperar'
     | '/salaode'
     | '/terapi'
     | '/whats'
@@ -141,6 +151,7 @@ export interface FileRouteTypes {
     | '/delivery'
     | '/painel'
     | '/pedido'
+    | '/recuperar'
     | '/salaode'
     | '/terapi'
     | '/whats'
@@ -154,6 +165,7 @@ export interface FileRouteTypes {
     | '/delivery'
     | '/painel'
     | '/pedido'
+    | '/recuperar'
     | '/salaode'
     | '/terapi'
     | '/whats'
@@ -168,6 +180,7 @@ export interface RootRouteChildren {
   DeliveryRoute: typeof DeliveryRoute
   PainelRoute: typeof PainelRoute
   PedidoRoute: typeof PedidoRoute
+  RecuperarRoute: typeof RecuperarRoute
   SalaodeRoute: typeof SalaodeRoute
   TerapiRoute: typeof TerapiRoute
   WhatsRoute: typeof WhatsRoute
@@ -225,6 +238,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PedidoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/recuperar': {
+      id: '/recuperar'
+      path: '/recuperar'
+      fullPath: '/recuperar'
+      preLoaderRoute: typeof RecuperarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/salaode': {
       id: '/salaode'
       path: '/salaode'
@@ -264,6 +284,7 @@ const rootRouteChildren: RootRouteChildren = {
   DeliveryRoute: DeliveryRoute,
   PainelRoute: PainelRoute,
   PedidoRoute: PedidoRoute,
+  RecuperarRoute: RecuperarRoute,
   SalaodeRoute: SalaodeRoute,
   TerapiRoute: TerapiRoute,
   WhatsRoute: WhatsRoute,
