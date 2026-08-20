@@ -172,6 +172,7 @@ export function PainelWizard({
               }}
               pending={mutation.isPending}
               ctaLabel="Escolher"
+              onNext={() => setStep(0)}
             />
           )}
         </div>
