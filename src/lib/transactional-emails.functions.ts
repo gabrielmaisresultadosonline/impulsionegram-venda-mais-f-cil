@@ -29,6 +29,7 @@ export const sendTransactionalEmail = createServerFn({ method: "POST" })
     }
 
     try {
+      console.log(`[sendTransactionalEmail] Preparando envio ${data.type} para ${data.email}`);
       const nodemailer = await import("nodemailer");
       const transporter = nodemailer.createTransport({
         host: "smtp.hostinger.com",
@@ -82,6 +83,8 @@ export const sendTransactionalEmail = createServerFn({ method: "POST" })
         subject,
         html,
       });
+
+      console.log(`[sendTransactionalEmail] E-mail ${data.type} enviado com sucesso para ${data.email}`);
 
       saveEmailLog({
         orderNsu: data.orderNsu || "transactional",
