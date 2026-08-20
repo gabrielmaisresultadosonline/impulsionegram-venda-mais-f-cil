@@ -50,6 +50,8 @@ const TABS: ReadonlyArray<{ key: TabKey; label: string }> = [
   { key: "tentativa", label: "Tentativas" },
   { key: "entregue", label: "Entregues" },
   { key: "cadastros", label: "Cadastros" },
+  { key: "ia", label: "Agente I.A" },
+  { key: "chats", label: "Conversas" },
   { key: "todos", label: "Todos" },
 ];
 
