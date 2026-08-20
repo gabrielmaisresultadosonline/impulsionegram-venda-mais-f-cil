@@ -57,7 +57,13 @@ function Ads01Page() {
 
   return (
     <main className="min-h-screen">
-      <Hero onCta={openSignup} onSecondary={openSignup} />
+      <Hero
+        onCta={openSignup}
+        onSecondary={openSignup}
+        headline={["Mais vendas,", "Mais engajamento", "Mais clientes"]}
+        highlight="Público filtrado por região e CEP no automático."
+        description="Basta uma configuração e você faz tudo direto pelo celular. Ganhe seguidores filtrados por cidade, região e pelo perfil do seu concorrente — sem esforço manual."
+      />
 
       <section className="px-4 pb-6">
         <div className="glass-panel mx-auto flex max-w-4xl flex-col items-center gap-4 rounded-2xl p-6 text-center md:flex-row md:justify-between md:text-left">
