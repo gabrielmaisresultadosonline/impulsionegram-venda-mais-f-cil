@@ -49,7 +49,7 @@ function PainelPage() {
   const isBarber = source === "barbea";
   const isTherapy = source === "terapi";
   const isDelivery = source === "delivery";
-  const isAds = source === "ads01";
+    const isAds = source === "ads01";
   const availablePlans = useMemo(() => {
     if (isSalon) return getSalonPlans();
     if (isBarber) return getBarberPlans();
