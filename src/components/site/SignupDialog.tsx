@@ -88,7 +88,7 @@ export function SignupDialog({
       saveAccount(created);
       if (selectedPlanId) savePlanSelection(selectedPlanId);
       
-      // O e-mail de boas-vindas agora é disparado pelo servidor via trackSiteEvent -> recordSignup
+      // O e-mail de boas-vindas é disparado pelo servidor via trackSiteEvent -> recordSignup
       // para garantir que o envio aconteça de forma centralizada e confiável.
 
       trackPixelEvent("Lead", {
