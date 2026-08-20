@@ -115,7 +115,9 @@ function Index() {
           <h2 className="text-3xl font-extrabold md:text-4xl">
             Planos de <span className="text-gradient-brand">Anúncios</span>
           </h2>
-          <p className="mt-4 text-muted-foreground">O valor já inclui a gestão e o crédito pago à Meta.</p>
+          <p className="mt-4 text-primary font-bold animate-pulse text-lg border-2 border-primary/20 bg-primary/5 inline-block px-6 py-2 rounded-full">
+            O valor já inclui a gestão e o crédito pago à Meta.
+          </p>
 
           <div className="mt-12 flex flex-wrap justify-center gap-6">
             {adsPlans.map((plan) => (
