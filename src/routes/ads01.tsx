@@ -9,6 +9,9 @@ import { Button } from "@/components/ui/button";
 import { PLANS } from "@/lib/plans";
 import { trackSiteEvent } from "@/lib/pixel.functions";
 
+/**
+ * Rota para a landing page focada em seguidores (Original Home).
+ */
 export const Route = createFileRoute("/ads01")({
   head: () => ({
     meta: [
