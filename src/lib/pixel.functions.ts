@@ -47,6 +47,22 @@ export const trackSiteEvent = createServerFn({ method: "POST" })
         phone: data.phone,
         source: data.source,
       });
+
+      // Dispara CAPI Lead no servidor para maior precisão
+      const { sendCapiEvent } = await import("./capi.server");
+      const eventId = `lead_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
+      const forwardedFor = getRequestHeader("x-forwarded-for") ?? "";
+      const clientIp = forwardedFor.split(",")[0]?.trim() || undefined;
+
+      void sendCapiEvent({
+        eventName: "Lead",
+        eventId,
+        email: data.email,
+        phone: data.phone,
+        eventSourceUrl: getRequestHeader("referer") ?? undefined,
+        clientIp,
+        clientUserAgent: getRequestHeader("user-agent") ?? undefined,
+      }).catch(() => {});
     }
     return { ok: true };
   });
