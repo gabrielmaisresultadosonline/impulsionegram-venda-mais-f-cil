@@ -1,5 +1,7 @@
-import { MessageSquare, Star } from "lucide-react";
+import { MessageSquare, Star, ChevronDown, ChevronUp } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
 interface Testimonial {
   id: number;
@@ -69,6 +71,10 @@ const TESTIMONIALS: Testimonial[] = [
 ];
 
 export function TestimonialsSection() {
+  const [showAll, setShowAll] = useState(false);
+  
+  const displayedTestimonials = showAll ? TESTIMONIALS : TESTIMONIALS.slice(0, 3);
+
   return (
     <section className="py-20 px-4">
       <div className="max-w-6xl mx-auto">
@@ -81,8 +87,8 @@ export function TestimonialsSection() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {TESTIMONIALS.map((t) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {displayedTestimonials.map((t) => (
             <div
               key={t.id}
               className="glass-panel p-5 rounded-2xl flex flex-col relative overflow-hidden group hover:border-primary/50 transition-colors"
@@ -117,6 +123,24 @@ export function TestimonialsSection() {
               </div>
             </div>
           ))}
+        </div>
+
+        <div className="mt-12 text-center">
+          <Button
+            variant="outline"
+            onClick={() => setShowAll(!showAll)}
+            className="rounded-full px-8 gap-2 border-primary/20 hover:bg-primary/5"
+          >
+            {showAll ? (
+              <>
+                Ver menos <ChevronUp className="size-4" />
+              </>
+            ) : (
+              <>
+                Ver todos <ChevronDown className="size-4" />
+              </>
+            )}
+          </Button>
         </div>
       </div>
     </section>
