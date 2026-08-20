@@ -55,9 +55,8 @@ function PainelPage() {
     if (isBarber) return getBarberPlans();
     if (isTherapy) return getTherapyPlans();
     if (isDelivery) return getDeliveryPlans();
-    if (isAds) return getAdsPlans();
     return PLANS;
-  }, [isSalon, isBarber, isTherapy, isDelivery, isAds]);
+  }, [isSalon, isBarber, isTherapy, isDelivery]);
 
 
 
