@@ -25,6 +25,8 @@ import { sourceLabel } from "@/lib/traffic-source";
 import { PixelCard } from "@/components/admin/PixelCard";
 import { SignupsCard } from "@/components/admin/SignupsCard";
 import { ManualPurchaseCard } from "@/components/admin/ManualPurchaseCard";
+import { AISettingsCard } from "@/components/admin/AISettingsCard";
+import { LayoutDashboard, Users2, MessageSquare, BotIcon } from "lucide-react";
 
 import {
   adminListOrders,
