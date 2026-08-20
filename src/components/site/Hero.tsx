@@ -1,8 +1,9 @@
-import { ArrowRight, Instagram, ShieldCheck, Timer } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import type { ComponentProps } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Social3DIcons } from "@/components/site/Social3DIcons";
+import metaPartnerAsset from "@/assets/meta-partner.png.asset.json";
 
 export interface HeroProps extends ComponentProps<"section"> {
   /** Abre o popup de cadastro. */
