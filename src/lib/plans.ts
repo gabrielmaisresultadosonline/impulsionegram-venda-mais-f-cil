@@ -84,53 +84,8 @@ export const PLANS: readonly Plan[] = [
     ],
     badge: "MAIS VENDIDO",
   },
-  {
-    id: "ads-10k",
-    slug: "ads10",
-    name: "Alcance 10.000",
-    tagline: "Alcance de público mensal",
-    priceCents: 9700,
-    features: [
-      "Alcance de 10.000 contas mensal",
-      "Engajamento, curtidas, comentários",
-      "Leads no WhatsApp e conversões",
-      "Gestão de anúncios inclusa",
-      "Valor pago à Meta incluso",
-    ],
-  },
-  {
-    id: "ads-50k",
-    slug: "ads50",
-    name: "Alcance 50.000",
-    tagline: "Alcance de público mensal",
-    priceCents: 14700,
-    features: [
-      "Alcance de 50.000 contas mensal",
-      "Engajamento, curtidas, comentários",
-      "Leads no WhatsApp e conversões",
-      "Gestão de anúncios inclusa",
-      "Valor pago à Meta incluso",
-    ],
-  },
-  {
-    id: "ads-100k",
-    slug: "ads100",
-    name: "Alcance 100.000",
-    tagline: "Alcance mensal massivo",
-    priceCents: 59700,
-    features: [
-      "Alcance de 100.000 contas mensal",
-      "Engajamento, curtidas, comentários",
-      "Leads no WhatsApp e conversões",
-      "Gestão de anúncios inclusa",
-      "Valor pago à Meta incluso",
-    ],
-    badge: "VIP",
-  },
 ] as const;
 
-/** Planos exibidos no funil de anúncios (/ads01). */
-export const ADS_PLAN_IDS: readonly string[] = ["ads-10k", "ads-50k", "ads-100k"] as const;
 
 /** Planos padrão da homepage (Seguidores + ADS). */
 export const HOME_PLAN_IDS: readonly string[] = [
@@ -138,19 +93,12 @@ export const HOME_PLAN_IDS: readonly string[] = [
   "impulso-2000",
   "autoridade-5000",
   "marketing-completo",
-  "ads-10k",
-  "ads-50k",
-  "ads-100k",
 ] as const;
 
 export function getHomePlans(): readonly Plan[] {
   return HOME_PLAN_IDS.map((id) => getPlanById(id)).filter((p): p is Plan => p !== undefined);
 }
 
-/** Retorna apenas os planos disponíveis para o funil de anúncios. */
-export function getAdsPlans(): readonly Plan[] {
-  return ADS_PLAN_IDS.map((id) => getPlanById(id)).filter((p): p is Plan => p !== undefined);
-}
 
 /** Planos exibidos no funil de salão de beleza (/salaode). */
 export const SALON_PLAN_IDS: readonly string[] = [...HOME_PLAN_IDS] as const;

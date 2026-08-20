@@ -17,7 +17,7 @@ import {
   getDeliveryPlans,
   getSalonPlans,
   getTherapyPlans,
-  getAdsPlans,
+  
 } from "@/lib/plans";
 
 
@@ -49,12 +49,13 @@ function PainelPage() {
   const isBarber = source === "barbea";
   const isTherapy = source === "terapi";
   const isDelivery = source === "delivery";
-  const isAds = source === "ads01";
+    const isAds = source === "ads01";
   const availablePlans = useMemo(() => {
     if (isSalon) return getSalonPlans();
     if (isBarber) return getBarberPlans();
     if (isTherapy) return getTherapyPlans();
     if (isDelivery) return getDeliveryPlans();
+    // No painel geral, mostramos apenas os planos de seguidores configurados no catálogo global
     return PLANS;
   }, [isSalon, isBarber, isTherapy, isDelivery]);
 
