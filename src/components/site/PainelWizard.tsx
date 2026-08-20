@@ -16,7 +16,7 @@ import { OrderBumpDialog } from "./wizard/OrderBumpDialog";
 import { CampaignQuiz } from "./wizard/CampaignQuiz";
 import { EMPTY_CAMPAIGN, formatRegion, type CampaignData } from "./wizard/types";
 
-const STEPS = ["Perfil e público", "Plano e pagamento"] as const;
+const STEPS = ["Plano", "Perfil e público", "Pagamento"] as const;
 
 export interface PainelWizardProps extends ComponentProps<"section"> {
   account: LocalAccount;
@@ -44,7 +44,7 @@ export function PainelWizard({
   className,
   ...props
 }: PainelWizardProps) {
-  const [step, setStep] = useState(0);
+  const [step, setStep] = useState(1); // Começa na seleção de plano
   const [campaign, setCampaign] = useState<CampaignData>({
     ...EMPTY_CAMPAIGN,
     customerName: account.name,
@@ -78,7 +78,7 @@ export function PainelWizard({
           source,
         },
       }),
-    onSettled: () => setStep(1),
+    onSettled: () => setBumpOpen(true),
   });
 
   useEffect(() => {
@@ -160,6 +160,7 @@ export function PainelWizard({
               onSubmit={() => saveProfile.mutate()}
               askPhone={false}
               pending={saveProfile.isPending}
+              onBack={() => setStep(1)}
             />
           ) : (
             <PlanStep
@@ -167,12 +168,10 @@ export function PainelWizard({
               selectedPlanId={selectedPlanId}
               onSelect={(planId) => {
                 onSelectPlan(planId);
-                setBumpOpen(true);
+                setStep(0);
               }}
-              onBack={() => setStep(0)}
-              onNext={() => setBumpOpen(true)}
               pending={mutation.isPending}
-              ctaLabel="Continuar com"
+              ctaLabel="Escolher"
             />
           )}
         </div>
