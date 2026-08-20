@@ -1,4 +1,4 @@
-import fs from "node:fs";
+import { supabaseAdmin } from "../supabase-admin.server";
 
 export interface EmailLog {
   id: string;
@@ -11,35 +11,45 @@ export interface EmailLog {
   content: string;
 }
 
-const DATA_DIR = ".data";
-const LOG_FILE = `${DATA_DIR}/email_logs.json`;
+export async function saveEmailLog(log: Omit<EmailLog, 'id' | 'sentAt'>): Promise<void> {
+  const { error } = await supabaseAdmin.from('email_logs').insert({
+    order_nsu: log.orderNsu,
+    customer_email: log.customerEmail,
+    customer_name: log.customerName,
+    type: log.type,
+    subject: log.subject,
+    content: log.content,
+    sent_at: new Date().toISOString()
+  });
 
-export function saveEmailLog(log: Omit<EmailLog, 'id' | 'sentAt'>): void {
-  try {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
-    const logs = listEmailLogs();
-    const newLog: EmailLog = {
-      ...log,
-      id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
-      sentAt: new Date().toISOString(),
-    };
-    logs.push(newLog);
-    fs.writeFileSync(LOG_FILE, JSON.stringify(logs), "utf8");
-  } catch (err) {
-    console.error("Erro ao salvar log de email:", err);
-  }
+  if (error) console.error("Erro ao salvar log de email no Supabase:", error);
 }
 
-export function listEmailLogs(): EmailLog[] {
-  try {
-    if (!fs.existsSync(LOG_FILE)) return [];
-    const raw = fs.readFileSync(LOG_FILE, "utf8");
-    return JSON.parse(raw) as EmailLog[];
-  } catch {
+export async function listEmailLogs(): Promise<EmailLog[]> {
+  const { data, error } = await supabaseAdmin
+    .from('email_logs')
+    .select('*')
+    .order('sent_at', { ascending: false });
+
+  if (error) {
+    console.error("Erro ao listar logs de email do Supabase:", error);
     return [];
   }
+
+  return (data || []).map(row => ({
+    id: row.id,
+    orderNsu: row.order_nsu,
+    customerEmail: row.customer_email,
+    customerName: row.customer_name,
+    type: row.type as any,
+    sentAt: row.sent_at,
+    subject: row.subject,
+    content: row.content
+  }));
 }
 
-export function getLogsByOrder(orderNsu: string): EmailLog[] {
-  return listEmailLogs().filter(l => l.orderNsu === orderNsu);
+export async function getLogsByOrder(orderNsu: string): Promise<EmailLog[]> {
+  const all = await listEmailLogs();
+  return all.filter(l => l.orderNsu === orderNsu);
 }
+

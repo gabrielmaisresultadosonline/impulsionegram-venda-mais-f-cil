@@ -1,19 +1,19 @@
-import fs from "node:fs";
+import { supabaseAdmin } from "./supabase-admin.server";
 
 /**
  * Repositório de chats da homepage (visitantes não logados).
- * O histórico de usuários logados (/painel) continua vinculado aos pedidos (orders-repo.server.ts).
+ * Migrado para Lovable Cloud (Supabase).
  */
 
 export interface ChatMessage {
   id: string;
-  author: "user" | "ai" | "admin";
+  author: "user" | "ai" | "admin" | "customer";
   text: string;
   createdAt: string;
 }
 
 export interface VisitorChat {
-  visitorId: string; // E-mail ou UUID gerado
+  visitorId: string;
   name: string;
   email: string;
   phone: string;
@@ -22,58 +22,82 @@ export interface VisitorChat {
   source: "home";
 }
 
-const DATA_DIR = process.env.ORDERS_DATA_DIR ?? ".data";
-const DATA_FILE = `${DATA_DIR}/visitor_chats.json`;
-const chats = new Map<string, VisitorChat>();
-let loaded = false;
-
-function load() {
-  if (loaded) return;
-  loaded = true;
-  try {
-    if (!fs.existsSync(DATA_FILE)) return;
-    const raw = fs.readFileSync(DATA_FILE, "utf8");
-    const parsed = JSON.parse(raw) as VisitorChat[];
-    for (const chat of parsed) chats.set(chat.email.toLowerCase(), chat);
-  } catch {}
+export async function getVisitorChat(email: string): Promise<VisitorChat | undefined> {
+  const all = await listVisitorChats();
+  return all.find(c => c.email.toLowerCase() === email.toLowerCase());
 }
 
-function persist() {
-  try {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
-    fs.writeFileSync(DATA_FILE, JSON.stringify([...chats.values()]), "utf8");
-  } catch {}
+export async function saveVisitorChat(chat: VisitorChat): Promise<void> {
+  // Garantir que o visitor_chat existe
+  const { error } = await supabaseAdmin.from('visitor_chats').upsert({
+    email: chat.email.toLowerCase(),
+    visitor_id: chat.visitorId,
+    name: chat.name,
+    phone: chat.phone,
+    last_message_at: chat.lastMessageAt || new Date().toISOString(),
+    source: chat.source || 'home'
+  });
+
+  if (error) throw error;
 }
 
-export function getVisitorChat(email: string): VisitorChat | undefined {
-  load();
-  return chats.get(email.toLowerCase());
+export async function listVisitorChats(): Promise<VisitorChat[]> {
+  const { data: chats, error: chatsError } = await supabaseAdmin
+    .from('visitor_chats')
+    .select('*')
+    .order('last_message_at', { ascending: false });
+
+  if (chatsError) throw chatsError;
+
+  const { data: messages, error: messagesError } = await supabaseAdmin
+    .from('visitor_messages')
+    .select('*')
+    .order('created_at', { ascending: true });
+
+  if (messagesError) throw messagesError;
+
+  const messagesMap = new Map<string, ChatMessage[]>();
+  messages?.forEach(msg => {
+    const list = messagesMap.get(msg.visitor_email.toLowerCase()) || [];
+    list.push({
+      id: msg.id,
+      author: msg.author as any,
+      text: msg.text,
+      createdAt: msg.created_at
+    });
+    messagesMap.set(msg.visitor_email.toLowerCase(), list);
+  });
+
+  return (chats || []).map(row => ({
+    visitorId: row.visitor_id,
+    name: row.name,
+    email: row.email,
+    phone: row.phone,
+    source: row.source as any,
+    lastMessageAt: row.last_message_at,
+    messages: messagesMap.get(row.email.toLowerCase()) || []
+  }));
 }
 
-export function saveVisitorChat(chat: VisitorChat) {
-  load();
-  chats.set(chat.email.toLowerCase(), chat);
-  persist();
-}
-
-export function listVisitorChats(): VisitorChat[] {
-  load();
-  return [...chats.values()].sort((a, b) => b.lastMessageAt.localeCompare(a.lastMessageAt));
-}
-
-export function addVisitorMessage(email: string, message: Omit<ChatMessage, "id" | "createdAt">): VisitorChat | undefined {
-  load();
-  const chat = chats.get(email.toLowerCase());
-  if (!chat) return undefined;
+export async function addVisitorMessage(email: string, message: Omit<ChatMessage, "id" | "createdAt">): Promise<VisitorChat | undefined> {
+  const now = new Date().toISOString();
   
-  const newMessage: ChatMessage = {
-    ...message,
-    id: crypto.randomUUID(),
-    createdAt: new Date().toISOString(),
-  };
-  
-  chat.messages.push(newMessage);
-  chat.lastMessageAt = newMessage.createdAt;
-  persist();
-  return chat;
+  // Registrar mensagem
+  const { error: msgError } = await supabaseAdmin.from('visitor_messages').insert({
+    visitor_email: email.toLowerCase(),
+    author: message.author,
+    text: message.text,
+    created_at: now
+  });
+
+  if (msgError) throw msgError;
+
+  // Atualizar last_message_at
+  await supabaseAdmin
+    .from('visitor_chats')
+    .update({ last_message_at: now })
+    .eq('email', email.toLowerCase());
+
+  return getVisitorChat(email);
 }
+
