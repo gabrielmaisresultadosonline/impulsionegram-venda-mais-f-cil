@@ -56,7 +56,13 @@ export function Hero({
       {...props}
     >
       <div className="mx-auto flex max-w-4xl flex-col items-center text-center">
-        <Social3DIcons className="mt-4 md:mt-12" />
+        <button 
+          onClick={onCta}
+          className="mb-4 text-sm font-medium text-muted-foreground hover:text-primary transition-colors border border-border/50 bg-background/50 backdrop-blur-sm px-4 py-1.5 rounded-full"
+        >
+          Sou Membro
+        </button>
+        <Social3DIcons className="mt-4 md:mt-6" />
 
         <h1 className="mt-3 text-3xl leading-[1.1] font-extrabold tracking-tight text-balance md:mt-8 md:text-6xl">
           {titleLines.map((line) => (
