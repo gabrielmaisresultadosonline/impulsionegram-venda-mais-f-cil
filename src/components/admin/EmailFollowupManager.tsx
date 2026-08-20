@@ -45,6 +45,14 @@ export function EmailFollowupManager({ credentials }: EmailFollowupManagerProps)
     return acc;
   }, {} as Record<string, { name: string; email: string; nsu: string; sentLogs: any[] }>);
 
+  // Fila de próximos envios (Followups pendentes)
+  const followupQueue = useMemo(() => {
+    // Como a fila está no servidor em .data/followup_queue.json,
+    // idealmente teríamos um serverFn para buscá-la. 
+    // Por ora, vamos inferir dos logs o que já foi enviado.
+    return logs.filter(l => l.type.startsWith('followup'));
+  }, [logs]);
+
   const customerList = Object.values(logsByCustomer).sort((a, b) => {
     const lastA = new Date(a.sentLogs[a.sentLogs.length - 1].sentAt).getTime();
     const lastB = new Date(b.sentLogs[b.sentLogs.length - 1].sentAt).getTime();
