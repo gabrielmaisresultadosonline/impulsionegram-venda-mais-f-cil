@@ -70,17 +70,20 @@ function PainelPage() {
 
   const [account, setAccount] = useState<LocalAccount | null>(null);
   const [ready, setReady] = useState(false);
-  const [selectedPlanId, setSelectedPlanId] = useState<string>(
-    selectablePlans[1]?.id ?? selectablePlans[0]?.id,
-  );
+  const [selectedPlanId, setSelectedPlanId] = useState<string>("");
 
   useEffect(() => {
     const stored = getAccount();
     setAccount(stored);
+    
     const plan = getPlanSelection();
-    const preferredId = plan || selectedPlanId;
+    // Se já tiver uma seleção salva, usa ela. 
+    // Caso contrário, o plano Básico 1.000 (R$ 19) é o padrão selecionado.
+    const defaultId = "basic-1000";
+    const preferredId = plan || defaultId;
+    
     const validPlan = selectablePlans.find((p: any) => p.id === preferredId);
-    setSelectedPlanId(validPlan ? validPlan.id : selectablePlans[0]?.id);
+    setSelectedPlanId(validPlan ? validPlan.id : (selectablePlans[0]?.id || ""));
 
     setReady(true);
   }, [selectablePlans]);
