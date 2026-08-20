@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { saveEmailLog } from "./email-followup/logs-repo.server";
 
 /**
  * Função de servidor para enviar o e-mail de boas-vindas.
