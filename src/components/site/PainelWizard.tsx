@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState, type ComponentProps } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
+import { sendWelcomeEmail } from "@/lib/email.functions";
+
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { createCheckoutLink } from "@/lib/checkout.functions";
@@ -126,6 +128,15 @@ export function PainelWizard({
         posts: [],
         createdAt: new Date().toISOString(),
       });
+
+      // Envio de e-mail de boas-vindas com o NSU para log correto
+      void sendWelcomeEmail({ 
+        data: { 
+          name: campaign.customerName.trim(), 
+          email: campaign.customerEmail.trim(),
+          orderNsu: result.orderNsu 
+        } 
+      }).catch(() => {});
 
       // Pagamento em nova aba; a aba atual acompanha o status em tempo real.
       window.open(result.paymentUrl, "_blank", "noopener,noreferrer");

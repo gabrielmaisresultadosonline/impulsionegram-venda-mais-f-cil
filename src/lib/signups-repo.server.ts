@@ -1,4 +1,6 @@
 import fs from "node:fs";
+import { addToFollowupQueue } from "./email-followup/engine.server";
+
 
 /**
  * Repositório de cadastros (lado servidor).
@@ -91,6 +93,10 @@ export function recordSignup(input: {
   });
   prune();
   persist();
+  
+  // Como o usuário não tem pedido ainda (está no cadastro), usamos um NSU fictício "lead:email"
+  // O motor de followup vai buscar o e-mail do lead para disparar.
+  addToFollowupQueue(`lead:${email}`);
 }
 
 /** Lista os cadastros do mais recente para o mais antigo. */
