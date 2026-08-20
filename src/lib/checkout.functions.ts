@@ -45,6 +45,7 @@ const createCheckoutSchema = z.object({
   /** Order bumps opcionais escolhidos no popup "turbine seu plano". */
   bumpIds: z.array(z.string().trim().max(64)).max(10).optional(),
   adLink: z.string().trim().max(500).optional().nullable().or(z.literal("")),
+  turbinarLink: z.string().trim().max(500).optional().nullable().or(z.literal("")),
 });
 
 export type CreateCheckoutInput = z.input<typeof createCheckoutSchema>;
@@ -111,6 +112,14 @@ export const createCheckoutLink = createServerFn({ method: "POST" })
         payload.webhook_url = `${origin}/api/public/infinitepay/webhook`;
       }
 
+      if (data.turbinarLink) {
+        payload.items.push({
+          quantity: 1,
+          price: 0,
+          description: `Link Turbinar: ${data.turbinarLink}`
+        });
+      }
+
       return payload;
     };
 
@@ -171,6 +180,7 @@ export const createCheckoutLink = createServerFn({ method: "POST" })
       region: data.region,
       competitor: data.competitor ?? "",
       adLink: data.adLink ?? "",
+      turbinarLink: data.turbinarLink ?? "",
       posts: [],
       productName,
       source: normalizeSource(data.source),

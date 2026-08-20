@@ -109,6 +109,7 @@ export function PainelWizard({
           source,
           bumpIds: selectedBumps,
           adLink: campaign.adLink.trim(),
+          turbinarLink: campaign.turbinarLink?.trim() || "",
         },
       }),
     onSuccess: (result) => {
@@ -125,6 +126,7 @@ export function PainelWizard({
         profileUrl: campaign.profileUrl.trim() || "",
         region: formatRegion(campaign),
         adLink: campaign.adLink.trim(),
+        turbinarLink: campaign.turbinarLink?.trim() || "",
         posts: [],
         createdAt: new Date().toISOString(),
       });
@@ -191,6 +193,8 @@ export function PainelWizard({
         }
         onConfirm={() => mutation.mutate()}
         pending={mutation.isPending}
+        turbinarLink={campaign.turbinarLink}
+        onTurbinarLinkChange={(val) => patchCampaign({ turbinarLink: val })}
       />
     </section>
   );

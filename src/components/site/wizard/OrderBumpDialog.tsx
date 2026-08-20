@@ -1,8 +1,9 @@
-import { ArrowDown, Check, Loader2, Rocket } from "lucide-react";
+import { ArrowDown, Check, Loader2, Rocket, Link as LinkIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { ORDER_BUMPS, formatBRL, sumOrderBumps, type Plan } from "@/lib/plans";
+import { Input } from "@/components/ui/input";
 
 export interface OrderBumpDialogProps {
   open: boolean;
@@ -13,6 +14,8 @@ export interface OrderBumpDialogProps {
   onToggleBump: (bumpId: string) => void;
   onConfirm: () => void;
   pending?: boolean;
+  turbinarLink?: string;
+  onTurbinarLinkChange?: (val: string) => void;
 }
 
 /**
@@ -28,11 +31,16 @@ export function OrderBumpDialog({
   onToggleBump,
   onConfirm,
   pending = false,
+  turbinarLink = "",
+  onTurbinarLinkChange,
 }: OrderBumpDialogProps) {
   if (!plan) return null;
 
   const bumpsTotal = sumOrderBumps(selectedBumps);
   const total = plan.priceCents + bumpsTotal;
+
+  const requiresLink = selectedBumps.length > 0;
+  const isLinkValid = !requiresLink || (turbinarLink && turbinarLink.trim().length > 5);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -106,6 +114,24 @@ export function OrderBumpDialog({
             })}
           </ul>
 
+          {requiresLink && (
+            <div className="animate-in fade-in slide-in-from-top-2 space-y-2 rounded-2xl border border-dashed border-primary/40 bg-primary/5 p-4 duration-300">
+              <label className="flex items-center gap-2 text-xs font-bold text-primary uppercase">
+                <LinkIcon className="size-3.5" />
+                Link da Publicação
+              </label>
+              <Input
+                placeholder="https://www.instagram.com/reels/..."
+                value={turbinarLink}
+                onChange={(e) => onTurbinarLinkChange?.(e.target.value)}
+                className="h-10 border-primary/20 bg-background text-sm focus-visible:ring-primary"
+              />
+              <p className="text-[10px] text-muted-foreground italic">
+                Compartilhe o link do post que deseja turbinar.
+              </p>
+            </div>
+          )}
+
           <div className="border-border flex items-center justify-between gap-3 border-t pt-4">
             <span className="text-muted-foreground text-sm font-semibold">Total</span>
             <span className="text-xl font-extrabold">{formatBRL(total)}</span>
@@ -115,8 +141,8 @@ export function OrderBumpDialog({
             type="button"
             size="lg"
             onClick={onConfirm}
-            disabled={pending}
-            className="h-14 w-full gap-2 bg-[oklch(0.62_0.18_145)] text-sm leading-tight font-bold whitespace-normal text-white hover:bg-[oklch(0.67_0.18_145)] sm:text-base"
+            disabled={pending || !isLinkValid}
+            className="h-14 w-full gap-2 bg-[oklch(0.62_0.18_145)] text-sm leading-tight font-bold whitespace-normal text-white hover:bg-[oklch(0.67_0.18_145)] disabled:opacity-50 sm:text-base"
           >
             {pending ? (
               <>

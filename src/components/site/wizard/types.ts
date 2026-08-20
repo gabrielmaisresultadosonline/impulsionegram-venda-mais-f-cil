@@ -11,6 +11,7 @@ export interface CampaignData {
   customerName: string;
   customerEmail: string;
   customerPhone: string;
+  turbinarLink?: string; // Novo campo para o link do post a turbinar
 }
 
 export const EMPTY_CAMPAIGN: CampaignData = {
