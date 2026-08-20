@@ -585,8 +585,6 @@ function OrderCard({ order, busy, sendingPixel, onDeliver, onReopen, onSendPixel
             Chat Ativo
           </Badge>
         )}
-      </div>
-
         {order.receiptUrl ? (
           <Button asChild variant="outline" size="sm">
             <a href={order.receiptUrl} target="_blank" rel="noopener noreferrer">
