@@ -137,6 +137,7 @@ function Index() {
             className="h-6 w-auto object-contain opacity-70 grayscale hover:grayscale-0 transition-all duration-300"
           />
           <p className="text-center text-xs text-muted-foreground">
+            O valor já inclui a gestão e o crédito pago à Meta. <br />
             Pagamentos processados pela InfinitePay ·
             Resultados iniciam em até 6 horas após a aprovação.
           </p>
