@@ -96,7 +96,7 @@ export function ChannelPositionSection() {
               </div>
               <p className="text-xs text-muted-foreground">
                 Priorizamos a geração de conversas diretas para o seu negócio.
-              </li>
+              </p>
             </div>
           </div>
         </div>
