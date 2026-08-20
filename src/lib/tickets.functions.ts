@@ -61,6 +61,7 @@ export const customerListOrdersByEmail = createServerFn({ method: "POST" })
     z.object({ customerEmail: z.string().trim().email().min(1).max(160) }).parse(data),
   )
   .handler(async ({ data }): Promise<CustomerOrder[]> => {
+    const repo = await import("./orders-repo.server");
     const allOrders = await repo.listOrders();
     const target = data.customerEmail.toLowerCase();
     return allOrders.filter(
