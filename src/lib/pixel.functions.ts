@@ -41,7 +41,7 @@ export const trackSiteEvent = createServerFn({ method: "POST" })
     settings.incrementSignups();
     if (data.email) {
       const { recordSignup } = await import("./signups-repo.server");
-      recordSignup({
+      await recordSignup({
         name: data.name ?? "",
         email: data.email,
         phone: data.phone,
