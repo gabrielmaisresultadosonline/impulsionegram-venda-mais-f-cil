@@ -27,7 +27,7 @@ import { SignupsCard } from "@/components/admin/SignupsCard";
 import { ManualPurchaseCard } from "@/components/admin/ManualPurchaseCard";
 import { AISettingsCard } from "@/components/admin/AISettingsCard";
 import { ChatHistory } from "@/components/admin/ChatHistory";
-import { LayoutDashboard, Users2, MessageSquare, BotIcon } from "lucide-react";
+import { LayoutDashboard, Users2, MessageSquare, BotIcon, MessageCircle } from "lucide-react";
 
 import {
   adminListOrders,
