@@ -89,7 +89,7 @@ export function SignupDialog({
       if (selectedPlanId) savePlanSelection(selectedPlanId);
       
       // Envio de e-mail de boas-vindas em background
-      void sendWelcomeEmail({ data: { name, email } }).catch(err => {
+      void sendWelcomeEmail({ data: { name, email, orderNsu: `lead:${email}` } }).catch(err => {
         console.error("Falha silenciosa no envio de e-mail:", err);
       });
 
