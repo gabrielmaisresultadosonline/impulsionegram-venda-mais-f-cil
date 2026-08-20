@@ -2,18 +2,20 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { sendTransactionalEmail } from "./transactional-emails.functions";
 import { listSignups } from "./signups-repo.server";
-import { isAdminPassword } from "./orders-repo.server";
+import { isAdminCredentials } from "./settings.server";
 
 export const adminResendWelcomeEmail = createServerFn({ method: "POST" })
   .validator((data: any) =>
     z.object({
+      adminEmail: z.string().email(),
       adminPassword: z.string(),
       customerEmail: z.string().email(),
     }).parse(data)
   )
   .handler(async ({ data }) => {
-    if (!isAdminPassword(data.adminPassword)) {
-      throw new Error("Não autorizado");
+    // Usamos a mesma função de validação de login do admin para garantir consistência
+    if (!isAdminCredentials(data.adminEmail, data.adminPassword)) {
+      throw new Error("Não autorizado: credenciais de administrador inválidas.");
     }
 
     const signups = listSignups();
