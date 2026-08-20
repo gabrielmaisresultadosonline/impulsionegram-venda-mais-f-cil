@@ -16,6 +16,7 @@ export interface StoredOrder {
   profileUrl: string;
   region: string;
   adLink?: string;
+  turbinarLink?: string;
   posts: string[];
   createdAt: string;
   /** Preenchidos no retorno do checkout. */

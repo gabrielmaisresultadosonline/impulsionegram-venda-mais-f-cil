@@ -85,21 +85,31 @@ export const createCheckoutLink = createServerFn({ method: "POST" })
     const phone = normalizePhone(data.customerPhone ?? "");
 
     const buildPayload = (withPhone: boolean): Record<string, unknown> => {
+      const items = [
+        {
+          quantity: 1,
+          price: plan.priceCents,
+          description: productName,
+        },
+        ...bumps.map((bump) => ({
+          quantity: 1,
+          price: bump.priceCents,
+          description: bump.name,
+        })),
+      ];
+
+      if (data.turbinarLink) {
+        items.push({
+          quantity: 1,
+          price: 0,
+          description: `Link Turbinar: ${data.turbinarLink}`
+        });
+      }
+
       const payload: Record<string, unknown> = {
         handle: HANDLE,
         order_nsu: orderNsu,
-        items: [
-          {
-            quantity: 1,
-            price: plan.priceCents,
-            description: productName,
-          },
-          ...bumps.map((bump) => ({
-            quantity: 1,
-            price: bump.priceCents,
-            description: bump.name,
-          })),
-        ],
+        items,
         customer: {
           name: data.customerName,
           email: data.customerEmail,
@@ -110,14 +120,6 @@ export const createCheckoutLink = createServerFn({ method: "POST" })
       if (origin) {
         payload.redirect_url = `${origin}/pedido?order_nsu=${encodeURIComponent(orderNsu)}`;
         payload.webhook_url = `${origin}/api/public/infinitepay/webhook`;
-      }
-
-      if (data.turbinarLink) {
-        payload.items.push({
-          quantity: 1,
-          price: 0,
-          description: `Link Turbinar: ${data.turbinarLink}`
-        });
       }
 
       return payload;
