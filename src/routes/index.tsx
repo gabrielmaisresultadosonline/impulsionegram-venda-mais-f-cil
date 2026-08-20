@@ -131,7 +131,7 @@ function Index() {
         </div>
       </section>
 
-      <SignupDialog open={signupOpen} onOpenChange={setSignupOpen} source="ads01" />
+      <SignupDialog open={signupOpen} onOpenChange={setSignupOpen} source="home" />
       <footer className="border-t border-border px-4 py-8">
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-3">
           <p className="text-center text-xs text-muted-foreground">
