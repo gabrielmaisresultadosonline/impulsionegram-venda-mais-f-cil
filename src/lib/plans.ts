@@ -126,24 +126,6 @@ export const ORDER_BUMPS: readonly OrderBump[] = [
     description: "Alcance máximo no Google com 5 mil pessoas impactadas.",
     priceCents: 7700,
   },
-  {
-    id: "bump-stories",
-    name: "+1.000 Alcance nos stories",
-    description: "Aumente drasticamente a visualização dos seus stories.",
-    priceCents: 700,
-  },
-  {
-    id: "bump-curtidas",
-    name: "1.000 curtidas",
-    description: "Impulsione o engajamento de uma publicação específica.",
-    priceCents: 900,
-  },
-  {
-    id: "bump-visualizacao",
-    name: "1.000 Visualização",
-    description: "Aumente as views em seus vídeos ou Reels.",
-    priceCents: 700,
-  },
 ] as const;
 
 export function getOrderBumpById(id: string): OrderBump | undefined {
