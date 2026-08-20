@@ -25,8 +25,9 @@ const HANDLE = "paguemro";
 const instagramField = z
   .string()
   .trim()
-  .min(2, "Informe o perfil do Instagram")
-  .max(200, "Valor muito longo");
+  .max(200, "Valor muito longo")
+  .optional()
+  .or(z.literal(""));
 
 const createCheckoutSchema = z.object({
   planId: z.string().trim().min(1).max(64),
@@ -42,7 +43,7 @@ const createCheckoutSchema = z.object({
   source: z.string().trim().max(40).optional(),
   /** Order bumps opcionais escolhidos no popup "turbine seu plano". */
   bumpIds: z.array(z.string().trim().max(64)).max(10).optional(),
-  adLink: z.string().trim().url("Link inválido").max(500).optional(),
+  adLink: z.string().trim().url("Link inválido").max(500),
 });
 
 export type CreateCheckoutInput = z.input<typeof createCheckoutSchema>;
@@ -165,7 +166,7 @@ export const createCheckoutLink = createServerFn({ method: "POST" })
       customerName: data.customerName,
       customerEmail: data.customerEmail,
       customerPhone: data.customerPhone ?? "",
-      profileUrl: data.profileUrl,
+      profileUrl: data.profileUrl ?? "",
       region: data.region,
       competitor: data.competitor ?? "",
       adLink: data.adLink,

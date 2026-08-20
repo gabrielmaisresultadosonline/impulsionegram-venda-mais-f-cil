@@ -99,9 +99,9 @@ export function PainelWizard({
       createLink({
         data: {
           planId: selectedPlanId,
-          profileUrl: campaign.profileUrl.trim(),
+          profileUrl: campaign.profileUrl.trim() || "",
           region: formatRegion(campaign),
-          competitor: campaign.competitor.trim(),
+          competitor: campaign.competitor.trim() || "",
           customerName: campaign.customerName.trim(),
           customerEmail: campaign.customerEmail.trim(),
           customerPhone: campaign.customerPhone.trim(),
@@ -122,7 +122,7 @@ export function PainelWizard({
         customerName: campaign.customerName.trim(),
         customerEmail: campaign.customerEmail.trim(),
         customerPhone: campaign.customerPhone.trim(),
-        profileUrl: campaign.profileUrl.trim(),
+        profileUrl: campaign.profileUrl.trim() || "",
         region: formatRegion(campaign),
         adLink: campaign.adLink.trim(),
         posts: [],
