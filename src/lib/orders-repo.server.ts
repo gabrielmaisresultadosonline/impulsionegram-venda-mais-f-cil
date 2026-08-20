@@ -173,6 +173,23 @@ export function markPaid(orderNsu: string, patch: Partial<OrderRecord> = {}): vo
     paidAt: existing.paidAt ?? new Date().toISOString(),
   });
   removeFromFollowupQueue(orderNsu);
+  
+  // Dispara evento Purchase via CAPI (API de Conversões)
+  const updatedOrder = registry.get(orderNsu);
+  if (updatedOrder) {
+    import("./capi.server").then(({ sendCapiEvent }) => {
+      void sendCapiEvent({
+        eventName: "Purchase",
+        eventId: `purchase-${updatedOrder.orderNsu}`,
+        email: updatedOrder.customerEmail,
+        phone: updatedOrder.customerPhone,
+        value: updatedOrder.priceCents / 100,
+        contentName: updatedOrder.planName,
+        orderId: updatedOrder.orderNsu
+      }).catch(err => console.error("[OrderRepo] Erro ao disparar CAPI Purchase:", err));
+    });
+  }
+
   persist();
 }
 
