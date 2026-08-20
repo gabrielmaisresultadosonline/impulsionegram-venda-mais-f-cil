@@ -53,32 +53,17 @@ export const Route = createFileRoute("/api/public/infinitepay/webhook")({
             ...(event.paid_amount ? { priceCents: event.paid_amount } : {}),
           };
 
-          const { markPaid, listOrders } = await import(
+          const { markPaid, markPaidByProductName } = await import(
             "@/lib/orders-repo.server"
           );
-          
-          const repo = { markPaid, listOrders };
 
           if (event.order_nsu) {
-            await repo.markPaid(event.order_nsu, patch);
+            markPaid(event.order_nsu, patch);
           } else {
-            // Sem NSU: concilia pelo nome do produto
+            // Sem NSU: concilia pelo nome do produto (planoslug + e-mail),
+            // cenário em que o cliente fechou a aba antes do redirect.
             const productName = event.items?.find((item) => item.description)?.description;
-            if (productName) {
-              const target = productName.trim().toLowerCase();
-              const orders = await repo.listOrders();
-              const match = orders
-                .filter((order) => order.productName?.toLowerCase() === target)
-                .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
-                .find((order) => order.status === "tentativa") ??
-                orders
-                  .filter((order) => order.productName?.toLowerCase() === target)
-                  .sort((a, b) => b.createdAt.localeCompare(a.createdAt))[0];
-              
-              if (match) {
-                await repo.markPaid(match.orderNsu, patch);
-              }
-            }
+            if (productName) markPaidByProductName(productName, patch);
           }
 
           return new Response("ok", { status: 200 });

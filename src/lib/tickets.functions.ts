@@ -29,8 +29,8 @@ export const customerListOrder = createServerFn({ method: "POST" })
   )
   .handler(async ({ data }): Promise<CustomerOrder | null> => {
     const repo = await import("./orders-repo.server");
-    const order = await repo.getOrderByNsu(data.orderNsu);
-    if (!order || order.customerEmail.toLowerCase() !== data.customerEmail.toLowerCase()) {
+    const order = repo.getOrderByNsu(data.orderNsu);
+    if (!order || order.customerEmail !== data.customerEmail) {
       return null;
     }
     return order;
@@ -40,16 +40,16 @@ export const customerSendMessage = createServerFn({ method: "POST" })
   .validator((data: unknown) => customerTicketSchema.parse(data))
   .handler(async ({ data }): Promise<CustomerOrder | null> => {
     const repo = await import("./orders-repo.server");
-    const order = await repo.getOrderByNsu(data.orderNsu);
-    if (!order || order.customerEmail.toLowerCase() !== data.customerEmail.toLowerCase()) {
+    const order = repo.getOrderByNsu(data.orderNsu);
+    if (!order || order.customerEmail !== data.customerEmail) {
       throw new Error("Pedido não encontrado.");
     }
-    await repo.addMessage(data.orderNsu, {
+    repo.addMessage(data.orderNsu, {
       author: "customer",
       text: data.text,
       readByAdmin: false,
     });
-    return (await repo.getOrderByNsu(data.orderNsu)) ?? null;
+    return repo.getOrderByNsu(data.orderNsu) ?? null;
   });
 
 /**
@@ -62,12 +62,13 @@ export const customerListOrdersByEmail = createServerFn({ method: "POST" })
   )
   .handler(async ({ data }): Promise<CustomerOrder[]> => {
     const repo = await import("./orders-repo.server");
-    const allOrders = await repo.listOrders();
     const target = data.customerEmail.toLowerCase();
-    return allOrders.filter(
-      (order: any) =>
-        order.customerEmail.trim().toLowerCase() === target && !order.cancelledAt,
-    );
+    return repo
+      .listOrders()
+      .filter(
+        (order) =>
+          order.customerEmail.trim().toLowerCase() === target && !order.cancelledAt,
+      );
   });
 
 /**
@@ -85,5 +86,5 @@ export const customerDeleteOrder = createServerFn({ method: "POST" })
   )
   .handler(async ({ data }): Promise<{ deleted: boolean }> => {
     const repo = await import("./orders-repo.server");
-    return { deleted: await repo.deleteUnpaidOrder(data.orderNsu, data.customerEmail) };
+    return { deleted: repo.deleteUnpaidOrder(data.orderNsu, data.customerEmail) };
   });
