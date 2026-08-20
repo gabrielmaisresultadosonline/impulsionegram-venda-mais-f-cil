@@ -172,24 +172,6 @@ export interface OrderBump {
 
 export const ORDER_BUMPS: readonly OrderBump[] = [
   {
-    id: "bump-stories",
-    name: "+1.000 alcance nos stories",
-    description: "Mais pessoas vendo seus stories todos os dias.",
-    priceCents: 700,
-  },
-  {
-    id: "bump-curtidas",
-    name: "1.000 curtidas nos últimos 3 posts",
-    description: "Curtidas divididas nas 3 publicações mais recentes.",
-    priceCents: 900,
-  },
-  {
-    id: "bump-reels",
-    name: "1.000 visualizações nos reels",
-    description: "Visualizações divididas nos 3 reels mais recentes.",
-    priceCents: 700,
-  },
-  {
     id: "bump-google-3k",
     name: "Anunciar no Google (3 mil pessoas)",
     description: "Expandimos sua campanha para o Google por 30 dias.",
