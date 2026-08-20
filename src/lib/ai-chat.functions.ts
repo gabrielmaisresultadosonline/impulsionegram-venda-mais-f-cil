@@ -80,7 +80,17 @@ export const sendMessageToAI = createServerFn({ method: "POST" })
       addVisitorMessage(data.visitor.email, { author: "user", text: data.message });
     }
 
-    // 2. Chamar OpenAI via Lovable Gateway
+    // 2. Recuperar histórico da conversa para contexto
+    const chatHistory = customerOrder 
+      ? (customerOrder.messages || []).slice(-10) // Últimas 10 mensagens
+      : (getVisitorChat(data.visitor.email)?.messages || []).slice(-10);
+
+    const formattedHistory = chatHistory.map(m => ({
+      role: m.author === "user" || m.author === "customer" ? "user" : (m.author === "admin" ? "assistant" : "assistant"),
+      content: m.text
+    }));
+
+    // 3. Chamar OpenAI via Lovable Gateway
     try {
       const response = await fetch(`${API_GATEWAY_URL}/chat/completions`, {
         method: "POST",
@@ -93,7 +103,8 @@ export const sendMessageToAI = createServerFn({ method: "POST" })
           model: "gpt-4o-mini",
           messages: [
             { role: "system", content: settings.aiPrompt || "Você é um assistente prestativo." },
-            { role: "user", content: `Cliente ${data.visitor.name}: ${data.message}` }
+            ...formattedHistory,
+            { role: "user", content: data.message }
           ],
           temperature: 0.7,
         }),
