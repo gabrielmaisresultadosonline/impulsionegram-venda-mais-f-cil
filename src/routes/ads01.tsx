@@ -31,10 +31,10 @@ export const Route = createFileRoute("/ads01")({
       },
     ],
   }),
-  component: Index,
+  component: AdsLandingPage,
 });
 
-function Index() {
+function AdsLandingPage() {
   const [signupOpen, setSignupOpen] = useState(false);
 
   // Contabiliza a visita para o painel administrativo (uma vez por carregamento).
