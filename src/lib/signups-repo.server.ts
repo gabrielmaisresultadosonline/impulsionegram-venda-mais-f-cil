@@ -1,9 +1,8 @@
-import fs from "node:fs";
-import { addToFollowupQueue } from "./email-followup/engine.server";
 import { supabaseAdmin } from "./supabase-admin.server";
+import { addToFollowupQueue } from "./email-followup/engine.server";
 
 /**
- * Repositório de cadastros (lado servidor).
+ * Repositório de cadastros (leads).
  * Migrado para Lovable Cloud (Supabase).
  */
 
@@ -49,11 +48,12 @@ export async function recordSignup(input: {
     attempts: (existing?.attempts ?? 0) + 1,
     last_seen_at: now,
     source: existing?.source ?? input.source ?? "home",
+    password: input.password || existing?.password
   };
 
   await supabaseAdmin.from('signups').upsert(record);
   
-  addToFollowupQueue(`lead:${email}`);
+  await addToFollowupQueue(`lead:${email}`);
 
   try {
     const { sendTransactionalEmail } = await import("./transactional-emails.functions");
@@ -62,7 +62,7 @@ export async function recordSignup(input: {
         type: "welcome",
         name: record.name, 
         email, 
-        password: input.password,
+        password: input.password || existing?.password,
         orderNsu: `lead:${email}` 
       } 
     });
@@ -78,7 +78,10 @@ export async function listSignups(): Promise<SignupRecord[]> {
     .select('*')
     .order('created_at', { ascending: false });
 
-  if (error) throw error;
+  if (error) {
+    console.error("[SignupsRepo] Erro ao listar do Supabase:", error);
+    return [];
+  }
   
   return (data || []).map(row => ({
     email: row.email,
@@ -139,4 +142,3 @@ export async function saveSignupProfile(input: {
 
   await supabaseAdmin.from('signups').upsert(record);
 }
-
