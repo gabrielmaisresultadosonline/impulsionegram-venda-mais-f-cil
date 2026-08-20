@@ -106,10 +106,10 @@ function Index() {
       <section className="px-4 py-20 bg-muted/30" id="planos">
         <div className="mx-auto max-w-6xl text-center">
           <h2 className="text-3xl font-extrabold md:text-4xl">
-            Planos de <span className="text-gradient-brand">Anúncios</span>
+            Nossos <span className="text-gradient-brand">Planos</span>
           </h2>
           <p className="mt-4 text-primary font-bold animate-pulse text-lg border-2 border-primary/20 bg-primary/5 inline-block px-6 py-2 rounded-full">
-            O valor já inclui a gestão e o crédito pago à Meta.
+            Selecione a melhor opção para o seu crescimento.
           </p>
 
           <div className="mt-12 flex flex-wrap justify-center gap-6">
@@ -145,7 +145,7 @@ function Index() {
             className="h-6 w-auto object-contain opacity-70 grayscale hover:grayscale-0 transition-all duration-300"
           />
           <p className="text-center text-xs text-muted-foreground">
-            O valor já inclui a gestão e o crédito pago à Meta. <br />
+            Impulsione seu negócio com seguidores reais e filtrados. <br />
             Pagamentos processados pela InfinitePay ·
             Resultados iniciam em até 6 horas após a aprovação.
           </p>
