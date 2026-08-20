@@ -13,6 +13,7 @@ export const sendWelcomeEmail = createServerFn({ method: "POST" })
       .object({
         name: z.string(),
         email: z.string().email(),
+        orderNsu: z.string().optional(),
       })
       .parse(data)
   )
@@ -115,6 +116,15 @@ export const sendWelcomeEmail = createServerFn({ method: "POST" })
         to: email,
         subject: `Bem-vindo à Acessar I.A, ${firstName}! 🚀`,
         html: htmlContent,
+      });
+
+      saveEmailLog({
+        orderNsu: data.orderNsu || "welcome-only",
+        customerEmail: email,
+        customerName: name,
+        type: "welcome",
+        subject: `Bem-vindo à Acessar I.A, ${firstName}! 🚀`,
+        content: htmlContent.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim(),
       });
 
       return { success: true };
