@@ -103,6 +103,7 @@ export const PLANS: readonly Plan[] = [
 
 /** Planos padrão da homepage (Seguidores + ADS). */
 export const HOME_PLAN_IDS: readonly string[] = [
+  "starter-500",
   "basic-1000",
   "impulso-2000",
   "autoridade-5000",
