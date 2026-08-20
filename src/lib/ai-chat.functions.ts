@@ -92,12 +92,11 @@ export const sendMessageToAI = createServerFn({ method: "POST" })
 
     // 3. Chamar OpenAI via Lovable Gateway
     try {
-      const response = await fetch(`${API_GATEWAY_URL}/chat/completions`, {
+      const response = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${settings.openaiKey}`,
-          "x-lovable-proxy": "openai"
+          "Authorization": `Bearer ${settings.openaiKey}`
         },
         body: JSON.stringify({
           model: "gpt-4o-mini",
