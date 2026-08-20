@@ -63,8 +63,8 @@ function Index() {
         headline={["Faça seus anúncios", "no automático"]}
         highlight="Facebook, Instagram e WhatsApp no piloto automático."
         description="Mande o link do seu post do instagram, selecione a região no mapa e deixe a gestão com a gente. Resultados reais para o seu negócio."
-        ctaLabel="Cadastre-se grátis"
-        secondaryLabel="Ver planos de anúncios"
+        ctaLabel="A partir de R$97 mensal"
+        secondaryLabel="Começar agora"
       />
 
       <section className="px-4 py-8">
@@ -125,6 +125,8 @@ function Index() {
                 key={plan.id}
                 plan={plan}
                 selected={false}
+                onSelect={openSignup}
+                ctaLabel="A partir de R$97 mensal"
                 className="w-full sm:w-[calc(50%-12px)] lg:w-[calc(33%-16px)] lg:max-w-[340px]"
               />
             ))}
@@ -135,7 +137,7 @@ function Index() {
             onClick={openSignup}
             className="bg-gradient-brand shadow-glow mt-12 h-12 px-8"
           >
-            Cadastre-se grátis
+            A partir de R$97 mensal
             <ArrowRight className="size-4 ml-2" />
           </Button>
         </div>
