@@ -110,6 +110,9 @@ export function SignupsCard({ credentials, className, ...props }: SignupsCardPro
               <Field label="Perfil do Instagram">
                 <span className="break-all">{signup.profileUrl || "—"}</span>
               </Field>
+              <Field label="Link da Publicação">
+                <span className="break-all">{signup.profileSavedAt && signup.profileUrl ? (signup.profileUrl.startsWith('http') ? signup.profileUrl : '—') : (signup.profileUrl || '—')}</span>
+              </Field>
               <Field label="Público (região / CEP)">{signup.region || "—"}</Field>
               <Field label="Concorrente">
                 <span className="break-all">{signup.competitor || "—"}</span>
