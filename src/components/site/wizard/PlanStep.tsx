@@ -85,8 +85,8 @@ export function PlanStep({
                   </Button>
 
                   {isTurbinarPlan && (
-                    <div className="animate-in fade-in slide-in-from-top-2 space-y-2 rounded-2xl border border-dashed border-primary/40 bg-primary/5 p-4 duration-300">
-                      <label className="flex items-center gap-2 text-xs font-bold text-primary uppercase text-left">
+                    <div className="animate-in fade-in slide-in-from-top-2 space-y-2 rounded-2xl border border-dashed border-primary/40 bg-zinc-900 p-4 duration-300">
+                      <label className="flex items-center gap-2 text-xs font-bold text-white uppercase text-left">
                         <LinkIcon className="size-3.5" />
                         Link do Reels Obrigatório
                       </label>
@@ -94,9 +94,9 @@ export function PlanStep({
                         placeholder="https://www.instagram.com/reels/..."
                         value={turbinarLink}
                         onChange={(e) => onTurbinarLinkChange?.(e.target.value)}
-                        className="h-10 border-primary/20 bg-background text-sm focus-visible:ring-primary"
+                        className="h-10 border-primary/20 bg-background text-sm text-white focus-visible:ring-primary placeholder:text-zinc-500"
                       />
-                      <p className="text-[10px] text-muted-foreground italic text-left">
+                      <p className="text-[10px] text-white/70 italic text-left">
                         Este plano exige o link do post para ser iniciado.
                       </p>
                     </div>
