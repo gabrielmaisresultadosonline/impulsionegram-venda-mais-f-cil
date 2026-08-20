@@ -34,10 +34,10 @@ export const Route = createFileRoute("/ads01")({
       },
     ],
   }),
-  component: AdsLandingPage,
+  component: Ads01Page,
 });
 
-function AdsLandingPage() {
+function Ads01Page() {
   const navigate = useNavigate();
   const [signupOpen, setSignupOpen] = useState(false);
 
