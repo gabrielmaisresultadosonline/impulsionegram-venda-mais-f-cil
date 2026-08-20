@@ -63,7 +63,7 @@ function Index() {
       <Hero
         onCta={openSignup}
         onSecondary={openSignup}
-        headline={["Faça seus anúncios", "no automático"]}
+        headline={["Trafego pago com", "Inteligência artificial", "Anuncie em 3 min."]}
         highlight="Facebook, Instagram e WhatsApp no piloto automático."
         description="Mande o link do seu post do instagram, selecione a região no mapa e deixe a gestão com a gente. Resultados reais para o seu negócio."
         ctaLabel="A partir de R$97 mensal"
