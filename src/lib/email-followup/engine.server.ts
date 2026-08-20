@@ -1,8 +1,7 @@
 import fs from "node:fs";
 import { saveEmailLog } from "./logs-repo.server";
-import { OrderRecord, markPaid } from "../orders-repo.server";
-import { SignupRecord, listSignups } from "../signups-repo.server";
-
+import { OrderRecord } from "../orders-repo.server";
+import { listSignups } from "../signups-repo.server";
 
 export interface FollowupConfig {
   type: 'followup_50m' | 'followup_4h' | 'followup_16h' | 'followup_last_4h';
@@ -58,10 +57,6 @@ const FOLLOWUPS: FollowupConfig[] = [
   }
 ];
 
-// O motor de followup roda via "cron" simulado ou trigger de requisição
-// Em um sistema real, usaríamos um Job Queue (BullMQ, QStash, etc)
-// Para este projeto, faremos um check passivo no load do admin ou via API public
-
 const DATA_DIR = ".data";
 const QUEUE_FILE = `${DATA_DIR}/followup_queue.json`;
 
@@ -73,7 +68,6 @@ export function addToFollowupQueue(orderNsu: string): void {
       queue = JSON.parse(fs.readFileSync(QUEUE_FILE, "utf8"));
     }
     
-    // Evita duplicados
     if (queue.find(q => q.orderNsu === orderNsu)) return;
 
     queue.push({
@@ -96,10 +90,6 @@ export function removeFromFollowupQueue(orderNsu: string): void {
   } catch {}
 }
 
-/** 
- * Esta função deve ser chamada periodicamente. 
- * Para simular, vamos chamar ela no listOrders do Admin.
- */
 export async function processFollowupQueue(getOrderByNsu: (nsu: string) => OrderRecord | undefined): Promise<void> {
   try {
     if (!fs.existsSync(QUEUE_FILE)) return;
@@ -120,10 +110,32 @@ export async function processFollowupQueue(getOrderByNsu: (nsu: string) => Order
     });
 
     for (const item of queue) {
-      const order = getOrderByNsu(item.orderNsu);
-      
-      // Se pagou ou cancelou, remove da fila
-      if (!order || order.status === 'pago' || order.status === 'entregue' || order.cancelledAt) {
+      let customerEmail = "";
+      let customerName = "";
+      let isPaid = false;
+
+      if (item.orderNsu.startsWith("lead:")) {
+        const email = item.orderNsu.replace("lead:", "");
+        const signups = listSignups();
+        const lead = signups.find(s => s.email.toLowerCase() === email.toLowerCase());
+        if (!lead) continue;
+        customerEmail = lead.email;
+        customerName = lead.name;
+
+        const ordersFile = ".data/orders.json";
+        if (fs.existsSync(ordersFile)) {
+          const orders: OrderRecord[] = JSON.parse(fs.readFileSync(ordersFile, "utf8"));
+          isPaid = orders.some(o => o.customerEmail.toLowerCase() === email.toLowerCase() && o.status !== 'tentativa');
+        }
+      } else {
+        const order = getOrderByNsu(item.orderNsu);
+        if (!order) continue;
+        customerEmail = order.customerEmail;
+        customerName = order.customerName;
+        isPaid = order.status !== 'tentativa' || !!order.cancelledAt;
+      }
+
+      if (isPaid) {
         removeFromFollowupQueue(item.orderNsu);
         changed = true;
         continue;
@@ -138,33 +150,38 @@ export async function processFollowupQueue(getOrderByNsu: (nsu: string) => Order
 
       const lastSent = new Date(item.lastSentAt).getTime();
       if (now - lastSent >= followup.delayMs) {
-        // Dispara email
         try {
+          const firstName = customerName.split(" ")[0];
           await transporter.sendMail({
             from: `"Acessar I.A Support" <${user}>`,
-            to: order.customerEmail,
+            to: customerEmail,
             subject: followup.subject,
             html: `
-              <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333;">
-                ${followup.template(order.customerName).replace(/\n/g, '<br>')}
+              <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333; line-height: 1.6;">
+                <h2 style="color: #0066FF;">Olá, ${firstName}!</h2>
+                ${followup.template(customerName).replace(/\n/g, '<br>')}
+                <br><br>
+                <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee; font-size: 12px; color: #999;">
+                  Você recebeu este e-mail porque se cadastrou em acessar.click
+                </div>
               </div>
             `
           });
 
           saveEmailLog({
-            orderNsu: order.orderNsu,
-            customerEmail: order.customerEmail,
-            customerName: order.customerName,
+            orderNsu: item.orderNsu,
+            customerEmail,
+            customerName,
             type: followup.type,
             subject: followup.subject,
-            content: followup.template(order.customerName)
+            content: followup.template(customerName)
           });
 
           item.nextFollowupIndex++;
           item.lastSentAt = new Date().toISOString();
           changed = true;
         } catch (err) {
-          console.error(`Erro ao enviar followup ${followup.type} para ${order.customerEmail}:`, err);
+          console.error(`Erro ao enviar followup ${followup.type} para ${customerEmail}:`, err);
         }
       }
     }
