@@ -84,9 +84,24 @@ export const PLANS: readonly Plan[] = [
     ],
   },
   {
+    id: "marketing-completo-up",
+    slug: "mktup",
+    name: "Marketing Completo",
+    tagline: "Combo de crescimento up 30 dias",
+    priceCents: 19700,
+    features: [
+      "+5.000 seguidores reais",
+      "Curtidas e comentários diários",
+      "+5 MIL visualizações reels",
+      "Gestão por 30 dias",
+      "Suporte prioritário",
+    ],
+    highlight: true,
+  },
+  {
     id: "marketing-completo",
     slug: "full",
-    name: "Marketing Completo",
+    name: "Marketing Completo (Standard)",
     tagline: "Combo de crescimento 30 dias",
     priceCents: 14700,
     features: [
@@ -107,6 +122,7 @@ export const HOME_PLAN_IDS: readonly string[] = [
   "basic-1000",
   "impulso-2000",
   "autoridade-5000",
+  "marketing-completo-up",
   "marketing-completo",
 ] as const;
 
