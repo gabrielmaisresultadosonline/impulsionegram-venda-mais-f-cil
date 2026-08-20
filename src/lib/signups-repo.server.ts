@@ -97,6 +97,18 @@ export function recordSignup(input: {
   // Como o usuário não tem pedido ainda (está no cadastro), usamos um NSU fictício "lead:email"
   // O motor de followup vai buscar o e-mail do lead para disparar.
   addToFollowupQueue(`lead:${email}`);
+
+  // Dispara o e-mail de boas-vindas IMEDIATAMENTE após o registro do cadastro no servidor
+  const { sendWelcomeEmail } = await import("./email.functions");
+  void sendWelcomeEmail({ 
+    data: { 
+      name: input.name.trim() || existing?.name || "", 
+      email, 
+      orderNsu: `lead:${email}` 
+    } 
+  }).catch(err => {
+    console.error("Erro ao enviar e-mail de boas-vindas no servidor:", err);
+  });
 }
 
 /** Lista os cadastros do mais recente para o mais antigo. */
