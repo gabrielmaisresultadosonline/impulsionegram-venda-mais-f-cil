@@ -64,11 +64,11 @@ function Index() {
       <Hero
         onCta={openSignup}
         onSecondary={openSignup}
-        headline={["Trafego pago com", "Inteligência artificial", "Anuncie em 3 min."]}
-        highlight="Facebook, Instagram e WhatsApp no piloto automático."
-        description="Mande o link do seu post do instagram, selecione a região no mapa e deixe a gestão com a gente. Resultados reais para o seu negócio."
+        headline={["Nunca foi tão fácil vender mais", "sem precisar de muito esforço,", "ganhe popularidade do seu negocio"]}
+        highlight="Seguidores filtrados por região e concorrente no automático."
+        description="Ganhe popularidade do seu negocio com seguidores filtrados por regiao e filtrados do seu concorrente. Resultados reais e rápidos."
         ctaLabel="Cadastre-se grátis"
-        secondaryLabel="Cadastre-se grátis"
+        secondaryLabel="A partir de R$ 14 mensal"
       />
 
 
