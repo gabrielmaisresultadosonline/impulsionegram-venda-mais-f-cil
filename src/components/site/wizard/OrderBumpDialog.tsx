@@ -51,7 +51,7 @@ export function OrderBumpDialog({
           <div className="border-primary/40 bg-primary/5 flex flex-wrap items-center justify-between gap-2 rounded-2xl border p-4">
             <div className="min-w-0">
               <p className="text-muted-foreground text-xs font-semibold tracking-wide uppercase">
-                Seu plano
+                Instagram + WhatsApp + Facebook
               </p>
               <p className="truncate text-base font-bold">{plan.name}</p>
             </div>
