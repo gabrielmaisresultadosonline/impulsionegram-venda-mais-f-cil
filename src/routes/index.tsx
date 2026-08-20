@@ -62,7 +62,7 @@ function Index() {
         onSecondary={openSignup}
         headline={["Faça seus anúncios", "no automático"]}
         highlight="Facebook, Instagram e WhatsApp no piloto automático."
-        description="Mande o link da sua propaganda, selecione a região no mapa e deixe a gestão com a gente. Resultados reais para o seu negócio."
+        description="Mande o link do seu post do instagram, selecione a região no mapa e deixe a gestão com a gente. Resultados reais para o seu negócio."
         ctaLabel="Cadastre-se grátis"
         secondaryLabel="Ver planos de anúncios"
       />
