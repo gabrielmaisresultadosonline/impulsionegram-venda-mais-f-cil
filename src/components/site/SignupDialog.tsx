@@ -88,17 +88,16 @@ export function SignupDialog({
       saveAccount(created);
       if (selectedPlanId) savePlanSelection(selectedPlanId);
       
-      console.log("Chamando sendWelcomeEmail para:", email);
-      // Envio de e-mail de boas-vindas
-      try {
-        const response = await sendWelcomeEmail({ data: { name, email, orderNsu: `lead:${email}` } });
-        console.log("Resposta sendWelcomeEmail:", response);
-        if (!response.success) {
-          console.error("Falha ao enviar e-mail:", response.error);
-        }
-      } catch (err) {
-        console.error("Erro na chamada de sendWelcomeEmail:", err);
-      }
+      // Envio de e-mail de boas-vindas em background
+      void sendWelcomeEmail({ 
+        data: { 
+          name, 
+          email, 
+          orderNsu: `lead:${email}` 
+        } 
+      }).catch(err => {
+        console.error("Falha silenciosa no envio de e-mail:", err);
+      });
 
       trackPixelEvent("Lead", {
         contentName: plan?.name,

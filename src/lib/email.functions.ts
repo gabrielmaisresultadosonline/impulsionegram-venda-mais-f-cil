@@ -19,7 +19,6 @@ export const sendWelcomeEmail = createServerFn({ method: "POST" })
   )
   .handler(async ({ data }) => {
     const { name, email } = data;
-    console.log(`[ServerFn] Iniciando envio para ${email}, nome: ${name}`);
 
     // Lemos do process.env dentro do handler (padrão TanStack Start)
     const user = process.env["SMTP_USER"];
@@ -31,7 +30,6 @@ export const sendWelcomeEmail = createServerFn({ method: "POST" })
     }
 
     try {
-      console.log(`[ServerFn] Usando SMTP_USER: ${user.substring(0, 3)}...`);
       const nodemailer = await import("nodemailer");
 
       const transporter = nodemailer.createTransport({
