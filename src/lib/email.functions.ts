@@ -134,3 +134,72 @@ export const sendWelcomeEmail = createServerFn({ method: "POST" })
       return { success: false, error: String(error) };
     }
   });
+
+export const sendPasswordRecoveryEmail = createServerFn({ method: "POST" })
+  .validator((data) =>
+    z.object({
+      email: z.string().email(),
+    }).parse(data)
+  )
+  .handler(async ({ data }) => {
+    const { email } = data;
+    const user = process.env["SMTP_USER"];
+    const pass = process.env["SMTP_PASS"];
+
+    if (!user || !pass) {
+      return { success: false, error: "SMTP configuration missing" };
+    }
+
+    try {
+      // Importações para verificar se o cadastro existe no servidor
+      const { listSignups } = await import("./signups-repo.server");
+      const signups = listSignups();
+      const account = signups.find(s => s.email.toLowerCase() === email.toLowerCase());
+
+      if (!account) {
+        return { success: false, error: "NOT_FOUND" };
+      }
+
+      const nodemailer = await import("nodemailer");
+      const transporter = nodemailer.createTransport({
+        host: "smtp.hostinger.com",
+        port: 465,
+        secure: true,
+        auth: { user, pass },
+      });
+
+      const htmlContent = `
+      <!DOCTYPE html>
+      <html>
+      <body style="font-family: sans-serif; line-height: 1.6; color: #333;">
+        <h2>Recuperação de Senha - Acessar I.A</h2>
+        <p>Olá, ${account.name.split(" ")[0]}!</p>
+        <p>Recebemos uma solicitação para recuperar o acesso à sua conta.</p>
+        <p>Como suas informações são armazenadas de forma segura e local em seu dispositivo, 
+        você pode redefinir sua senha clicando no link abaixo:</p>
+        <p style="margin: 30px 0;">
+          <a href="https://acessar.click/recuperar?email=${encodeURIComponent(email)}" 
+             style="background: #0066FF; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;">
+            Redefinir Minha Senha
+          </a>
+        </p>
+        <p>Se você não solicitou isso, pode ignorar este e-mail.</p>
+        <br>
+        <p>Atenciosamente,<br><strong>Equipe Acessar I.A</strong></p>
+      </body>
+      </html>
+      `;
+
+      await transporter.sendMail({
+        from: `"Acessar I.A Support" <${user}>`,
+        to: email,
+        subject: "Recuperação de Acesso - Acessar I.A",
+        html: htmlContent,
+      });
+
+      return { success: true };
+    } catch (error) {
+      console.error("Erro ao enviar e-mail de recuperação:", error);
+      return { success: false, error: String(error) };
+    }
+  });
