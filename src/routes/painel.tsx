@@ -132,7 +132,7 @@ function PainelPage() {
               Seja bem-vindo, <span className="text-gradient-brand">{firstName}</span>!
             </h1>
             <p className="text-muted-foreground mt-2 text-sm">
-              Escolha o seu plano, preencha as informações da campanha e siga para o pagamento.
+              Preencha as informações da campanha e depois escolha o seu plano para seguir para o pagamento.
             </p>
           </div>
 
