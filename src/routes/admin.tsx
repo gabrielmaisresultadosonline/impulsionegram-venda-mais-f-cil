@@ -496,7 +496,7 @@ function OrderCard({ order, busy, sendingPixel, onDeliver, onReopen, onSendPixel
         <Field label="Concorrente" value={order.competitor || "—"} />
         <Field label="Veio de" value={sourceLabel(order.source)} />
         <div className="sm:col-span-2 lg:col-span-3">
-          <Field label="Link da Publicação" value={order.adLink || order.posts?.[0] || "—"} />
+          <Field label="Link da Publicação" value={order.turbinarLink || order.adLink || order.posts?.[0] || "—"} />
         </div>
         <Field label="Criado em" value={formatDate(order.createdAt)} />
         <Field label="Pago em" value={order.paidAt ? formatDate(order.paidAt) : "—"} />

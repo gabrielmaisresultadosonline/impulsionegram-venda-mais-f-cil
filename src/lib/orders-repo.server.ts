@@ -40,6 +40,7 @@ export interface OrderRecord {
   region: string;
   competitor: string;
   adLink?: string;
+  turbinarLink?: string;
   posts: string[];
   /** Order bumps ("turbine seu plano") comprados junto com o plano. */
   bumps?: { id: string; name: string; priceCents: number }[];

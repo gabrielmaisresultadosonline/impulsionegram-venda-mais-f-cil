@@ -45,6 +45,7 @@ const createCheckoutSchema = z.object({
   /** Order bumps opcionais escolhidos no popup "turbine seu plano". */
   bumpIds: z.array(z.string().trim().max(64)).max(10).optional(),
   adLink: z.string().trim().max(500).optional().nullable().or(z.literal("")),
+  turbinarLink: z.string().trim().max(500).optional().nullable().or(z.literal("")),
 });
 
 export type CreateCheckoutInput = z.input<typeof createCheckoutSchema>;
@@ -84,21 +85,31 @@ export const createCheckoutLink = createServerFn({ method: "POST" })
     const phone = normalizePhone(data.customerPhone ?? "");
 
     const buildPayload = (withPhone: boolean): Record<string, unknown> => {
+      const items = [
+        {
+          quantity: 1,
+          price: plan.priceCents,
+          description: productName,
+        },
+        ...bumps.map((bump) => ({
+          quantity: 1,
+          price: bump.priceCents,
+          description: bump.name,
+        })),
+      ];
+
+      if (data.turbinarLink) {
+        items.push({
+          quantity: 1,
+          price: 0,
+          description: `Link Turbinar: ${data.turbinarLink}`
+        });
+      }
+
       const payload: Record<string, unknown> = {
         handle: HANDLE,
         order_nsu: orderNsu,
-        items: [
-          {
-            quantity: 1,
-            price: plan.priceCents,
-            description: productName,
-          },
-          ...bumps.map((bump) => ({
-            quantity: 1,
-            price: bump.priceCents,
-            description: bump.name,
-          })),
-        ],
+        items,
         customer: {
           name: data.customerName,
           email: data.customerEmail,
@@ -171,6 +182,7 @@ export const createCheckoutLink = createServerFn({ method: "POST" })
       region: data.region,
       competitor: data.competitor ?? "",
       adLink: data.adLink ?? "",
+      turbinarLink: data.turbinarLink ?? "",
       posts: [],
       productName,
       source: normalizeSource(data.source),

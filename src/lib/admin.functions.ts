@@ -121,6 +121,7 @@ export interface AdminSignup {
   region?: string;
   competitor?: string;
   adLink?: string;
+  turbinarLink?: string;
   profileSavedAt?: string;
 }
 
@@ -154,6 +155,7 @@ export const adminListSignups = createServerFn({ method: "POST" })
         if (!existing.profileUrl && order.profileUrl) existing.profileUrl = order.profileUrl;
         if (!existing.region && order.region) existing.region = order.region;
         if (!existing.adLink && order.adLink) existing.adLink = order.adLink;
+        if (!existing.turbinarLink && order.turbinarLink) existing.turbinarLink = order.turbinarLink;
         continue;
       }
       map.set(email, {
@@ -167,6 +169,7 @@ export const adminListSignups = createServerFn({ method: "POST" })
         profileUrl: order.profileUrl,
         region: order.region,
         adLink: order.adLink,
+        turbinarLink: order.turbinarLink,
       });
     }
 
