@@ -7,7 +7,7 @@ import { z } from "zod";
  * ou usado em um ambiente que suporte nodejs_compat.
  */
 export const sendWelcomeEmail = createServerFn({ method: "POST" })
-  .inputValidator((data) =>
+  .validator((data) =>
     z
       .object({
         name: z.string(),
