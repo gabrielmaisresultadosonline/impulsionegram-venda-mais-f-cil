@@ -15,8 +15,8 @@ export function ChatHistory({ credentials }: { credentials: any }) {
     refetchInterval: 10000,
   });
 
-  const { visitors = [], customers = [] } = (query.data as any) || {};
-  const allChats = [...(Array.isArray(visitors) ? visitors.map((v: any) => ({ ...v, type: 'visitor' })) : []), ...customers];
+  const { visitors = [], customers = [] } = query.data || {};
+  const allChats = [...visitors.map(v => ({ ...v, type: 'visitor' })), ...customers];
 
   if (query.isLoading) {
     return (
