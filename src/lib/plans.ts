@@ -101,13 +101,13 @@ export const PLANS: readonly Plan[] = [
   {
     id: "marketing-completo",
     slug: "full",
-    name: "Marketing Completo (Standard)",
+    name: "Marketing Completo",
     tagline: "Combo de crescimento 30 dias",
     priceCents: 14700,
     features: [
       "+2.000 seguidores reais",
       "Curtidas e comentários diários",
-      "+10.000 visualizações reels",
+      "+3 MIL visualizações reels",
       "Gestão por 30 dias",
       "Suporte prioritário",
     ],
