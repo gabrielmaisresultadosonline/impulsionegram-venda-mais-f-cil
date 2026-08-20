@@ -33,7 +33,7 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending, askPhone = fal
 
   /** Ordem das perguntas exibidas — o WhatsApp entra apenas quando necessário. */
   const questions = useMemo(
-    () => (["profileUrl", "adLink", "region", "competitor"] as const),
+    () => (["profileUrl", "region", "competitor"] as const),
     [],
   );
   const totalQuestions = questions.length;
@@ -48,10 +48,6 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending, askPhone = fal
   const validate = (): boolean => {
     if (currentQuestion === "profileUrl" && data.profileUrl.trim().length < 3) {
       toast.error("Informe seu perfil do Instagram.");
-      return false;
-    }
-    if (currentQuestion === "adLink" && data.adLink.trim().length < 10) {
-      toast.error("Informe o link da publicação (propaganda) que vamos anunciar.");
       return false;
     }
     if (currentQuestion === "region") {
@@ -127,42 +123,13 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending, askPhone = fal
         </Question>
       ) : null}
 
-      {currentQuestion === "adLink" ? (
-        <Question
-          icon={<Instagram className="size-5" aria-hidden="true" />}
-          title="Manda o link da sua propaganda?"
-          description="A mesma que você quer anunciar no Instagram/Facebook."
-        >
-          <Label htmlFor="quiz-ad-link" className="sr-only">
-            Qual é o link da sua publicação no instagram, essa vamos usar para fazer a propaganda/anúncio
-          </Label>
-          <div className="space-y-4">
-            <p className="text-sm font-medium">
-              link da sua publicação no instagram, vamos usar o instagram para anunciar apartir de agora.
-            </p>
-            <p className="text-xs text-muted-foreground">
-              coloque link da publicação que vamos anunciar.
-            </p>
-            <Input
-              id="quiz-ad-link"
-              autoFocus
-              value={data.adLink}
-              onChange={(event) => onChange({ adLink: event.target.value })}
-              onKeyDown={(event) => event.key === "Enter" && next()}
-              placeholder="Apenas link de publicação"
-              maxLength={500}
-              className="h-12 text-base"
-            />
-          </div>
-        </Question>
-      ) : null}
 
 
       {currentQuestion === "region" ? (
         <Question
           icon={<MapPin className="size-5" aria-hidden="true" />}
-          title="Qual localização do nosso anuncio?"
-          description="Aonde quer que mostramos seu anuncio. Vamos colocar um raio de km em volta da sua localização de no mínimo 40km, podendo ser mais, mas nunca menos."
+          title="Qual localização dos seus seguidores?"
+          description="Aonde quer que seus novos seguidores venham. Vamos colocar um raio de km em volta da sua localização de no mínimo 40km, podendo ser mais, mas nunca menos."
         >
           <div className="grid gap-2 sm:grid-cols-2">
             {(
@@ -225,19 +192,18 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending, askPhone = fal
         <Question
           icon={<PartyPopper className="size-5" aria-hidden="true" />}
           title="É isso que precisa?"
-          description="Confirme os dados da sua campanha de anúncios."
+          description="Confirme os dados da sua popularidade."
 
         >
           <div className="border-primary/30 bg-primary/5 space-y-3 rounded-2xl border p-5">
             <p className="text-base font-semibold text-balance">
-              Esta campanha vai gerar novos clientes, públicos quentes e conversões direto para seu WhatsApp.
+              Esta campanha vai gerar novos seguidores, engajamento e popularidade direto para seu Perfil do Instagram.
             </p>
             <p className="text-base font-semibold text-balance mt-3">
               Perfil <span className="text-gradient-brand">{data.profileUrl}</span>.
             </p>
             <p className="text-base font-semibold text-balance mt-1">
-              Público <span className="text-gradient-brand">{regionSummary}</span> para o link{" "}
-              <span className="text-gradient-brand break-all">{data.adLink.trim()}</span>.
+              Público <span className="text-gradient-brand">{regionSummary}</span> focado em popularidade.
             </p>
             <p className="text-muted-foreground text-sm">
               Referência de público: <strong>{data.competitor.trim()}</strong>
