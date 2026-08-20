@@ -19,7 +19,7 @@ export type OrderStatus = "tentativa" | "pago" | "entregue";
 
 export interface TicketMessage {
   id: string;
-  author: "customer" | "admin";
+  author: "customer" | "admin" | "ai";
   text: string;
   createdAt: string;
   readByAdmin: boolean;
