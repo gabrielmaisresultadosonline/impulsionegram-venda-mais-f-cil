@@ -68,7 +68,7 @@ function Index() {
         highlight="Seguidores, alcance e visualizações: resultados automáticos para o seu negócio."
         description="Ganhe popularidade com seguidores filtrados por região e concorrente. Focado exclusivamente em resultados reais no Instagram."
         ctaLabel="Cadastre-se grátis"
-        secondaryLabel="A partir de R$ 14 mensal"
+        secondaryLabel="A partir de R$ 10 mensal"
       />
 
 
