@@ -111,7 +111,7 @@ export function SignupsCard({ credentials, className, ...props }: SignupsCardPro
                 <span className="break-all">{signup.profileUrl || "—"}</span>
               </Field>
               <Field label="Link da Publicação">
-                <span className="break-all">{signup.profileSavedAt && signup.profileUrl ? (signup.profileUrl.startsWith('http') ? signup.profileUrl : '—') : (signup.profileUrl || '—')}</span>
+                <span className="break-all">{signup.adLink || "—"}</span>
               </Field>
               <Field label="Público (região / CEP)">{signup.region || "—"}</Field>
               <Field label="Concorrente">
