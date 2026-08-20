@@ -1,7 +1,8 @@
-import { ArrowRight, BellRing, Loader2 } from "lucide-react";
+import { ArrowRight, BellRing, Loader2, Link as LinkIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PlanCard } from "@/components/site/PlanCard";
 import { PLANS, formatBRL, type Plan } from "@/lib/plans";
+import { Input } from "@/components/ui/input";
 
 export interface PlanStepProps {
   selectedPlanId: string;
@@ -14,6 +15,8 @@ export interface PlanStepProps {
   pending?: boolean;
   /** Prefixo do botão principal. */
   ctaLabel?: string;
+  turbinarLink?: string;
+  onTurbinarLinkChange?: (val: string) => void;
 }
 
 export function PlanStep({
@@ -24,15 +27,19 @@ export function PlanStep({
   plans = PLANS,
   pending = false,
   ctaLabel = "Comprar agora",
+  turbinarLink = "",
+  onTurbinarLinkChange,
 }: PlanStepProps) {
+  const isTurbinarPlan = selectedPlanId === "turbinar-10k";
+  const isLinkValid = !isTurbinarPlan || (turbinarLink && turbinarLink.trim().length > 5);
 
   return (
     <div className="space-y-6">
       <header className="relative">
         <h3 className="text-xl font-bold">Escolha o melhor plano</h3>
-          <p className="text-muted-foreground mt-1 text-sm">
-            Selecione o plano desejado para sua campanha e turbine os resultados.
-          </p>
+        <p className="text-muted-foreground mt-1 text-sm">
+          Selecione o plano desejado para sua campanha e turbine os resultados.
+        </p>
 
         <div className="animate-pulse-glow bg-gradient-brand text-primary-foreground relative mt-4 inline-flex items-center gap-2 rounded-2xl px-4 py-2 text-sm font-semibold shadow-lg">
           <BellRing className="size-4" aria-hidden="true" />
@@ -54,27 +61,47 @@ export function PlanStep({
             onSelect={item.unavailable ? undefined : onSelect}
             action={
               item.id === selectedPlanId && !item.unavailable ? (
-                <Button
-                  type="button"
-                  size="lg"
-                  onClick={onNext}
-                  disabled={pending}
-                  className="h-14 w-full min-w-0 gap-2 bg-[oklch(0.62_0.18_145)] px-3 text-sm leading-tight font-bold whitespace-normal text-white shadow-lg hover:bg-[oklch(0.67_0.18_145)] sm:text-base"
-                >
-                  {pending ? (
-                    <>
-                      <Loader2 className="size-4 shrink-0 animate-spin" aria-hidden="true" />
-                      Gerando pagamento...
-                    </>
-                  ) : (
-                    <>
-                      <span className="min-w-0">
-                        {ctaLabel} {item.name} — {formatBRL(item.priceCents)}
-                      </span>
-                      <ArrowRight className="size-4 shrink-0" aria-hidden="true" />
-                    </>
+                <div className="space-y-4">
+                  <Button
+                    type="button"
+                    size="lg"
+                    onClick={onNext}
+                    disabled={pending || !isLinkValid}
+                    className="h-14 w-full min-w-0 gap-2 bg-[oklch(0.62_0.18_145)] px-3 text-sm leading-tight font-bold whitespace-normal text-white shadow-lg transition-all hover:bg-[oklch(0.67_0.18_145)] disabled:opacity-50 sm:text-base"
+                  >
+                    {pending ? (
+                      <>
+                        <Loader2 className="size-4 shrink-0 animate-spin" aria-hidden="true" />
+                        Gerando pagamento...
+                      </>
+                    ) : (
+                      <>
+                        <span className="min-w-0">
+                          {ctaLabel} {item.name} — {formatBRL(item.priceCents)}
+                        </span>
+                        <ArrowRight className="size-4 shrink-0" aria-hidden="true" />
+                      </>
+                    )}
+                  </Button>
+
+                  {isTurbinarPlan && (
+                    <div className="animate-in fade-in slide-in-from-top-2 space-y-2 rounded-2xl border border-dashed border-primary/40 bg-primary/5 p-4 duration-300">
+                      <label className="flex items-center gap-2 text-xs font-bold text-primary uppercase text-left">
+                        <LinkIcon className="size-3.5" />
+                        Link do Reels Obrigatório
+                      </label>
+                      <Input
+                        placeholder="https://www.instagram.com/reels/..."
+                        value={turbinarLink}
+                        onChange={(e) => onTurbinarLinkChange?.(e.target.value)}
+                        className="h-10 border-primary/20 bg-background text-sm focus-visible:ring-primary"
+                      />
+                      <p className="text-[10px] text-muted-foreground italic text-left">
+                        Este plano exige o link do post para ser iniciado.
+                      </p>
+                    </div>
                   )}
-                </Button>
+                </div>
               ) : null
             }
           />
@@ -98,4 +125,3 @@ export function PlanStep({
     </div>
   );
 }
-
