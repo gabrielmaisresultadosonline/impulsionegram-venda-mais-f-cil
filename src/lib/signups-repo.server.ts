@@ -75,6 +75,7 @@ export async function recordSignup(input: {
   phone?: string;
   source?: string;
 }): Promise<void> {
+  console.log(`[recordSignup] Iniciando para ${input.email}`);
   loadFromDisk();
   const email = input.email.trim().toLowerCase();
   if (!email) return;
