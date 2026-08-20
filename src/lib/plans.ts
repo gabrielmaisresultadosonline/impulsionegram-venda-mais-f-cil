@@ -37,7 +37,7 @@ export const PLANS: readonly Plan[] = [
       "Seguidores filtrados por região",
       "Filtrados do seu concorrente",
       "Início imediato",
-      "Suporte via ticket",
+      "Suporte via ticket dentro do /painel",
     ],
   },
   {
@@ -51,8 +51,9 @@ export const PLANS: readonly Plan[] = [
       "Seguidores filtrados por região",
       "Filtrados do seu concorrente",
       "Início imediato",
-      "Suporte via ticket",
+      "Suporte via ticket dentro do /painel",
     ],
+    badge: "MAIS VENDIDO",
   },
   {
     id: "impulso-2000",
@@ -65,9 +66,10 @@ export const PLANS: readonly Plan[] = [
       "Seguidores filtrados por região",
       "Filtrados do seu concorrente",
       "Entrega natural",
-      "Suporte via ticket",
+      "Suporte via ticket dentro do /painel",
     ],
     highlight: true,
+    badge: "POPULAR",
   },
   {
     id: "autoridade-5000",
@@ -80,7 +82,7 @@ export const PLANS: readonly Plan[] = [
       "Seguidores filtrados por região",
       "Filtrados do seu concorrente",
       "Reposicionamento de marca",
-      "Suporte via ticket",
+      "Suporte via ticket dentro do /painel",
     ],
   },
   {
@@ -124,7 +126,7 @@ export const PLANS: readonly Plan[] = [
       "Resultados imediatos",
       "Entrega automática",
       "Link do post obrigatório",
-      "Suporte via ticket",
+      "Suporte via ticket dentro do /painel",
     ],
   },
 ] as const;
@@ -132,8 +134,8 @@ export const PLANS: readonly Plan[] = [
 
 /** Planos padrão da homepage (Seguidores + ADS). */
 export const HOME_PLAN_IDS: readonly string[] = [
-  "turbinar-10k",
   "starter-500",
+  "turbinar-10k",
   "basic-1000",
   "impulso-2000",
   "autoridade-5000",
