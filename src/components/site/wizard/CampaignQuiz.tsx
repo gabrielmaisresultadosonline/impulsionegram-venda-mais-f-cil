@@ -233,6 +233,9 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending, askPhone = fal
               Esta campanha vai gerar novos clientes, públicos quentes e conversões direto para seu WhatsApp.
             </p>
             <p className="text-base font-semibold text-balance mt-3">
+              Perfil <span className="text-gradient-brand">{data.profileUrl}</span>.
+            </p>
+            <p className="text-base font-semibold text-balance mt-1">
               Público <span className="text-gradient-brand">{regionSummary}</span> para o link{" "}
               <span className="text-gradient-brand break-all">{data.adLink.trim()}</span>.
             </p>
