@@ -71,7 +71,7 @@ export const adminListOrders = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<AdminOrder[]> => {
     await assertAdmin(data.email, data.password);
     const repo = await import("./orders-repo.server");
-    return repo.listOrders();
+    return await repo.listOrders();
   });
 
 export const adminUpdateOrder = createServerFn({ method: "POST" })
@@ -81,12 +81,12 @@ export const adminUpdateOrder = createServerFn({ method: "POST" })
     const repo = await import("./orders-repo.server");
     const changed =
       data.action === "entregue"
-        ? repo.markDelivered(data.orderNsu)
-        : repo.markReopened(data.orderNsu);
+        ? await repo.markDelivered(data.orderNsu)
+        : await repo.markReopened(data.orderNsu);
     if (!changed) {
       throw new Error("Pedido não encontrado.");
     }
-    return repo.listOrders();
+    return await repo.listOrders();
   });
 
 export const adminReplyTicket = createServerFn({ method: "POST" })
@@ -94,7 +94,7 @@ export const adminReplyTicket = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<AdminOrder[]> => {
     await assertAdmin(data.email, data.password);
     const repo = await import("./orders-repo.server");
-    const added = repo.addMessage(data.orderNsu, {
+    const added = await repo.addMessage(data.orderNsu, {
       author: "admin",
       text: data.text,
       readByAdmin: true,
@@ -102,7 +102,7 @@ export const adminReplyTicket = createServerFn({ method: "POST" })
     if (!added) {
       throw new Error("Pedido não encontrado.");
     }
-    return repo.listOrders();
+    return await repo.listOrders();
   });
 
 
@@ -143,7 +143,8 @@ export const adminListSignups = createServerFn({ method: "POST" })
     const allSignups = await listSignups();
     for (const signup of allSignups) map.set(signup.email.toLowerCase(), signup);
 
-    for (const order of repo.listOrders()) {
+    const allOrders = await repo.listOrders();
+    for (const order of allOrders) {
       const email = (order.customerEmail ?? "").trim().toLowerCase();
       if (!email) continue;
       const existing = map.get(email);
@@ -253,8 +254,8 @@ export const adminQuickSendPurchase = createServerFn({ method: "POST" })
     const repo = await import("./orders-repo.server");
     const { sendCapiEvent } = await import("./capi.server");
 
-    const orders = repo.listOrders();
-    const order = orders.find((o) => o.orderNsu === data.orderNsu);
+    const orders = await repo.listOrders();
+    const order = orders.find((o: any) => o.orderNsu === data.orderNsu);
     if (!order) throw new Error("Pedido não encontrado.");
 
     return sendCapiEvent({
