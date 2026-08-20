@@ -58,7 +58,7 @@ export function Hero({
       <div className="mx-auto flex max-w-4xl flex-col items-center text-center">
         <button 
           onClick={onCta}
-          className="fixed top-4 right-4 z-50 text-sm font-bold text-white bg-orange-600 hover:bg-orange-700 transition-colors shadow-lg px-6 py-2 rounded-full md:top-6 md:right-6"
+          className="absolute top-4 right-4 z-50 text-sm font-bold text-white bg-orange-600 hover:bg-orange-700 transition-colors shadow-md px-6 py-2 rounded-full md:top-6 md:right-6"
         >
           Sou Membro
         </button>
