@@ -69,12 +69,12 @@ function prune(): void {
 }
 
 /** Registra (ou atualiza) um cadastro feito na home. */
-export function recordSignup(input: {
+export async function recordSignup(input: {
   name: string;
   email: string;
   phone?: string;
   source?: string;
-}): void {
+}): Promise<void> {
   loadFromDisk();
   const email = input.email.trim().toLowerCase();
   if (!email) return;
@@ -97,6 +97,20 @@ export function recordSignup(input: {
   // Como o usuário não tem pedido ainda (está no cadastro), usamos um NSU fictício "lead:email"
   // O motor de followup vai buscar o e-mail do lead para disparar.
   addToFollowupQueue(`lead:${email}`);
+
+  // Dispara o e-mail de boas-vindas IMEDIATAMENTE após o registro do cadastro no servidor
+  try {
+    const { sendWelcomeEmail } = await import("./email.functions");
+    await sendWelcomeEmail({ 
+      data: { 
+        name: input.name.trim() || existing?.name || "", 
+        email, 
+        orderNsu: `lead:${email}` 
+      } 
+    });
+  } catch (err) {
+    console.error(`[recordSignup] Erro ao enviar e-mail de boas-vindas para ${email}:`, err);
+  }
 }
 
 /** Lista os cadastros do mais recente para o mais antigo. */
@@ -109,7 +123,7 @@ export function listSignups(): SignupRecord[] {
  * Salva os dados da campanha no cadastro do cliente (antes do pagamento).
  * Cria o cadastro caso ainda não exista, sem contar como nova tentativa.
  */
-export function saveSignupProfile(input: {
+export async function saveSignupProfile(input: {
   name?: string;
   email: string;
   phone?: string;
@@ -118,7 +132,7 @@ export function saveSignupProfile(input: {
   competitor?: string;
   adLink?: string;
   source?: string;
-}): void {
+}): Promise<void> {
   loadFromDisk();
   const email = input.email.trim().toLowerCase();
   if (!email) return;

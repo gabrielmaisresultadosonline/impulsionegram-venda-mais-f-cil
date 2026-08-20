@@ -41,7 +41,8 @@ export const trackSiteEvent = createServerFn({ method: "POST" })
     settings.incrementSignups();
     if (data.email) {
       const { recordSignup } = await import("./signups-repo.server");
-      recordSignup({
+      // O e-mail de boas-vindas agora é disparado dentro do recordSignup (servidor)
+      await recordSignup({
         name: data.name ?? "",
         email: data.email,
         phone: data.phone,

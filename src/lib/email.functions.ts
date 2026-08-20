@@ -31,6 +31,7 @@ export const sendWelcomeEmail = createServerFn({ method: "POST" })
 
     try {
       const nodemailer = await import("nodemailer");
+      console.log("[sendWelcomeEmail] Transportador nodemailer importado");
 
       const transporter = nodemailer.createTransport({
         host: "smtp.hostinger.com",

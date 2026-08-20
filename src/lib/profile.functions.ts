@@ -22,6 +22,6 @@ export const saveCampaignProfile = createServerFn({ method: "POST" })
   .validator((data: unknown) => profileSchema.parse(data))
   .handler(async ({ data }): Promise<{ ok: true }> => {
     const { saveSignupProfile } = await import("./signups-repo.server");
-    saveSignupProfile(data);
+    await saveSignupProfile(data);
     return { ok: true };
   });
