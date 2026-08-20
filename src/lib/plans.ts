@@ -70,10 +70,25 @@ export const PLANS: readonly Plan[] = [
     ],
     badge: "VIP",
   },
+  {
+    id: "ads-trimestral-1200",
+    slug: "ads1200",
+    name: "VIP Trimestral",
+    tagline: "Alcance total por 90 dias",
+    priceCents: 120000,
+    features: [
+      "Alcance total por 3 meses",
+      "Engajamento massivo constante",
+      "Leads ilimitados no WhatsApp",
+      "Gestão estratégica de anúncios",
+      "Verba de anúncios Meta inclusa",
+    ],
+    badge: "MELHOR VALOR",
+  },
 ] as const;
 
 /** Planos exibidos no funil de anúncios (/ads01). */
-export const ADS_PLAN_IDS: readonly string[] = ["ads-10k", "ads-50k", "ads-100k"] as const;
+export const ADS_PLAN_IDS: readonly string[] = ["ads-10k", "ads-50k", "ads-100k", "ads-trimestral-1200"] as const;
 
 /** Retorna apenas os planos disponíveis para o funil de anúncios. */
 export function getAdsPlans(): readonly Plan[] {
