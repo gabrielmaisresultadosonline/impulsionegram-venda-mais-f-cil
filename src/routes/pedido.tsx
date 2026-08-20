@@ -154,7 +154,7 @@ function PedidoPage() {
                 <dl className="mt-6 grid gap-4 sm:grid-cols-2">
                   <Info label="Plano" value={order.planName} />
                   <Info label="Valor" value={formatBRL(order.priceCents)} />
-                  <Info label="Perfil" value={order.profileUrl} />
+                  <Info label="Anúncios Meta" value="Ativado" />
                   <Info label="Região" value={order.region} />
                   <Info
                     label="Prazo de entrega"
