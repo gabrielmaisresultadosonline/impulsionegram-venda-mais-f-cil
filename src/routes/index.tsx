@@ -7,7 +7,7 @@ import { PlanCard } from "@/components/site/PlanCard";
 import { Button } from "@/components/ui/button";
 import { getAdsPlans } from "@/lib/plans";
 import { trackSiteEvent } from "@/lib/pixel.functions";
-import metaPartnerAsset from "@/assets/meta-partner.png.asset.json";
+
 import { TestimonialsSection } from "@/components/site/TestimonialsSection";
 import { AboutSection } from "@/components/site/AboutSection";
 import { ChannelPositionSection } from "@/components/site/ChannelPositionSection";
@@ -140,7 +140,7 @@ function Index() {
       <footer className="border-t border-border px-4 py-8">
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-6">
           <img 
-            src={metaPartnerAsset.url} 
+            src="/meta-partner.png" 
             alt="Meta Business Partner" 
             className="h-6 w-auto object-contain opacity-70 grayscale hover:grayscale-0 transition-all duration-300"
           />

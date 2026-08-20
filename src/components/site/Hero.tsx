@@ -3,7 +3,7 @@ import type { ComponentProps } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Social3DIcons } from "@/components/site/Social3DIcons";
-import metaPartnerAsset from "@/assets/meta-partner.png.asset.json";
+
 
 export interface HeroProps extends ComponentProps<"section"> {
   /** Abre o popup de cadastro. */
@@ -90,7 +90,7 @@ export function Hero({
           
           <div className="flex flex-col items-center gap-3">
             <img 
-              src={metaPartnerAsset.url} 
+              src="/meta-partner.png" 
               alt="Meta Business Partner" 
               className="h-8 w-auto object-contain opacity-90"
             />
