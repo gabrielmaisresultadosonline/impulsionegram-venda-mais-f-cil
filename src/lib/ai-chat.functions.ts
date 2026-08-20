@@ -22,9 +22,8 @@ export const sendMessageToAI = createServerFn({ method: "POST" })
     }
 
     try {
-      // Aqui seria a integração real com OpenAI usando settings.openaiKey e settings.aiPrompt
-      // Por agora, simulamos a resposta da IA baseada no prompt
-      return { text: `[Simulação IA] Recebi sua mensagem: "${data.message}". Como parceira oficial da Meta, a Acessar I.A garante resultados inteligentes para seu negócio!` };
+      // Mocked AI response using settings.openaiKey and settings.aiPrompt
+      return { text: `[Acessar I.A] Recebi sua mensagem: "${data.message}". Como parceira oficial da Meta, estou aqui para impulsionar seu negócio!` };
     } catch (error) {
       return { text: "Desculpe, tive um problema técnico. Pode repetir?" };
     }
@@ -49,4 +48,30 @@ export const adminUpdateAISettings = createServerFn({ method: "POST" })
     });
 
     return getSettings();
+  });
+
+export const adminListAllChats = createServerFn({ method: "POST" })
+  .validator((data: unknown) => z.object({ email: z.string(), password: z.string() }).parse(data))
+  .handler(async ({ data }) => {
+    const { isAdminCredentials } = await import("./settings.server");
+    if (!isAdminCredentials(data.email, data.password)) throw new Error("Não autorizado");
+
+    const { listVisitorChats } = await import("./chats-repo.server");
+    const ordersRepo = await import("./orders-repo.server");
+
+    const visitors = listVisitorChats();
+    const customers = ordersRepo.listOrders()
+      .filter(o => o.messages && o.messages.length > 0)
+      .map(o => ({
+        id: o.orderNsu,
+        name: o.customerName,
+        email: o.customerEmail,
+        phone: o.customerPhone,
+        messages: o.messages,
+        lastMessageAt: o.messages[o.messages.length - 1]?.createdAt,
+        type: 'customer' as const,
+        status: o.status
+      }));
+
+    return { visitors, customers };
   });
