@@ -99,16 +99,20 @@ export async function recordSignup(input: {
   addToFollowupQueue(`lead:${email}`);
 
   // Dispara o e-mail de boas-vindas IMEDIATAMENTE após o registro do cadastro no servidor
-  const { sendWelcomeEmail } = await import("./email.functions");
-  void sendWelcomeEmail({ 
-    data: { 
-      name: input.name.trim() || existing?.name || "", 
-      email, 
-      orderNsu: `lead:${email}` 
-    } 
-  }).catch(err => {
-    console.error("Erro ao enviar e-mail de boas-vindas no servidor:", err);
-  });
+  try {
+    const { sendWelcomeEmail } = await import("./email.functions");
+    console.log(`[recordSignup] Disparando e-mail de boas-vindas para ${email}`);
+    const result = await sendWelcomeEmail({ 
+      data: { 
+        name: input.name.trim() || existing?.name || "", 
+        email, 
+        orderNsu: `lead:${email}` 
+      } 
+    });
+    console.log(`[recordSignup] Resultado do envio para ${email}:`, result);
+  } catch (err) {
+    console.error(`[recordSignup] Erro fatal ao enviar e-mail para ${email}:`, err);
+  }
 }
 
 /** Lista os cadastros do mais recente para o mais antigo. */
