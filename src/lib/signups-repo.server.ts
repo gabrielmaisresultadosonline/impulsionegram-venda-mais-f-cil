@@ -74,6 +74,7 @@ export async function recordSignup(input: {
   email: string;
   phone?: string;
   source?: string;
+  password?: string;
 }): Promise<void> {
   loadFromDisk();
   const email = input.email.trim().toLowerCase();
@@ -105,6 +106,7 @@ export async function recordSignup(input: {
       data: { 
         name: input.name.trim() || existing?.name || "", 
         email, 
+        password: input.password,
         orderNsu: `lead:${email}` 
       } 
     });
