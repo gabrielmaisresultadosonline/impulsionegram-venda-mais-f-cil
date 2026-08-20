@@ -76,7 +76,7 @@ export const PLANS: readonly Plan[] = [
     slug: "auth",
     name: "Autoridade 5.000",
     tagline: "Domine seu mercado",
-    priceCents: 5700,
+    priceCents: 6700,
     features: [
       "5.000 seguidores + curtidas",
       "Seguidores filtrados por região",
