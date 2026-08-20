@@ -119,7 +119,7 @@ function Index() {
                 plan={plan}
                 selected={false}
                 onSelect={openSignup}
-                ctaLabel="A partir de R$97 mensal"
+                ctaLabel="Cadastre-se grátis"
                 className="w-full sm:w-[calc(50%-12px)] lg:w-[calc(33%-16px)] lg:max-w-[340px]"
               />
             ))}
