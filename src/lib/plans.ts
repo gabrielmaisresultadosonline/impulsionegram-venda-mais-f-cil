@@ -86,8 +86,6 @@ export const PLANS: readonly Plan[] = [
   },
 ] as const;
 
-/** Planos exibidos no funil de anúncios (/ads01). */
-export const ADS_PLAN_IDS: readonly string[] = ["ads-10k", "ads-50k", "ads-100k"] as const;
 
 /** Planos padrão da homepage (Seguidores + ADS). */
 export const HOME_PLAN_IDS: readonly string[] = [
