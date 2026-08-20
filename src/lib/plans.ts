@@ -53,6 +53,7 @@ export const PLANS: readonly Plan[] = [
       "Início imediato",
       "Suporte via ticket",
     ],
+    badge: "MAIS VENDIDO",
   },
   {
     id: "impulso-2000",
@@ -68,6 +69,7 @@ export const PLANS: readonly Plan[] = [
       "Suporte via ticket",
     ],
     highlight: true,
+    badge: "POPULAR",
   },
   {
     id: "autoridade-5000",
@@ -124,7 +126,7 @@ export const PLANS: readonly Plan[] = [
       "Resultados imediatos",
       "Entrega automática",
       "Link do post obrigatório",
-      "Suporte via ticket",
+      "Suporte via ticket dentro do /painel",
     ],
   },
 ] as const;
@@ -132,8 +134,8 @@ export const PLANS: readonly Plan[] = [
 
 /** Planos padrão da homepage (Seguidores + ADS). */
 export const HOME_PLAN_IDS: readonly string[] = [
-  "turbinar-10k",
   "starter-500",
+  "turbinar-10k",
   "basic-1000",
   "impulso-2000",
   "autoridade-5000",
