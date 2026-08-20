@@ -38,6 +38,9 @@ export interface AdminSettings {
   facebookPixelId: string;
   visits: number;
   signups: number;
+  openaiKey?: string;
+  aiPrompt?: string;
+  aiActive?: boolean;
 }
 
 /** Guarda única de autorização usada por todas as funções administrativas. */
