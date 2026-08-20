@@ -105,7 +105,7 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending, askPhone = fal
         <Question
           icon={<Instagram className="size-5" aria-hidden="true" />}
           title="Qual o seu perfil do Instagram?"
-          description="Onde seus novos seguidores e clientes vão chegar."
+          description="Onde seus novos seguidores e clientes vão chegar. MANDA LINK OU @NOMEDOPERFIL"
         >
           <Label htmlFor="quiz-profile-url" className="sr-only">
             Instagram
