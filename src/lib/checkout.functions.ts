@@ -54,7 +54,7 @@ export interface CreateCheckoutResult {
 }
 
 export const createCheckoutLink = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => createCheckoutSchema.parse(data))
+  .validator((data: unknown) => createCheckoutSchema.parse(data))
   .handler(async ({ data }): Promise<CreateCheckoutResult> => {
     const plan = getPlanById(data.planId);
     if (!plan) {
@@ -194,7 +194,7 @@ export interface PaymentStatus {
 }
 
 export const checkPaymentStatus = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => paymentCheckSchema.parse(data))
+  .validator((data: unknown) => paymentCheckSchema.parse(data))
   .handler(async ({ data }): Promise<PaymentStatus> => {
     const response = await fetch(`${INFINITEPAY_API}/payment_check`, {
       method: "POST",
@@ -260,7 +260,7 @@ export interface OrderStatusByEmail {
  * webhook. Não expõe dados de outros clientes além do próprio pedido.
  */
 export const getOrderStatusByEmail = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => emailSchema.parse(data))
+  .validator((data: unknown) => emailSchema.parse(data))
   .handler(async ({ data }): Promise<OrderStatusByEmail> => {
     const { getLatestOrderByEmail } = await import("./orders-repo.server");
     const order = getLatestOrderByEmail(data.customerEmail);

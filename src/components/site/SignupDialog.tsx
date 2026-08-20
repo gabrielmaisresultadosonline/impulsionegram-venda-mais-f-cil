@@ -19,6 +19,7 @@ import {
   savePlanSelection,
   type LocalAccount,
 } from "@/lib/account-storage";
+import { sendWelcomeEmail } from "@/lib/email.functions";
 import { formatBRL, getPlanById } from "@/lib/plans";
 import { trackPixelEvent } from "./FacebookPixel";
 import { trackSiteEvent } from "@/lib/pixel.functions";
@@ -86,6 +87,12 @@ export function SignupDialog({
       };
       saveAccount(created);
       if (selectedPlanId) savePlanSelection(selectedPlanId);
+      
+      // Envio de e-mail de boas-vindas em background
+      void sendWelcomeEmail({ data: { name, email } }).catch(err => {
+        console.error("Falha silenciosa no envio de e-mail:", err);
+      });
+
       trackPixelEvent("Lead", {
         contentName: plan?.name,
         email,

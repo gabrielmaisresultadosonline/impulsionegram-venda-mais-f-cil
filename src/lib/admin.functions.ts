@@ -52,7 +52,7 @@ async function assertAdmin(email: string, password: string): Promise<void> {
 export type AdminOrder = OrderRecord;
 
 export const adminLogin = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => passwordSchema.parse(data))
+  .validator((data: unknown) => passwordSchema.parse(data))
   .handler(async ({ data }): Promise<{ ok: true }> => {
     const { isAdminCredentials } = await import("./settings.server");
     if (!isAdminCredentials(data.email, data.password)) {
@@ -62,7 +62,7 @@ export const adminLogin = createServerFn({ method: "POST" })
   });
 
 export const adminListOrders = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => passwordSchema.parse(data))
+  .validator((data: unknown) => passwordSchema.parse(data))
   .handler(async ({ data }): Promise<AdminOrder[]> => {
     await assertAdmin(data.email, data.password);
     const repo = await import("./orders-repo.server");
@@ -70,7 +70,7 @@ export const adminListOrders = createServerFn({ method: "POST" })
   });
 
 export const adminUpdateOrder = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => deliverSchema.parse(data))
+  .validator((data: unknown) => deliverSchema.parse(data))
   .handler(async ({ data }): Promise<AdminOrder[]> => {
     await assertAdmin(data.email, data.password);
     const repo = await import("./orders-repo.server");
@@ -85,7 +85,7 @@ export const adminUpdateOrder = createServerFn({ method: "POST" })
   });
 
 export const adminReplyTicket = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => adminTicketSchema.parse(data))
+  .validator((data: unknown) => adminTicketSchema.parse(data))
   .handler(async ({ data }): Promise<AdminOrder[]> => {
     await assertAdmin(data.email, data.password);
     const repo = await import("./orders-repo.server");
@@ -126,7 +126,7 @@ export interface AdminSignup {
  * registro de cadastro tenha sido criado depois dele.
  */
 export const adminListSignups = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => passwordSchema.parse(data))
+  .validator((data: unknown) => passwordSchema.parse(data))
   .handler(async ({ data }): Promise<AdminSignup[]> => {
     await assertAdmin(data.email, data.password);
     const { listSignups } = await import("./signups-repo.server");
@@ -167,7 +167,7 @@ export const adminListSignups = createServerFn({ method: "POST" })
 
 
 export const adminGetSettings = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => passwordSchema.parse(data))
+  .validator((data: unknown) => passwordSchema.parse(data))
   .handler(async ({ data }): Promise<AdminSettings> => {
     await assertAdmin(data.email, data.password);
     const { getSettings } = await import("./settings.server");
@@ -175,7 +175,7 @@ export const adminGetSettings = createServerFn({ method: "POST" })
   });
 
 export const adminSetPixel = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => pixelSchema.parse(data))
+  .validator((data: unknown) => pixelSchema.parse(data))
   .handler(async ({ data }): Promise<AdminSettings> => {
     await assertAdmin(data.email, data.password);
     const { setFacebookPixelId, getSettings } = await import("./settings.server");
@@ -201,7 +201,7 @@ const manualPurchaseSchema = passwordSchema.extend({
  * reenviar o mesmo pedido não duplica a conversão no Meta.
  */
 export const adminSendPurchaseEvent = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => manualPurchaseSchema.parse(data))
+  .validator((data: unknown) => manualPurchaseSchema.parse(data))
   .handler(async ({ data }): Promise<{ ok: boolean }> => {
     await assertAdmin(data.email, data.password);
     const { sendCapiEvent } = await import("./capi.server");
@@ -235,7 +235,7 @@ const quickPurchaseSchema = passwordSchema.extend({
  * Atalho para enviar o evento de compra direto de um pedido existente no admin.
  */
 export const adminQuickSendPurchase = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => quickPurchaseSchema.parse(data))
+  .validator((data: unknown) => quickPurchaseSchema.parse(data))
   .handler(async ({ data }): Promise<{ ok: boolean }> => {
     await assertAdmin(data.email, data.password);
     const repo = await import("./orders-repo.server");

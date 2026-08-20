@@ -30,7 +30,7 @@ const eventSchema = z.object({
 
 /** Contadores internos de visita/cadastro exibidos no painel administrativo. */
 export const trackSiteEvent = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => eventSchema.parse(data))
+  .validator((data: unknown) => eventSchema.parse(data))
   .handler(async ({ data }): Promise<{ ok: true }> => {
     const settings = await import("./settings.server");
     if (data.type === "pageview") {
@@ -72,7 +72,7 @@ const conversionSchema = z.object({
  * quebrar cadastro nem checkout.
  */
 export const trackConversion = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => conversionSchema.parse(data))
+  .validator((data: unknown) => conversionSchema.parse(data))
   .handler(async ({ data }): Promise<{ ok: boolean }> => {
     const { sendCapiEvent } = await import("./capi.server");
 

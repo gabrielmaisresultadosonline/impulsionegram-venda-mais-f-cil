@@ -19,7 +19,7 @@ const customerTicketSchema = z.object({
 export type CustomerOrder = OrderRecord;
 
 export const customerListOrder = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) =>
+  .validator((data: unknown) =>
     z
       .object({
         orderNsu: z.string().trim().min(1).max(120),
@@ -37,7 +37,7 @@ export const customerListOrder = createServerFn({ method: "POST" })
   });
 
 export const customerSendMessage = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => customerTicketSchema.parse(data))
+  .validator((data: unknown) => customerTicketSchema.parse(data))
   .handler(async ({ data }): Promise<CustomerOrder | null> => {
     const repo = await import("./orders-repo.server");
     const order = repo.getOrderByNsu(data.orderNsu);
@@ -57,7 +57,7 @@ export const customerSendMessage = createServerFn({ method: "POST" })
  * A posse é validada pelo e-mail salvo na conta local do navegador.
  */
 export const customerListOrdersByEmail = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) =>
+  .validator((data: unknown) =>
     z.object({ customerEmail: z.string().trim().email().min(1).max(160) }).parse(data),
   )
   .handler(async ({ data }): Promise<CustomerOrder[]> => {
@@ -76,7 +76,7 @@ export const customerListOrdersByEmail = createServerFn({ method: "POST" })
  * Pedidos pagos ou entregues são protegidos e nunca removidos aqui.
  */
 export const customerDeleteOrder = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) =>
+  .validator((data: unknown) =>
     z
       .object({
         orderNsu: z.string().trim().min(1).max(120),
