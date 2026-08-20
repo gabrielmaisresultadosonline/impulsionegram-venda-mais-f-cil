@@ -140,6 +140,7 @@ export const HOME_PLAN_IDS: readonly string[] = [
   "marketing-completo",
   "ads-10k",
   "ads-50k",
+  "ads-100k",
 ] as const;
 
 export function getHomePlans(): readonly Plan[] {
@@ -151,30 +152,17 @@ export function getAdsPlans(): readonly Plan[] {
   return ADS_PLAN_IDS.map((id) => getPlanById(id)).filter((p): p is Plan => p !== undefined);
 }
 
-
 /** Planos exibidos no funil de salão de beleza (/salaode). */
-export const SALON_PLAN_IDS: readonly string[] = [
-  "marketing-completo",
-  "trimestral-10k",
-] as const;
+export const SALON_PLAN_IDS: readonly string[] = [...HOME_PLAN_IDS] as const;
 
 /** Planos exibidos no funil de barbearia (/barbea). */
-export const BARBER_PLAN_IDS: readonly string[] = [
-  "marketing-completo",
-  "trimestral-10k",
-] as const;
+export const BARBER_PLAN_IDS: readonly string[] = [...HOME_PLAN_IDS] as const;
 
 /** Planos exibidos no funil de terapeutas (/terapi). */
-export const THERAPY_PLAN_IDS: readonly string[] = [
-  "marketing-completo",
-  "trimestral-10k",
-] as const;
+export const THERAPY_PLAN_IDS: readonly string[] = [...HOME_PLAN_IDS] as const;
 
 /** Planos exibidos no funil de delivery (/delivery). */
-export const DELIVERY_PLAN_IDS: readonly string[] = [
-  "marketing-completo",
-  "trimestral-10k",
-] as const;
+export const DELIVERY_PLAN_IDS: readonly string[] = [...HOME_PLAN_IDS] as const;
 
 /** Item opcional de "turbine seu plano" (order bump) exibido após escolher o plano. */
 export interface OrderBump {
