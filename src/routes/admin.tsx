@@ -312,7 +312,24 @@ function AdminDashboard({ credentials, onLogout }: AdminDashboardProps) {
           ))}
         </nav>
 
-        {tab === "cadastros" ? (
+        {tab === "ia" ? (
+          <AISettingsCard credentials={credentials} className="mt-6" />
+        ) : tab === "chats" ? (
+          <div className="mt-6 glass-panel rounded-2xl p-6">
+            <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
+              <MessageSquare className="size-5 text-primary" />
+              Conversas Recentes
+            </h2>
+            <p className="text-muted-foreground text-sm mb-6">
+              Aqui você pode ver o histórico de conversas da homepage e do painel, e assumir o atendimento se necessário.
+            </p>
+            <div className="space-y-4">
+              <div className="border border-border rounded-xl p-8 text-center text-muted-foreground text-sm">
+                Nenhuma conversa ativa no momento. As conversas atendidas pela I.A aparecerão aqui com um ícone de robô.
+              </div>
+            </div>
+          </div>
+        ) : tab === "cadastros" ? (
           <>
             <SignupsCard credentials={credentials} className="mt-6" />
             <section className="mt-6 space-y-4">
