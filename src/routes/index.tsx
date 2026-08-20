@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { ArrowRight, Sparkles, MapPin, Target, Users, Timer, ShieldCheck, Instagram } from "lucide-react";
 import { Hero } from "@/components/site/Hero";
@@ -38,6 +38,7 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  const navigate = useNavigate();
   const [signupOpen, setSignupOpen] = useState(false);
   const adsPlans = getAdsPlans();
 
@@ -45,7 +46,14 @@ function Index() {
     void trackSiteEvent({ data: { type: "pageview", source: "home" } });
   }, []);
 
-  const openSignup = useCallback(() => setSignupOpen(true), []);
+  const openSignup = useCallback(() => {
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    if (isMobile) {
+      void navigate({ to: "/painel", search: { source: "home" } });
+    } else {
+      setSignupOpen(true);
+    }
+  }, [navigate]);
 
   return (
     <main className="min-h-screen">
