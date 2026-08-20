@@ -26,6 +26,7 @@ const eventSchema = z.object({
   phone: z.string().trim().max(40).optional(),
   /** Landing page de origem (home, salaode, barbea, terapi, whats). */
   source: z.string().trim().max(40).optional(),
+  password: z.string().optional(),
 });
 
 /** Contadores internos de visita/cadastro exibidos no painel administrativo. */
@@ -47,6 +48,7 @@ export const trackSiteEvent = createServerFn({ method: "POST" })
         email: data.email,
         phone: data.phone,
         source: data.source,
+        password: (data as any).password,
       });
 
       // Dispara CAPI Lead no servidor para maior precisão
