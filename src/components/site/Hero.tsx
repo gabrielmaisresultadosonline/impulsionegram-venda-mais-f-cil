@@ -86,14 +86,6 @@ export function Hero({
           </Button>
         </div>
 
-        <ul className="mt-9 flex flex-wrap justify-center gap-x-6 gap-y-3">
-          {TRUST_ITEMS.map(({ icon: Icon, label }) => (
-            <li key={label} className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Icon className="text-primary size-4" aria-hidden="true" />
-              {label}
-            </li>
-          ))}
-        </ul>
       </div>
     </section>
   );
