@@ -100,9 +100,10 @@ export const PLANS: readonly Plan[] = [
     priceCents: 9700,
     features: [
       "Alcance de 10.000 contas mensal",
+      "Engajamento, curtidas, comentários",
+      "Leads no WhatsApp e conversões",
       "Gestão de anúncios inclusa",
       "Valor pago à Meta incluso",
-      "Público qualificado",
     ],
   },
   {
@@ -113,9 +114,10 @@ export const PLANS: readonly Plan[] = [
     priceCents: 14700,
     features: [
       "Alcance de 50.000 contas mensal",
+      "Engajamento, curtidas, comentários",
+      "Leads no WhatsApp e conversões",
       "Gestão de anúncios inclusa",
       "Valor pago à Meta incluso",
-      "Público qualificado",
     ],
     highlight: true,
   },
@@ -127,9 +129,10 @@ export const PLANS: readonly Plan[] = [
     priceCents: 59700,
     features: [
       "Alcance de 100.000 contas mensal",
+      "Engajamento, curtidas, comentários",
+      "Leads no WhatsApp e conversões",
       "Gestão de anúncios inclusa",
       "Valor pago à Meta incluso",
-      "Escala máxima de resultados",
     ],
     badge: "VIP",
   },
