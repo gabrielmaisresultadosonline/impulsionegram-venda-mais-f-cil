@@ -110,13 +110,15 @@ export function SignupsCard({ credentials, className, ...props }: SignupsCardPro
               <Field label="Perfil do Instagram">
                 <span className="break-all">{signup.profileUrl || "—"}</span>
               </Field>
-              <Field label="Link da Publicação">
-                <span className="break-all">{signup.adLink || "—"}</span>
-              </Field>
               <Field label="Público (região / CEP)">{signup.region || "—"}</Field>
               <Field label="Concorrente">
                 <span className="break-all">{signup.competitor || "—"}</span>
               </Field>
+              <div className="lg:col-span-2">
+                <Field label="Link da Publicação">
+                  <span className="break-all text-xs text-primary font-mono">{signup.adLink || "—"}</span>
+                </Field>
+              </div>
             </article>
           ))
         )}
