@@ -72,6 +72,7 @@ export function PainelWizard({
           profileUrl: campaign.profileUrl.trim(),
           region: formatRegion(campaign),
           competitor: campaign.competitor.trim(),
+          adLink: campaign.adLink.trim(),
           source,
         },
       }),

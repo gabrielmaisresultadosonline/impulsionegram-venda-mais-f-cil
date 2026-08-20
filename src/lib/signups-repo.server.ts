@@ -24,6 +24,7 @@ export interface SignupRecord {
   profileUrl?: string;
   region?: string;
   competitor?: string;
+  adLink?: string;
   /** Momento em que os dados da campanha foram salvos. */
   profileSavedAt?: string;
 }
@@ -109,6 +110,7 @@ export function saveSignupProfile(input: {
   profileUrl: string;
   region: string;
   competitor?: string;
+  adLink?: string;
   source?: string;
 }): void {
   loadFromDisk();
@@ -127,6 +129,7 @@ export function saveSignupProfile(input: {
     profileUrl: input.profileUrl.trim(),
     region: input.region.trim(),
     competitor: input.competitor?.trim() || existing?.competitor,
+    adLink: input.adLink?.trim() || existing?.adLink,
     profileSavedAt: now,
   });
   prune();
