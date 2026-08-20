@@ -165,7 +165,7 @@ export const createCheckoutLink = createServerFn({ method: "POST" })
 
     // Registra a tentativa de compra para o painel administrativo.
     const { recordAttempt } = await import("./orders-repo.server");
-    recordAttempt({
+    await recordAttempt({
       orderNsu,
       planId: plan.id,
       planName: plan.name,
@@ -187,7 +187,6 @@ export const createCheckoutLink = createServerFn({ method: "POST" })
       productName,
       source: normalizeSource(data.source),
       paymentUrl,
-      messages: [],
     });
 
 
@@ -242,7 +241,7 @@ export const checkPaymentStatus = createServerFn({ method: "POST" })
     if (paid) {
       // Fonte de verdade confirmada pela InfinitePay: propaga para o admin.
       const { markPaid } = await import("./orders-repo.server");
-      markPaid(data.orderNsu, {
+      await markPaid(data.orderNsu, {
         captureMethod: body.capture_method,
         transactionNsu: data.transactionNsu || undefined,
       });
@@ -279,7 +278,7 @@ export const getOrderStatusByEmail = createServerFn({ method: "POST" })
   .validator((data: unknown) => emailSchema.parse(data))
   .handler(async ({ data }): Promise<OrderStatusByEmail> => {
     const { getLatestOrderByEmail } = await import("./orders-repo.server");
-    const order = getLatestOrderByEmail(data.customerEmail);
+    const order = await getLatestOrderByEmail(data.customerEmail);
     if (!order) return { found: false, paid: false };
     return {
       found: true,

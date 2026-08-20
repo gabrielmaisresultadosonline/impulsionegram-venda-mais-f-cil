@@ -29,8 +29,8 @@ export const customerListOrder = createServerFn({ method: "POST" })
   )
   .handler(async ({ data }): Promise<CustomerOrder | null> => {
     const repo = await import("./orders-repo.server");
-    const order = repo.getOrderByNsu(data.orderNsu);
-    if (!order || order.customerEmail !== data.customerEmail) {
+    const order = await repo.getOrderByNsu(data.orderNsu);
+    if (!order || order.customerEmail.toLowerCase() !== data.customerEmail.toLowerCase()) {
       return null;
     }
     return order;
@@ -40,16 +40,16 @@ export const customerSendMessage = createServerFn({ method: "POST" })
   .validator((data: unknown) => customerTicketSchema.parse(data))
   .handler(async ({ data }): Promise<CustomerOrder | null> => {
     const repo = await import("./orders-repo.server");
-    const order = repo.getOrderByNsu(data.orderNsu);
-    if (!order || order.customerEmail !== data.customerEmail) {
+    const order = await repo.getOrderByNsu(data.orderNsu);
+    if (!order || order.customerEmail.toLowerCase() !== data.customerEmail.toLowerCase()) {
       throw new Error("Pedido não encontrado.");
     }
-    repo.addMessage(data.orderNsu, {
+    await repo.addMessage(data.orderNsu, {
       author: "customer",
       text: data.text,
       readByAdmin: false,
     });
-    return repo.getOrderByNsu(data.orderNsu) ?? null;
+    return (await repo.getOrderByNsu(data.orderNsu)) ?? null;
   });
 
 /**
@@ -61,14 +61,12 @@ export const customerListOrdersByEmail = createServerFn({ method: "POST" })
     z.object({ customerEmail: z.string().trim().email().min(1).max(160) }).parse(data),
   )
   .handler(async ({ data }): Promise<CustomerOrder[]> => {
-    const repo = await import("./orders-repo.server");
+    const allOrders = await repo.listOrders();
     const target = data.customerEmail.toLowerCase();
-    return repo
-      .listOrders()
-      .filter(
-        (order) =>
-          order.customerEmail.trim().toLowerCase() === target && !order.cancelledAt,
-      );
+    return allOrders.filter(
+      (order: any) =>
+        order.customerEmail.trim().toLowerCase() === target && !order.cancelledAt,
+    );
   });
 
 /**
@@ -86,5 +84,5 @@ export const customerDeleteOrder = createServerFn({ method: "POST" })
   )
   .handler(async ({ data }): Promise<{ deleted: boolean }> => {
     const repo = await import("./orders-repo.server");
-    return { deleted: repo.deleteUnpaidOrder(data.orderNsu, data.customerEmail) };
+    return { deleted: await repo.deleteUnpaidOrder(data.orderNsu, data.customerEmail) };
   });
