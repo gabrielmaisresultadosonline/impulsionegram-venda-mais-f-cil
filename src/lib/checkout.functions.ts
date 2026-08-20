@@ -170,7 +170,7 @@ export const createCheckoutLink = createServerFn({ method: "POST" })
       profileUrl: data.profileUrl ?? "",
       region: data.region,
       competitor: data.competitor ?? "",
-      adLink: data.adLink,
+      adLink: data.adLink ?? "",
       posts: [],
       productName,
       source: normalizeSource(data.source),
