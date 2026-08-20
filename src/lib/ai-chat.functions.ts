@@ -59,7 +59,7 @@ export const sendMessageToAI = createServerFn({ method: "POST" })
     const customerOrder = orders.find((o: any) => o.customerEmail.toLowerCase() === data.visitor.email.toLowerCase());
     
     if (customerOrder) {
-      addMessageToOrder(customerOrder.orderNsu, { 
+      await addMessageToOrder(customerOrder.orderNsu, { 
         author: "customer", 
         text: data.message,
         id: crypto.randomUUID(),
@@ -67,7 +67,7 @@ export const sendMessageToAI = createServerFn({ method: "POST" })
         readByAdmin: false
       });
     } else {
-      let vChat = await getVisitorChat(data.visitor.email);
+      const vChat = await getVisitorChat(data.visitor.email);
       if (!vChat) {
         await saveVisitorChat({
           visitorId: crypto.randomUUID(),
@@ -133,7 +133,7 @@ export const sendMessageToAI = createServerFn({ method: "POST" })
           readByAdmin: false
         });
       } else {
-        await await addVisitorMessage(data.visitor.email, { author: "ai", text: aiText });
+        await addVisitorMessage(data.visitor.email, { author: "ai", text: aiText });
       }
 
       return { text: aiText };
@@ -148,8 +148,8 @@ export const adminListAllChats = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     if (!isAdminCredentials(data.email, data.password)) throw new Error("Não autorizado");
     
-    const visitorsResult = await listVisitorChats();
-    const visitors = (visitorsResult || []).map((c: any) => ({
+    const visitorsData = await listVisitorChats();
+    const visitors = (visitorsData || []).map((c: any) => ({
       id: c.email,
       name: c.name,
       email: c.email,
@@ -158,6 +158,7 @@ export const adminListAllChats = createServerFn({ method: "POST" })
       lastMessageAt: c.lastMessageAt,
       type: 'visitor' as const
     }));
+    
     const allOrders = await listOrders();
     
     const customers = allOrders
@@ -195,7 +196,7 @@ export const adminSendMessage = createServerFn({ method: "POST" })
         readByAdmin: true
       });
     } else {
-      await await addVisitorMessage(data.chatId, { author: "admin", text: data.text });
+      await addVisitorMessage(data.chatId, { author: "admin", text: data.text });
     }
 
     return { success: true };
