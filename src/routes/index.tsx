@@ -34,7 +34,7 @@ export const Route = createFileRoute("/")({
       },
     ],
   }),
-  component: AdsLandingPage,
+  component: Index,
 });
 
 function Index() {
