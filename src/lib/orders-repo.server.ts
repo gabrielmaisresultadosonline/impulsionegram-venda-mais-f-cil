@@ -19,7 +19,7 @@ export type OrderStatus = "tentativa" | "pago" | "entregue";
 
 export interface TicketMessage {
   id: string;
-  author: "customer" | "admin";
+  author: "customer" | "admin" | "ai";
   text: string;
   createdAt: string;
   readByAdmin: boolean;
@@ -308,6 +308,16 @@ export function listOrders(): OrderRecord[] {
   return [...registry.values()].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
 }
 
+
+export function addMessageToOrder(orderNsu: string, message: TicketMessage) {
+  loadFromDisk();
+  const order = registry.get(orderNsu);
+  if (!order) return false;
+  order.messages = order.messages || [];
+  order.messages.push(message);
+  persist();
+  return true;
+}
 
 /**
  * Valida a senha do administrador contra o secret ADMIN_PASSWORD.

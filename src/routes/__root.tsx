@@ -13,6 +13,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "@/components/ui/sonner";
 import { FacebookPixel } from "@/components/site/FacebookPixel";
+import { FloatingChat } from "@/components/site/FloatingChat";
 
 
 function NotFoundComponent() {
@@ -126,6 +127,7 @@ function RootComponent() {
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <FacebookPixel />
       <Outlet />
+      <FloatingChat />
       <Toaster position="top-center" richColors />
     </QueryClientProvider>
   );

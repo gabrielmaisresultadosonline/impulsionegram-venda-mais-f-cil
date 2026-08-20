@@ -25,6 +25,9 @@ import { sourceLabel } from "@/lib/traffic-source";
 import { PixelCard } from "@/components/admin/PixelCard";
 import { SignupsCard } from "@/components/admin/SignupsCard";
 import { ManualPurchaseCard } from "@/components/admin/ManualPurchaseCard";
+import { AISettingsCard } from "@/components/admin/AISettingsCard";
+import { ChatHistory } from "@/components/admin/ChatHistory";
+import { LayoutDashboard, Users2, MessageSquare, BotIcon, MessageCircle } from "lucide-react";
 
 import {
   adminListOrders,
@@ -41,13 +44,15 @@ export interface AdminCredentials {
   password: string;
 }
 
-type TabKey = "todos" | "pago" | "tentativa" | "entregue" | "cadastros";
+type TabKey = "todos" | "pago" | "tentativa" | "entregue" | "cadastros" | "ia" | "chats";
 
 const TABS: ReadonlyArray<{ key: TabKey; label: string }> = [
   { key: "pago", label: "A entregar" },
   { key: "tentativa", label: "Tentativas" },
   { key: "entregue", label: "Entregues" },
   { key: "cadastros", label: "Cadastros" },
+  { key: "ia", label: "Agente I.A" },
+  { key: "chats", label: "Conversas" },
   { key: "todos", label: "Todos" },
 ];
 
@@ -308,7 +313,20 @@ function AdminDashboard({ credentials, onLogout }: AdminDashboardProps) {
           ))}
         </nav>
 
-        {tab === "cadastros" ? (
+        {tab === "ia" ? (
+          <AISettingsCard credentials={credentials} className="mt-6" />
+        ) : tab === "chats" ? (
+          <div className="mt-6 glass-panel rounded-2xl p-6">
+            <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
+              <MessageSquare className="size-5 text-primary" />
+              Conversas Recentes
+            </h2>
+            <p className="text-muted-foreground text-sm mb-6">
+              Aqui você pode ver o histórico de conversas da homepage e do painel, e assumir o atendimento se necessário.
+            </p>
+            <ChatHistory credentials={credentials} />
+          </div>
+        ) : tab === "cadastros" ? (
           <>
             <SignupsCard credentials={credentials} className="mt-6" />
             <section className="mt-6 space-y-4">
@@ -560,7 +578,13 @@ function OrderCard({ order, busy, sendingPixel, onDeliver, onReopen, onSendPixel
             Enviar Pixel (Purchase)
           </Button>
         )}
-
+        
+        {order.messages && order.messages.length > 0 && (
+          <Badge className="bg-primary/20 text-primary border-primary/20 flex gap-1.5 items-center">
+            <BotIcon className="size-3" />
+            Chat Ativo
+          </Badge>
+        )}
         {order.receiptUrl ? (
           <Button asChild variant="outline" size="sm">
             <a href={order.receiptUrl} target="_blank" rel="noopener noreferrer">
