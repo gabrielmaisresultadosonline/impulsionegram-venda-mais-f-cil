@@ -15,6 +15,7 @@ export interface StoredOrder {
   customerPhone: string;
   profileUrl: string;
   region: string;
+  adLink?: string;
   posts: string[];
   createdAt: string;
   /** Preenchidos no retorno do checkout. */

@@ -72,6 +72,11 @@ export function SignupsCard({ credentials, className, ...props }: SignupsCardPro
                 <span className="flex items-center gap-2">
                   <UserRound className="text-primary size-4" aria-hidden="true" />
                   {signup.name || "—"}
+                  {signup.source === "home" && (
+                    <Badge className="bg-blue-600 text-white border-transparent hover:bg-blue-700 animate-pulse text-[10px] h-4">
+                      NOVO
+                    </Badge>
+                  )}
                 </span>
               </Field>
               <Field label="E-mail">
@@ -109,6 +114,11 @@ export function SignupsCard({ credentials, className, ...props }: SignupsCardPro
               <Field label="Concorrente">
                 <span className="break-all">{signup.competitor || "—"}</span>
               </Field>
+              <div className="lg:col-span-2">
+                <Field label="Link da Publicação">
+                  <span className="break-all text-xs text-primary font-mono">{signup.adLink || "—"}</span>
+                </Field>
+              </div>
             </article>
           ))
         )}

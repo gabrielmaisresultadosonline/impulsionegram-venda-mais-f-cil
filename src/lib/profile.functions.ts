@@ -14,6 +14,7 @@ const profileSchema = z.object({
   profileUrl: z.string().trim().min(3, "Informe o link do perfil").max(200),
   region: z.string().trim().min(2, "Informe a região ou CEP").max(160),
   competitor: z.string().trim().max(200).optional(),
+  adLink: z.string().trim().url("Link inválido").max(500).optional(),
   source: z.string().trim().max(40).optional(),
 });
 

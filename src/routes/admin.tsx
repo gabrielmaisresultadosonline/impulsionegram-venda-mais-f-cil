@@ -318,18 +318,27 @@ function AdminDashboard({ credentials, onLogout }: AdminDashboardProps) {
                   Nenhum pedido registrado ainda.
                 </div>
               ) : (
-                customerGroups.map((group) => (
-                  <article key={group.email} className="glass-panel rounded-2xl p-5">
-                    <div className="flex flex-wrap items-baseline justify-between gap-2">
-                      <div>
-                        <h3 className="text-base font-bold">{group.name || "Sem nome"}</h3>
-                        <p className="text-muted-foreground text-xs break-all">{group.email}</p>
-                        {group.orders.find(o => o.customerPhone)?.customerPhone && (
-                          <p className="text-primary mt-1 text-xs font-semibold">
-                            WhatsApp: {group.orders.find(o => o.customerPhone)?.customerPhone}
-                          </p>
-                        )}
-                      </div>
+                customerGroups.map((group) => {
+                  const hasNewTag = group.orders.some(o => o.source === "home");
+                  return (
+                    <article key={group.email} className="glass-panel rounded-2xl p-5">
+                      <div className="flex flex-wrap items-baseline justify-between gap-2">
+                        <div className="flex flex-col gap-1">
+                          <div className="flex items-center gap-2">
+                            <h3 className="text-base font-bold">{group.name || "Sem nome"}</h3>
+                            {hasNewTag && (
+                              <Badge className="bg-blue-600 text-white border-transparent hover:bg-blue-700 animate-pulse text-[10px] h-5">
+                                NOVO
+                              </Badge>
+                            )}
+                          </div>
+                          <p className="text-muted-foreground text-xs break-all">{group.email}</p>
+                          {group.orders.find(o => o.customerPhone)?.customerPhone && (
+                            <p className="text-primary mt-1 text-xs font-semibold">
+                              WhatsApp: {group.orders.find(o => o.customerPhone)?.customerPhone}
+                            </p>
+                          )}
+                        </div>
                       <p className="text-muted-foreground text-xs">
                         {group.orders.length} pedido(s)
                       </p>
@@ -362,8 +371,9 @@ function AdminDashboard({ credentials, onLogout }: AdminDashboardProps) {
                         </li>
                       ))}
                     </ul>
-                  </article>
-                ))
+                    </article>
+                  );
+                })
               )}
             </section>
           </>
@@ -436,6 +446,11 @@ function OrderCard({ order, busy, sendingPixel, onDeliver, onReopen, onSendPixel
         <div>
           <div className="flex flex-wrap items-center gap-2">
             <h2 className="text-base font-bold">{order.planName}</h2>
+            {order.source === "home" && (
+              <Badge className="bg-blue-600 text-white border-transparent hover:bg-blue-700 animate-pulse text-[10px] h-5">
+                NOVO
+              </Badge>
+            )}
             <StatusBadge status={order.status} />
             {order.cancelledAt ? (
               <Badge variant="outline" className="text-destructive border-destructive/30">
@@ -456,6 +471,9 @@ function OrderCard({ order, busy, sendingPixel, onDeliver, onReopen, onSendPixel
         <Field label="Região" value={order.region || "—"} />
         <Field label="Concorrente" value={order.competitor || "—"} />
         <Field label="Veio de" value={sourceLabel(order.source)} />
+        <div className="sm:col-span-2 lg:col-span-3">
+          <Field label="Link da Publicação" value={order.adLink || order.posts?.[0] || "—"} />
+        </div>
         <Field label="Criado em" value={formatDate(order.createdAt)} />
         <Field label="Pago em" value={order.paidAt ? formatDate(order.paidAt) : "—"} />
         <Field

@@ -42,6 +42,7 @@ const createCheckoutSchema = z.object({
   source: z.string().trim().max(40).optional(),
   /** Order bumps opcionais escolhidos no popup "turbine seu plano". */
   bumpIds: z.array(z.string().trim().max(64)).max(10).optional(),
+  adLink: z.string().trim().url("Link inválido").max(500).optional(),
 });
 
 export type CreateCheckoutInput = z.input<typeof createCheckoutSchema>;
@@ -167,6 +168,7 @@ export const createCheckoutLink = createServerFn({ method: "POST" })
       profileUrl: data.profileUrl,
       region: data.region,
       competitor: data.competitor ?? "",
+      adLink: data.adLink,
       posts: [],
       productName,
       source: normalizeSource(data.source),

@@ -72,6 +72,7 @@ export function PainelWizard({
           profileUrl: campaign.profileUrl.trim(),
           region: formatRegion(campaign),
           competitor: campaign.competitor.trim(),
+          adLink: campaign.adLink.trim(),
           source,
         },
       }),
@@ -105,6 +106,7 @@ export function PainelWizard({
           origin: window.location.origin,
           source,
           bumpIds: selectedBumps,
+          adLink: campaign.adLink.trim(),
         },
       }),
     onSuccess: (result) => {
@@ -120,6 +122,7 @@ export function PainelWizard({
         customerPhone: campaign.customerPhone.trim(),
         profileUrl: campaign.profileUrl.trim(),
         region: formatRegion(campaign),
+        adLink: campaign.adLink.trim(),
         posts: [],
         createdAt: new Date().toISOString(),
       });
