@@ -18,7 +18,7 @@ const profileSchema = z.object({
 });
 
 export const saveCampaignProfile = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => profileSchema.parse(data))
+  .validator((data: unknown) => profileSchema.parse(data))
   .handler(async ({ data }): Promise<{ ok: true }> => {
     const { saveSignupProfile } = await import("./signups-repo.server");
     saveSignupProfile(data);
