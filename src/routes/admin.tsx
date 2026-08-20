@@ -43,7 +43,7 @@ export interface AdminCredentials {
   password: string;
 }
 
-type TabKey = "todos" | "pago" | "tentativa" | "entregue" | "cadastros";
+type TabKey = "todos" | "pago" | "tentativa" | "entregue" | "cadastros" | "ia" | "chats";
 
 const TABS: ReadonlyArray<{ key: TabKey; label: string }> = [
   { key: "pago", label: "A entregar" },
