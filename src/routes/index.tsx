@@ -21,20 +21,20 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       {
-        title: "Faça seus anúncios no automático — Facebook, Instagram e WhatsApp",
+        title: "Seguidores e Engajamento no Automático — Público de Concorrentes",
       },
       {
         name: "description",
         content:
-          "Anúncios automáticos para Facebook, Instagram e WhatsApp. Alcance até 100 mil contas mensalmente com gestão inclusa.",
+          "Resultados automáticos com seguidores, engajamento e público de concorrentes no automático. Ganhe popularidade real.",
       },
       {
         property: "og:title",
-        content: "Faça seus anúncios no automático — POPULAR",
+        content: "Seguidores e Engajamento no Automático — POPULAR",
       },
       {
         property: "og:description",
-        content: "Gestão e anúncios inclusos. Comece a vender mais agora.",
+        content: "Resultados automáticos: Seguidores, Engajamento e Público de Concorrentes.",
       },
     ],
   }),
@@ -64,9 +64,9 @@ function Index() {
       <Hero
         onCta={openSignup}
         onSecondary={openSignup}
-        headline={["Nunca foi tão fácil vender mais", "sem precisar de muito esforço,", "ganhe popularidade do seu negocio"]}
-        highlight="Seguidores filtrados por região e concorrente no automático."
-        description="Ganhe popularidade do seu negocio com seguidores filtrados por regiao e filtrados do seu concorrente. Resultados reais e rápidos."
+        headline={["SEGUIDORES, ENGAJAMENTO,", "PÚBLICO DE CONCORRENTES", "NO AUTOMÁTICO"]}
+        highlight="Seguidores, alcance e visualizações: resultados automáticos para o seu negócio."
+        description="Ganhe popularidade com seguidores filtrados por região e concorrente. Focado exclusivamente em resultados reais no Instagram."
         ctaLabel="Cadastre-se grátis"
         secondaryLabel="A partir de R$ 14 mensal"
       />
@@ -86,7 +86,7 @@ function Index() {
               <Target className="text-primary size-6" />
             </div>
             <h3 className="font-bold">Mais Conversões</h3>
-            <p className="text-sm text-muted-foreground">Gere leads qualificados direto para o seu WhatsApp.</p>
+            <p className="text-sm text-muted-foreground">Gere engajamento real e crescimento constante no seu perfil.</p>
           </div>
           <div className="glass-panel p-6 rounded-2xl text-center space-y-3">
             <div className="bg-primary/10 w-12 h-12 rounded-full flex items-center justify-center mx-auto">

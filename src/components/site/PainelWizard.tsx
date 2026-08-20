@@ -16,7 +16,7 @@ import { OrderBumpDialog } from "./wizard/OrderBumpDialog";
 import { CampaignQuiz } from "./wizard/CampaignQuiz";
 import { EMPTY_CAMPAIGN, formatRegion, type CampaignData } from "./wizard/types";
 
-const STEPS = ["Plano", "Perfil e público", "Pagamento"] as const;
+const STEPS = ["Escolha o Plano", "Configurar Resultados", "Confirmar"] as const;
 
 export interface PainelWizardProps extends ComponentProps<"section"> {
   account: LocalAccount;

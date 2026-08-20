@@ -44,12 +44,12 @@ export function AboutSection() {
               </h2>
               
               <p className="text-lg text-muted-foreground leading-relaxed">
-                Uma Inteligência Artificial <span className="text-foreground font-semibold">parceira oficial da Meta</span> desenvolvida para revolucionar o seu marketing. Eu crio e gerencio seus anúncios automaticamente via API, garantindo que sua verba seja aplicada onde realmente traz retorno.
+                Uma Inteligência Artificial <span className="text-foreground font-semibold">parceira oficial da Meta</span> desenvolvida para revolucionar o seu Instagram. Eu gerencio seu crescimento automaticamente via API, garantindo seguidores reais e engajamento.
               </p>
 
               <div className="bg-primary/5 border border-primary/20 p-4 rounded-2xl">
                 <p className="text-sm font-bold text-primary">
-                  A verba já está inclusa: Sou uma I.A parceira de anúncios onde o valor investido em tráfego já está incluso no primeiro mês.
+                  Crescimento Inteligente: Sou uma I.A parceira onde o foco é atrair o público do seu concorrente e da sua região de forma automática.
                 </p>
               </div>
 

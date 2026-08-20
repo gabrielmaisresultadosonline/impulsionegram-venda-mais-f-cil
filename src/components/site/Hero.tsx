@@ -28,10 +28,10 @@ const TRUST_ITEMS = [
   { icon: Instagram, label: "Filtro por região" },
 ] as const;
 
-const DEFAULT_TITLE = ["Mais vendas,", "Mais engajamento", "Mais clientes"] as const;
-const DEFAULT_HIGHLIGHT = "Público filtrado por região e CEP no automático.";
+const DEFAULT_TITLE = ["SEGUIDORES, ENGAJAMENTO,", "PÚBLICO DE CONCORRENTES", "NO AUTOMÁTICO"] as const;
+const DEFAULT_HIGHLIGHT = "Seguidores, alcance e visualizações: resultados automáticos.";
 const DEFAULT_DESCRIPTION =
-  "Basta uma configuração e você faz tudo direto pelo celular. Ganhe seguidores filtrados por cidade, região e pelo perfil do seu concorrente — sem esforço manual.";
+  "Basta uma configuração e nossa I.A faz tudo para você. Ganhe seguidores filtrados por cidade, região e pelo perfil do seu concorrente no Instagram.";
 
 export function Hero({
   onCta,
@@ -64,7 +64,7 @@ export function Hero({
         </button>
         <Social3DIcons className="mt-4 md:mt-6" />
 
-        <h1 className="mt-3 text-3xl leading-[1.1] font-extrabold tracking-tight text-balance md:mt-8 md:text-6xl">
+        <h1 className="mt-3 text-3xl leading-[1.2] font-black tracking-tighter text-balance md:mt-8 md:text-7xl uppercase">
           {titleLines.map((line) => (
             <span key={line} className="block whitespace-nowrap">
               {line}
