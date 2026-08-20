@@ -6,20 +6,9 @@ import { normalizeSource } from "./traffic-source";
 
 /**
  * Integração InfinitePay (Checkout Integrado).
- *
- * Fluxo:
- *  1. `createCheckoutLink` monta o payload no servidor (preço vem do catálogo,
- *     nunca do cliente) e chama POST /links.
- *  2. O cliente é redirecionado para o link retornado.
- *  3. Após pagar, o usuário volta para /pedido com os parâmetros de retorno.
- *  4. `checkPaymentStatus` consulta POST /payment_check em tempo real.
- *  5. O webhook público (/api/public/infinitepay/webhook) recebe a confirmação
- *     assíncrona da InfinitePay.
  */
 
 const INFINITEPAY_API = "https://api.checkout.infinitepay.io";
-
-/** InfiniteTag do vendedor (sem o "$"). */
 const HANDLE = "paguemro";
 
 const instagramField = z
@@ -38,11 +27,8 @@ const createCheckoutSchema = z.object({
   customerName: z.string().trim().min(2, "Informe seu nome").max(120),
   customerEmail: z.string().trim().email("E-mail inválido").max(160),
   customerPhone: z.string().trim().min(10, "Informe o WhatsApp").max(30),
-  /** Origem do site, usada para montar redirect_url e webhook_url. */
   origin: z.string().trim().url().max(300),
-  /** Landing page de origem do funil, usada nos relatórios do admin. */
   source: z.string().trim().max(40).optional(),
-  /** Order bumps opcionais escolhidos no popup "turbine seu plano". */
   bumpIds: z.array(z.string().trim().max(64)).max(10).optional(),
   adLink: z.string().trim().max(500).optional().nullable().or(z.literal("")),
   turbinarLink: z.string().trim().max(500).optional().nullable().or(z.literal("")),
@@ -53,7 +39,6 @@ export type CreateCheckoutInput = z.input<typeof createCheckoutSchema>;
 export interface CreateCheckoutResult {
   orderNsu: string;
   paymentUrl: string;
-  /** Nome do produto (planoslug + e-mail) usado para conciliação. */
   productName: string;
 }
 
@@ -61,69 +46,38 @@ export const createCheckoutLink = createServerFn({ method: "POST" })
   .validator((data: unknown) => createCheckoutSchema.parse(data))
   .handler(async ({ data }): Promise<CreateCheckoutResult> => {
     const plan = getPlanById(data.planId);
-    if (!plan) {
-      throw new Error("Plano inválido.");
-    }
-    // Defesa no servidor: planos bloqueados nunca geram link de pagamento.
-    if (plan.unavailable) {
-      throw new Error("Plano indisponível no momento, devido à alta demanda.");
-    }
+    if (!plan) throw new Error("Plano inválido.");
+    if (plan.unavailable) throw new Error("Plano indisponível no momento.");
 
     const orderNsu = `IMP-${Date.now()}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
     const origin = safeOrigin(data.origin);
-    // Nome do produto = prefixo do plano + e-mail. Serve de chave alternativa
-    // para reconhecer a venda no webhook mesmo sem o NSU.
     const productName = buildProductName(plan, data.customerEmail);
 
-    // Preço dos bumps também vem do catálogo do servidor, nunca do cliente.
     const bumps = (data.bumpIds ?? [])
       .map((id) => getOrderBumpById(id))
       .filter((bump): bump is NonNullable<typeof bump> => bump !== undefined);
-    const bumpsCents = bumps.reduce((total, bump) => total + bump.priceCents, 0);
-    const totalCents = plan.priceCents + bumpsCents;
+    const totalCents = plan.priceCents + bumps.reduce((total, bump) => total + bump.priceCents, 0);
 
     const phone = normalizePhone(data.customerPhone ?? "");
 
-    const buildPayload = (withPhone: boolean): Record<string, unknown> => {
-      const items = [
-        {
-          quantity: 1,
-          price: plan.priceCents,
-          description: productName,
-        },
-        ...bumps.map((bump) => ({
-          quantity: 1,
-          price: bump.priceCents,
-          description: bump.name,
-        })),
-      ];
-
-      if (data.turbinarLink) {
-        items.push({
-          quantity: 1,
-          price: 0,
-          description: `Link Turbinar: ${data.turbinarLink}`
-        });
-      }
-
-      const payload: Record<string, unknown> = {
-        handle: HANDLE,
-        order_nsu: orderNsu,
-        items,
-        customer: {
-          name: data.customerName,
-          email: data.customerEmail,
-          ...(withPhone && phone ? { phone_number: phone } : {}),
-        },
-      };
-
-      if (origin) {
-        payload.redirect_url = `${origin}/pedido?order_nsu=${encodeURIComponent(orderNsu)}`;
-        payload.webhook_url = `${origin}/api/public/infinitepay/webhook`;
-      }
-
-      return payload;
-    };
+    const buildPayload = (withPhone: boolean) => ({
+      handle: HANDLE,
+      order_nsu: orderNsu,
+      items: [
+        { quantity: 1, price: plan.priceCents, description: productName },
+        ...bumps.map((bump) => ({ quantity: 1, price: bump.priceCents, description: bump.name })),
+        ...(data.turbinarLink ? [{ quantity: 1, price: 0, description: `Link Turbinar: ${data.turbinarLink}` }] : [])
+      ],
+      customer: {
+        name: data.customerName,
+        email: data.customerEmail,
+        ...(withPhone && phone ? { phone_number: phone } : {}),
+      },
+      ...(origin ? {
+        redirect_url: `${origin}/pedido?order_nsu=${encodeURIComponent(orderNsu)}`,
+        webhook_url: `${origin}/api/public/infinitepay/webhook`
+      } : {})
+    });
 
     const requestLink = async (withPhone: boolean) => {
       const response = await fetch(`${INFINITEPAY_API}/links`, {
@@ -135,46 +89,21 @@ export const createCheckoutLink = createServerFn({ method: "POST" })
     };
 
     let { response, raw } = await requestLink(Boolean(phone));
+    if (!response.ok && phone) ({ response, raw } = await requestLink(false));
 
-    // A InfinitePay recusa telefones fora do padrão com 422. Nesse caso
-    // repetimos sem o telefone: o pagamento é mais importante que o campo.
-    if (!response.ok && phone) {
-      console.error(`InfinitePay /links falhou [${response.status}]: ${raw}. Retentando sem telefone.`);
-      ({ response, raw } = await requestLink(false));
-    }
+    if (!response.ok) throw new Error("Não foi possível gerar o link de pagamento.");
 
-    if (!response.ok) {
-      console.error(`InfinitePay /links falhou [${response.status}]: ${raw}`);
-      throw new Error("Não foi possível gerar o link de pagamento. Tente novamente.");
-    }
-
-
-    let parsed: { url?: string; link?: string; payment_url?: string } = {};
-    try {
-      parsed = JSON.parse(raw) as typeof parsed;
-    } catch {
-      console.error("InfinitePay /links retornou resposta não-JSON.");
-      throw new Error("Resposta inesperada do provedor de pagamento.");
-    }
-
+    const parsed = JSON.parse(raw);
     const paymentUrl = parsed.url ?? parsed.link ?? parsed.payment_url;
-    if (!paymentUrl) {
-      console.error("InfinitePay /links sem URL de pagamento no corpo.");
-      throw new Error("Resposta inesperada do provedor de pagamento.");
-    }
+    if (!paymentUrl) throw new Error("Resposta inesperada do provedor de pagamento.");
 
-    // Registra a tentativa de compra para o painel administrativo.
     const { recordAttempt } = await import("./orders-repo.server");
-    recordAttempt({
+    await recordAttempt({
       orderNsu,
       planId: plan.id,
       planName: plan.name,
       priceCents: totalCents,
-      bumps: bumps.map((bump) => ({
-        id: bump.id,
-        name: bump.name,
-        priceCents: bump.priceCents,
-      })),
+      bumps: bumps.map((bump) => ({ id: bump.id, name: bump.name, priceCents: bump.priceCents })),
       customerName: data.customerName,
       customerEmail: data.customerEmail,
       customerPhone: data.customerPhone ?? "",
@@ -187,31 +116,18 @@ export const createCheckoutLink = createServerFn({ method: "POST" })
       productName,
       source: normalizeSource(data.source),
       paymentUrl,
-      messages: [],
     });
 
-
     return { orderNsu, paymentUrl, productName };
-
   });
 
-const paymentCheckSchema = z.object({
-  orderNsu: z.string().trim().min(1).max(120),
-  transactionNsu: z.string().trim().max(120).optional().default(""),
-  slug: z.string().trim().max(120).optional().default(""),
-});
-
-export interface PaymentStatus {
-  paid: boolean;
-  amount?: number;
-  paidAmount?: number;
-  captureMethod?: string;
-  installments?: number;
-}
-
 export const checkPaymentStatus = createServerFn({ method: "POST" })
-  .validator((data: unknown) => paymentCheckSchema.parse(data))
-  .handler(async ({ data }): Promise<PaymentStatus> => {
+  .validator((data: any) => z.object({
+    orderNsu: z.string().trim().min(1).max(120),
+    transactionNsu: z.string().trim().max(120).optional().default(""),
+    slug: z.string().trim().max(120).optional().default(""),
+  }).parse(data))
+  .handler(async ({ data }) => {
     const response = await fetch(`${INFINITEPAY_API}/payment_check`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -223,26 +139,14 @@ export const checkPaymentStatus = createServerFn({ method: "POST" })
       }),
     });
 
-    if (!response.ok) {
-      // Enquanto o pagamento não existe, a API pode responder com erro.
-      return { paid: false };
-    }
+    if (!response.ok) return { paid: false };
 
-    const body = (await response.json()) as {
-      success?: boolean;
-      paid?: boolean;
-      amount?: number;
-      paid_amount?: number;
-      installments?: number;
-      capture_method?: string;
-    };
-
+    const body = await response.json();
     const paid = Boolean(body.paid);
 
     if (paid) {
-      // Fonte de verdade confirmada pela InfinitePay: propaga para o admin.
       const { markPaid } = await import("./orders-repo.server");
-      markPaid(data.orderNsu, {
+      await markPaid(data.orderNsu, {
         captureMethod: body.capture_method,
         transactionNsu: data.transactionNsu || undefined,
       });
@@ -257,29 +161,11 @@ export const checkPaymentStatus = createServerFn({ method: "POST" })
     };
   });
 
-
-const emailSchema = z.object({
-  customerEmail: z.string().trim().email().max(160),
-});
-
-export interface OrderStatusByEmail {
-  found: boolean;
-  paid: boolean;
-  orderNsu?: string;
-  planName?: string;
-  priceCents?: number;
-}
-
-/**
- * Fallback de conciliação: quando o cliente perde o NSU (fechou a aba, voltou
- * depois), consultamos pelo e-mail o pedido mais recente já confirmado pelo
- * webhook. Não expõe dados de outros clientes além do próprio pedido.
- */
 export const getOrderStatusByEmail = createServerFn({ method: "POST" })
-  .validator((data: unknown) => emailSchema.parse(data))
-  .handler(async ({ data }): Promise<OrderStatusByEmail> => {
+  .validator((data: any) => z.object({ customerEmail: z.string().trim().email().max(160) }).parse(data))
+  .handler(async ({ data }) => {
     const { getLatestOrderByEmail } = await import("./orders-repo.server");
-    const order = getLatestOrderByEmail(data.customerEmail);
+    const order = await getLatestOrderByEmail(data.customerEmail);
     if (!order) return { found: false, paid: false };
     return {
       found: true,

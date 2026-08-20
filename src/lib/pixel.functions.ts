@@ -13,7 +13,8 @@ import { z } from "zod";
 export const getPixelConfig = createServerFn({ method: "GET" }).handler(
   async (): Promise<{ pixelId: string }> => {
     const { getSettings } = await import("./settings.server");
-    return { pixelId: getSettings().facebookPixelId };
+    const settings = await getSettings();
+    return { pixelId: settings.facebookPixelId };
   },
 );
 
