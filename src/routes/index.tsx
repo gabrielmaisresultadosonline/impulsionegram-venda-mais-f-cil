@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { getAdsPlans } from "@/lib/plans";
 import { trackSiteEvent } from "@/lib/pixel.functions";
 import metaPartnerAsset from "@/assets/meta-partner.png.asset.json";
+import { TestimonialsSection } from "@/components/site/TestimonialsSection";
 
 /**
  * Landing Page Principal (Funil de ADS).
