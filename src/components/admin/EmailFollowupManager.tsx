@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Mail, Eye, Clock, User, CheckCircle2, Loader2 } from "lucide-react";
@@ -44,6 +44,14 @@ export function EmailFollowupManager({ credentials }: EmailFollowupManagerProps)
     acc[key].sentLogs.push(log);
     return acc;
   }, {} as Record<string, { name: string; email: string; nsu: string; sentLogs: any[] }>);
+
+  // Fila de próximos envios (Followups pendentes)
+  const followupQueue = useMemo(() => {
+    // Como a fila está no servidor em .data/followup_queue.json,
+    // idealmente teríamos um serverFn para buscá-la. 
+    // Por ora, vamos inferir dos logs o que já foi enviado.
+    return logs.filter(l => l.type.startsWith('followup'));
+  }, [logs]);
 
   const customerList = Object.values(logsByCustomer).sort((a, b) => {
     const lastA = new Date(a.sentLogs[a.sentLogs.length - 1].sentAt).getTime();

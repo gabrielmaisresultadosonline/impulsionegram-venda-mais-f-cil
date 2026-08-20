@@ -101,10 +101,11 @@ export async function recordSignup(input: {
 
   // Dispara o e-mail de boas-vindas IMEDIATAMENTE após o registro do cadastro no servidor
   try {
-    const { sendWelcomeEmail } = await import("./email.functions");
+    const { sendTransactionalEmail } = await import("./transactional-emails.functions");
     console.log(`[recordSignup] Tentando enviar e-mail de boas-vindas para ${email}`);
-    const emailResult = await sendWelcomeEmail({ 
+    const emailResult = await sendTransactionalEmail({ 
       data: { 
+        type: "welcome",
         name: input.name.trim() || existing?.name || "", 
         email, 
         password: input.password,
@@ -113,7 +114,7 @@ export async function recordSignup(input: {
     });
     console.log(`[recordSignup] Resultado do envio para ${email}:`, emailResult);
   } catch (err) {
-    console.error(`[recordSignup] Erro fatal ao chamar sendWelcomeEmail para ${email}:`, err);
+    console.error(`[recordSignup] Erro fatal ao disparar e-mail para ${email}:`, err);
   }
 }
 

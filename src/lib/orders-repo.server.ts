@@ -175,9 +175,10 @@ export function markPaid(orderNsu: string, patch: Partial<OrderRecord> = {}): vo
   });
   removeFromFollowupQueue(orderNsu);
   
-  // Dispara evento Purchase via CAPI (API de Conversões)
+  // Dispara evento Purchase via CAPI (API de Conversões) e E-mail de confirmação
   const updatedOrder = registry.get(orderNsu);
   if (updatedOrder) {
+    // CAPI
     import("./capi.server").then(({ sendCapiEvent }) => {
       void sendCapiEvent({
         eventName: "Purchase",
@@ -189,11 +190,23 @@ export function markPaid(orderNsu: string, patch: Partial<OrderRecord> = {}): vo
         orderId: updatedOrder.orderNsu
       }).catch(err => console.error("[OrderRepo] Erro ao disparar CAPI Purchase:", err));
     });
+
+    // E-mail de confirmação de pagamento
+    import("./transactional-emails.functions").then(({ sendTransactionalEmail }) => {
+      void sendTransactionalEmail({
+        data: {
+          type: "payment_confirmed",
+          email: updatedOrder.customerEmail,
+          name: updatedOrder.customerName,
+          orderNsu: updatedOrder.orderNsu,
+          planName: updatedOrder.planName,
+        }
+      }).catch(err => console.error("[OrderRepo] Erro ao enviar e-mail de pagamento:", err));
+    });
   }
 
   persist();
 }
-
 
 /** Marca o pedido como entregue. Retorna false quando o pedido não existe. */
 export function markDelivered(orderNsu: string): boolean {
@@ -205,6 +218,20 @@ export function markDelivered(orderNsu: string): boolean {
     status: "entregue",
     deliveredAt: new Date().toISOString(),
   });
+  
+  // E-mail de aviso de entrega
+  import("./transactional-emails.functions").then(({ sendTransactionalEmail }) => {
+    void sendTransactionalEmail({
+      data: {
+        type: "delivered",
+        email: existing.customerEmail,
+        name: existing.customerName,
+        orderNsu: existing.orderNsu,
+        planName: existing.planName,
+      }
+    }).catch(err => console.error("[OrderRepo] Erro ao enviar e-mail de entrega:", err));
+  });
+
   persist();
   return true;
 }
