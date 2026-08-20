@@ -1,4 +1,6 @@
 import fs from "node:fs";
+import { addToFollowupQueue } from "./email-followup/engine.server";
+
 
 /**
  * Repositório de cadastros (lado servidor).
