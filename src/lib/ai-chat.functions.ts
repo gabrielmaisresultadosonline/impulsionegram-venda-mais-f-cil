@@ -113,7 +113,9 @@ export const sendMessageToAI = createServerFn({ method: "POST" })
       if (!response.ok) {
         const errorText = await response.text();
         console.error("AI Gateway error:", response.status, errorText);
-        return { text: `Erro técnico (OpenAI ${response.status}). Verifique seu token no admin.` };
+        const isQuota = errorText.includes('insufficient_quota') || errorText.includes('billing_hard_limit_reached');
+        const detail = isQuota ? "Saldo insuficiente na conta OpenAI." : errorText.substring(0, 50);
+        return { text: `Erro técnico (OpenAI ${response.status}). Verifique seu token e saldo no admin.\n\nDetalhe: ${detail}` };
       }
 
       const result = await response.json();
