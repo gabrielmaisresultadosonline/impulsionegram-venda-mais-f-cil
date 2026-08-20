@@ -10,6 +10,7 @@ import { trackSiteEvent } from "@/lib/pixel.functions";
 import metaPartnerAsset from "@/assets/meta-partner.png.asset.json";
 import { TestimonialsSection } from "@/components/site/TestimonialsSection";
 import { AboutSection } from "@/components/site/AboutSection";
+import { ChannelPositionSection } from "@/components/site/ChannelPositionSection";
 
 /**
  * Landing Page Principal (Funil de ADS).
