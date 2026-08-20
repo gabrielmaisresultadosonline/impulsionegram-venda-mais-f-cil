@@ -578,6 +578,14 @@ function OrderCard({ order, busy, sendingPixel, onDeliver, onReopen, onSendPixel
             Enviar Pixel (Purchase)
           </Button>
         )}
+        
+        {order.messages && order.messages.length > 0 && (
+          <Badge className="bg-primary/20 text-primary border-primary/20 flex gap-1.5 items-center">
+            <BotIcon className="size-3" />
+            Chat Ativo
+          </Badge>
+        )}
+      </div>
 
         {order.receiptUrl ? (
           <Button asChild variant="outline" size="sm">
