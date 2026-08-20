@@ -33,7 +33,7 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending, askPhone = fal
 
   /** Ordem das perguntas exibidas — o WhatsApp entra apenas quando necessário. */
   const questions = useMemo(
-    () => (["adLink", "region", "competitor"] as const),
+    () => (["profileUrl", "adLink", "region", "competitor"] as const),
     [],
   );
   const totalQuestions = questions.length;
@@ -46,6 +46,10 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending, askPhone = fal
 
   /** Valida a pergunta atual antes de liberar o avanço. */
   const validate = (): boolean => {
+    if (currentQuestion === "profileUrl" && data.profileUrl.trim().length < 3) {
+      toast.error("Informe seu perfil do Instagram.");
+      return false;
+    }
     if (currentQuestion === "adLink" && data.adLink.trim().length < 10) {
       toast.error("Informe o link da publicação (propaganda) que vamos anunciar.");
       return false;
@@ -100,6 +104,28 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending, askPhone = fal
           />
         </div>
       </div>
+
+      {currentQuestion === "profileUrl" ? (
+        <Question
+          icon={<Instagram className="size-5" aria-hidden="true" />}
+          title="Qual o seu perfil do Instagram?"
+          description="Onde seus novos seguidores e clientes vão chegar."
+        >
+          <Label htmlFor="quiz-profile-url" className="sr-only">
+            Instagram
+          </Label>
+          <Input
+            id="quiz-profile-url"
+            autoFocus
+            value={data.profileUrl}
+            onChange={(event) => onChange({ profileUrl: event.target.value })}
+            onKeyDown={(event) => event.key === "Enter" && next()}
+            placeholder="@seuusuario"
+            maxLength={100}
+            className="h-12 text-base"
+          />
+        </Question>
+      ) : null}
 
       {currentQuestion === "adLink" ? (
         <Question
