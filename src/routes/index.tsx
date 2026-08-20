@@ -67,8 +67,8 @@ function Index() {
         headline={["Trafego pago com", "Inteligência artificial", "Anuncie em 3 min."]}
         highlight="Facebook, Instagram e WhatsApp no piloto automático."
         description="Mande o link do seu post do instagram, selecione a região no mapa e deixe a gestão com a gente. Resultados reais para o seu negócio."
-        ctaLabel="A partir de R$97 mensal"
-        secondaryLabel="Faça seu cadastro grátis"
+        ctaLabel="Cadastre-se grátis"
+        secondaryLabel="Cadastre-se grátis"
       />
 
 
@@ -119,7 +119,7 @@ function Index() {
                 plan={plan}
                 selected={false}
                 onSelect={openSignup}
-                ctaLabel="A partir de R$97 mensal"
+                ctaLabel="Cadastre-se grátis"
                 className="w-full sm:w-[calc(50%-12px)] lg:w-[calc(33%-16px)] lg:max-w-[340px]"
               />
             ))}
@@ -130,7 +130,7 @@ function Index() {
             onClick={openSignup}
             className="bg-gradient-brand shadow-glow mt-12 h-12 px-8"
           >
-            A partir de R$97 mensal
+            Cadastre-se grátis
             <ArrowRight className="size-4 ml-2" />
           </Button>
         </div>
