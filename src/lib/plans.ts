@@ -31,7 +31,7 @@ export const PLANS: readonly Plan[] = [
     slug: "start",
     name: "Básico 1.000",
     tagline: "Seguidores reais brasileiros",
-    priceCents: 1400,
+    priceCents: 1900,
     features: [
       "1.000 seguidores brasileiros",
       "Seguidores filtrados por região",
@@ -45,7 +45,7 @@ export const PLANS: readonly Plan[] = [
     slug: "boost",
     name: "Impulso 2.000",
     tagline: "Popularidade acelerada",
-    priceCents: 2900,
+    priceCents: 3300,
     features: [
       "2.000 seguidores + curtidas",
       "Seguidores filtrados por região",
