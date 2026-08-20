@@ -263,7 +263,7 @@ export function SignupDialog({
               {saving ? "Criando conta..." : "Criar conta grátis"}
             </Button>
           </form>
-        ) : (
+        ) : mode === "login" ? (
           <form onSubmit={handleLogin} className="mt-2 space-y-4">
             <div className="space-y-2">
               <Label htmlFor="login-email">E-mail *</Label>
@@ -277,7 +277,16 @@ export function SignupDialog({
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="login-password">Senha *</Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="login-password">Senha *</Label>
+                <button
+                  type="button"
+                  onClick={() => setMode("forgot-password")}
+                  className="text-xs text-primary hover:underline"
+                >
+                  Esqueceu a senha?
+                </button>
+              </div>
               <Input id="login-password" name="password" type="password" minLength={6} required />
             </div>
 
@@ -290,6 +299,36 @@ export function SignupDialog({
               <LogIn className="size-4" aria-hidden="true" />
               {saving ? "Entrando..." : "Entrar no painel"}
             </Button>
+          </form>
+        ) : (
+          <form onSubmit={handleForgotPassword} className="mt-2 space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="forgot-email">E-mail de cadastro *</Label>
+              <Input
+                id="forgot-email"
+                name="email"
+                type="email"
+                placeholder="seu@email.com"
+                required
+              />
+            </div>
+
+            <Button
+              type="submit"
+              size="lg"
+              disabled={saving}
+              className="bg-gradient-brand shadow-glow h-12 w-full"
+            >
+              {saving ? "Enviando..." : "Recuperar acesso"}
+            </Button>
+
+            <button
+              type="button"
+              onClick={() => setMode("login")}
+              className="w-full text-center text-sm text-muted-foreground hover:text-foreground"
+            >
+              Voltar para o login
+            </button>
           </form>
         )}
 
