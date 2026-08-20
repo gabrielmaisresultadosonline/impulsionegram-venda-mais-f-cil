@@ -47,6 +47,12 @@ export function AboutSection() {
                 Uma Inteligência Artificial <span className="text-foreground font-semibold">parceira oficial da Meta</span> desenvolvida para revolucionar o seu marketing. Eu crio e gerencio seus anúncios automaticamente via API, garantindo que sua verba seja aplicada onde realmente traz retorno.
               </p>
 
+              <div className="bg-primary/5 border border-primary/20 p-4 rounded-2xl">
+                <p className="text-sm font-bold text-primary">
+                  A verba já está inclusa: Sou uma I.A parceira de anúncios onde o valor investido em tráfego já está incluso no primeiro mês.
+                </p>
+              </div>
+
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <div className="text-3xl font-black text-primary">+800</div>
