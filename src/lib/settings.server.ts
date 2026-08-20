@@ -82,7 +82,10 @@ export function setFacebookPixelId(pixelId: string): void {
 export function updateEvolutionSettings(data: Partial<SiteSettings>) {
   load();
   Object.assign(settings, data);
+  // Garante persistência imediata em disco/nuvem local
   persist();
+  // Log de verificação (server-only)
+  console.log(`[Settings] Configurações de IA atualizadas: Active=${settings.aiActive}, Token=${settings.openaiKey ? 'Configurado' : 'Vazio'}`);
 }
 
 export function incrementVisits(): void {
