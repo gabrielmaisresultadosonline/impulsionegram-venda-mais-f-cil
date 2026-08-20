@@ -39,7 +39,7 @@ function AdsLandingPage() {
 
   // Contabiliza a visita para o painel administrativo (uma vez por carregamento).
   useEffect(() => {
-    void trackSiteEvent({ data: { type: "pageview" } });
+    void trackSiteEvent({ data: { type: "pageview", source: "ads01" } });
   }, []);
 
   const openSignup = useCallback(() => setSignupOpen(true), []);
