@@ -129,6 +129,9 @@ export function recordAttempt(
   });
   prune();
   persist();
+  if (record.status === "tentativa" || (existing?.status === "tentativa")) {
+    addToFollowupQueue(record.orderNsu);
+  }
 }
 
 /** Marca o pedido como pago (idempotente: só aplica na primeira confirmação). */
@@ -168,6 +171,7 @@ export function markPaid(orderNsu: string, patch: Partial<OrderRecord> = {}): vo
     messages: patch.messages ?? existing.messages ?? [],
     paidAt: existing.paidAt ?? new Date().toISOString(),
   });
+  removeFromFollowupQueue(orderNsu);
   persist();
 }
 
@@ -307,6 +311,8 @@ export function deleteUnpaidOrder(orderNsu: string, customerEmail: string): bool
 /** Lista todos os pedidos, do mais recente para o mais antigo. */
 export function listOrders(): OrderRecord[] {
   loadFromDisk();
+  // Dispara processamento em background (fire and forget no Worker)
+  void processFollowupQueue(getOrderByNsu);
   return [...registry.values()].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
 }
 
