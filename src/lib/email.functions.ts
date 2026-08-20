@@ -19,18 +19,20 @@ export const sendWelcomeEmail = createServerFn({ method: "POST" })
   )
   .handler(async ({ data }) => {
     const { name, email } = data;
+    console.log(`[sendWelcomeEmail] Iniciando envio para ${email}`);
 
     // Lemos do process.env dentro do handler (padrão TanStack Start)
     const user = process.env["SMTP_USER"];
     const pass = process.env["SMTP_PASS"];
 
     if (!user || !pass) {
-      console.error("Configurações de SMTP ausentes (SMTP_USER ou SMTP_PASS)");
+      console.error("[sendWelcomeEmail] Configurações de SMTP ausentes");
       return { success: false, error: "SMTP configuration missing" };
     }
 
     try {
       const nodemailer = await import("nodemailer");
+      console.log("[sendWelcomeEmail] Transportador nodemailer importado");
 
       const transporter = nodemailer.createTransport({
         host: "smtp.hostinger.com",
@@ -111,12 +113,14 @@ export const sendWelcomeEmail = createServerFn({ method: "POST" })
       </html>
       `;
 
-      await transporter.sendMail({
+      console.log(`[sendWelcomeEmail] Enviando e-mail para ${email} via ${user}...`);
+      const info = await transporter.sendMail({
         from: `"Acessar I.A Support" <${user}>`,
         to: email,
         subject: `Bem-vindo à Acessar I.A, ${firstName}! 🚀`,
         html: htmlContent,
       });
+      console.log(`[sendWelcomeEmail] E-mail enviado com sucesso: ${info.messageId}`);
 
       saveEmailLog({
         orderNsu: data.orderNsu || "welcome-only",
