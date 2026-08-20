@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import type { OrderRecord } from "./orders-repo.server";
 export { adminListEmailLogs } from "./email-admin.functions";
+export { adminResendWelcomeEmail } from "./email-manual.functions";
 
 
 /**
