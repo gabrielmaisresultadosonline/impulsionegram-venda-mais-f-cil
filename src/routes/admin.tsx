@@ -446,6 +446,11 @@ function OrderCard({ order, busy, sendingPixel, onDeliver, onReopen, onSendPixel
         <div>
           <div className="flex flex-wrap items-center gap-2">
             <h2 className="text-base font-bold">{order.planName}</h2>
+            {order.source === "home" && (
+              <Badge className="bg-blue-600 text-white border-transparent hover:bg-blue-700 animate-pulse text-[10px] h-5">
+                NOVO
+              </Badge>
+            )}
             <StatusBadge status={order.status} />
             {order.cancelledAt ? (
               <Badge variant="outline" className="text-destructive border-destructive/30">
