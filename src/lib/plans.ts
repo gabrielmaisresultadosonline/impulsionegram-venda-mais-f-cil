@@ -99,7 +99,7 @@ export const PLANS: readonly Plan[] = [
     id: "ads-10k",
     slug: "ads10",
     name: "Alcance 10.000",
-    tagline: "Alcance mensal de contas reais",
+    tagline: "Alcance de público mensal",
     priceCents: 9700,
     features: [
       "Alcance de 10.000 contas mensal",
@@ -113,7 +113,7 @@ export const PLANS: readonly Plan[] = [
     id: "ads-50k",
     slug: "ads50",
     name: "Alcance 50.000",
-    tagline: "Alcance mensal de contas reais",
+    tagline: "Alcance de público mensal",
     priceCents: 14700,
     features: [
       "Alcance de 50.000 contas mensal",
