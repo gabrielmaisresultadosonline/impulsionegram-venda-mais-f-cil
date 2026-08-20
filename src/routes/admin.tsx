@@ -323,11 +323,7 @@ function AdminDashboard({ credentials, onLogout }: AdminDashboardProps) {
             <p className="text-muted-foreground text-sm mb-6">
               Aqui você pode ver o histórico de conversas da homepage e do painel, e assumir o atendimento se necessário.
             </p>
-            <div className="space-y-4">
-              <div className="border border-border rounded-xl p-8 text-center text-muted-foreground text-sm">
-                Nenhuma conversa ativa no momento. As conversas atendidas pela I.A aparecerão aqui com um ícone de robô.
-              </div>
-            </div>
+            <ChatHistory credentials={credentials} />
           </div>
         ) : tab === "cadastros" ? (
           <>
