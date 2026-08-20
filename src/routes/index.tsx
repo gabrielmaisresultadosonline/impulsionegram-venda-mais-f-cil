@@ -130,7 +130,7 @@ function Index() {
             onClick={openSignup}
             className="bg-gradient-brand shadow-glow mt-12 h-12 px-8"
           >
-            A partir de R$97 mensal
+            Cadastre-se grátis
             <ArrowRight className="size-4 ml-2" />
           </Button>
         </div>
