@@ -115,6 +115,25 @@ function AdsLandingPage() {
       </section>
 
       <SignupDialog open={signupOpen} onOpenChange={setSignupOpen} source="ads01" />
+      <footer className="border-t border-border px-4 py-8">
+        <div className="mx-auto flex max-w-6xl flex-col items-center gap-3">
+          <p className="text-center text-xs text-muted-foreground">
+            Pagamentos processados pela InfinitePay ·
+            Resultados iniciam em até 6 horas após a aprovação.
+          </p>
+          <div className="flex items-center gap-4 text-xs">
+            <Link to="/painel" className="text-muted-foreground hover:text-foreground">
+              Meu painel
+            </Link>
+            <Link to="/pedido" className="text-muted-foreground hover:text-foreground">
+              Acompanhar meu pedido
+            </Link>
+            <Link to="/admin" className="text-muted-foreground hover:text-foreground">
+              Administração
+            </Link>
+          </div>
+        </div>
+      </footer>
     </main>
   );
 }
