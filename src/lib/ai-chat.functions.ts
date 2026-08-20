@@ -27,12 +27,15 @@ export const saveAISettings = createServerFn({ method: "POST" })
     aiActive: z.boolean(),
   }).parse(data))
   .handler(async ({ data }) => {
+    const { isAdminCredentials, updateEvolutionSettings } = await import("./settings.server");
     if (!isAdminCredentials(data.email, data.password)) throw new Error("Não autorizado");
+    
     updateEvolutionSettings({
       openaiKey: data.openaiKey,
       aiPrompt: data.aiPrompt,
       aiActive: data.aiActive,
     });
+    
     return { success: true };
   });
 

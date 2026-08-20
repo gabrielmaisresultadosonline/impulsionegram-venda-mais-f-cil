@@ -22,6 +22,9 @@ if [[ -d .git ]]; then
   git fetch --all --prune
   git reset --hard "origin/main" || git reset --hard "origin/$(git rev-parse --abbrev-ref HEAD)"
   git checkout HEAD -- .data/ || true
+  # Garante que as permissões de escrita na pasta de dados persistam
+  mkdir -p .data
+  chmod -R 777 .data
 else
   log "Pasta sem git — sincronizando código do GitHub (preserva .env)"
   rm -rf /tmp/${APP_NAME}-src
