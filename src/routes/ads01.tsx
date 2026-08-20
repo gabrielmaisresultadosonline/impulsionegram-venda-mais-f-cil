@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { Hero } from "@/components/site/Hero";
@@ -38,6 +38,7 @@ export const Route = createFileRoute("/ads01")({
 });
 
 function AdsLandingPage() {
+  const navigate = useNavigate();
   const [signupOpen, setSignupOpen] = useState(false);
 
   // Contabiliza a visita para o painel administrativo (uma vez por carregamento).
