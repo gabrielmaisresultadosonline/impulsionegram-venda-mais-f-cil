@@ -140,7 +140,7 @@ function Index() {
       <footer className="border-t border-border px-4 py-8">
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-6">
           <img 
-            src={metaPartnerAsset.url} 
+            src="/meta-partner.png" 
             alt="Meta Business Partner" 
             className="h-6 w-auto object-contain opacity-70 grayscale hover:grayscale-0 transition-all duration-300"
           />
