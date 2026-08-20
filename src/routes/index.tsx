@@ -99,6 +99,7 @@ function Index() {
       </section>
 
       <AboutSection />
+      <ChannelPositionSection />
 
       <TestimonialsSection />
 
