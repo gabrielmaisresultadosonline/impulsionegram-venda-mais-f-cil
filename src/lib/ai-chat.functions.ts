@@ -133,7 +133,7 @@ export const sendMessageToAI = createServerFn({ method: "POST" })
           readByAdmin: false
         });
       } else {
-        await addVisitorMessage(data.visitor.email, { author: "ai", text: aiText });
+        await await addVisitorMessage(data.visitor.email, { author: "ai", text: aiText });
       }
 
       return { text: aiText };
@@ -195,7 +195,7 @@ export const adminSendMessage = createServerFn({ method: "POST" })
         readByAdmin: true
       });
     } else {
-      await addVisitorMessage(data.chatId, { author: "admin", text: data.text });
+      await await addVisitorMessage(data.chatId, { author: "admin", text: data.text });
     }
 
     return { success: true };
