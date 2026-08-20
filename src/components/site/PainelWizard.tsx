@@ -127,6 +127,15 @@ export function PainelWizard({
         createdAt: new Date().toISOString(),
       });
 
+      // Envio de e-mail de boas-vindas com o NSU para log correto
+      void sendWelcomeEmail({ 
+        data: { 
+          name: campaign.customerName.trim(), 
+          email: campaign.customerEmail.trim(),
+          orderNsu: result.orderNsu 
+        } 
+      }).catch(() => {});
+
       // Pagamento em nova aba; a aba atual acompanha o status em tempo real.
       window.open(result.paymentUrl, "_blank", "noopener,noreferrer");
       window.location.href = `/pedido?order_nsu=${encodeURIComponent(result.orderNsu)}`;
