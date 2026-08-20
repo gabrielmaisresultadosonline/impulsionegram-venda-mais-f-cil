@@ -140,7 +140,8 @@ export const adminListSignups = createServerFn({ method: "POST" })
     const repo = await import("./orders-repo.server");
 
     const map = new Map<string, AdminSignup>();
-    for (const signup of listSignups()) map.set(signup.email.toLowerCase(), signup);
+    const allSignups = await listSignups();
+    for (const signup of allSignups) map.set(signup.email.toLowerCase(), signup);
 
     for (const order of repo.listOrders()) {
       const email = (order.customerEmail ?? "").trim().toLowerCase();
