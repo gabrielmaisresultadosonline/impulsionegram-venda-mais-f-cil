@@ -9,7 +9,7 @@ import { getAdsPlans } from "@/lib/plans";
 import { trackSiteEvent } from "@/lib/pixel.functions";
 
 /**
- * Rota para a landing page focada em anúncios (/ads01).
+ * Landing Page Principal (Funil de ADS).
  */
 
 
