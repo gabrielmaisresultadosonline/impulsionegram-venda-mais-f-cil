@@ -64,9 +64,9 @@ export function Hero({
         </button>
         <Social3DIcons className="mt-4 md:mt-6" />
 
-        <h1 className="mt-3 text-3xl leading-[1.2] font-black tracking-tighter text-balance md:mt-8 md:text-7xl uppercase">
+        <h1 className="mt-3 text-[7vw] leading-[1.1] font-black tracking-tighter text-balance md:mt-8 md:text-7xl lg:text-8xl uppercase">
           {titleLines.map((line) => (
-            <span key={line} className="block whitespace-nowrap">
+            <span key={line} className="block w-full break-words">
               {line}
             </span>
           ))}
