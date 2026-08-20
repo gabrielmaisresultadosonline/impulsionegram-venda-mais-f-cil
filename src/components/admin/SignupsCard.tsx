@@ -130,6 +130,7 @@ export function SignupsCard({ credentials, className, ...props }: SignupsCardPro
                   onClick={async () => {
                     const promise = resendEmail({ 
                       data: { 
+                        adminEmail: credentials.email,
                         adminPassword: credentials.password, 
                         customerEmail: signup.email 
                       } 
