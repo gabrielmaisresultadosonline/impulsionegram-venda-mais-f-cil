@@ -27,7 +27,8 @@ import { SignupsCard } from "@/components/admin/SignupsCard";
 import { ManualPurchaseCard } from "@/components/admin/ManualPurchaseCard";
 import { AISettingsCard } from "@/components/admin/AISettingsCard";
 import { ChatHistory } from "@/components/admin/ChatHistory";
-import { LayoutDashboard, Users2, MessageSquare, BotIcon, MessageCircle } from "lucide-react";
+import { LayoutDashboard, Users2, MessageSquare, BotIcon, MessageCircle, Mail } from "lucide-react";
+import { EmailFollowupManager } from "@/components/admin/EmailFollowupManager";
 
 import {
   adminListOrders,
@@ -44,7 +45,7 @@ export interface AdminCredentials {
   password: string;
 }
 
-type TabKey = "todos" | "pago" | "tentativa" | "entregue" | "cadastros" | "ia" | "chats";
+type TabKey = "todos" | "pago" | "tentativa" | "entregue" | "cadastros" | "ia" | "chats" | "emails";
 
 const TABS: ReadonlyArray<{ key: TabKey; label: string }> = [
   { key: "pago", label: "A entregar" },
@@ -53,6 +54,7 @@ const TABS: ReadonlyArray<{ key: TabKey; label: string }> = [
   { key: "cadastros", label: "Cadastros" },
   { key: "ia", label: "Agente I.A" },
   { key: "chats", label: "Conversas" },
+  { key: "emails", label: "E-mails" },
   { key: "todos", label: "Todos" },
 ];
 
@@ -325,6 +327,10 @@ function AdminDashboard({ credentials, onLogout }: AdminDashboardProps) {
               Aqui você pode ver o histórico de conversas da homepage e do painel, e assumir o atendimento se necessário.
             </p>
             <ChatHistory credentials={credentials} />
+          </div>
+        ) : tab === "emails" ? (
+          <div className="mt-6">
+            <EmailFollowupManager credentials={credentials} />
           </div>
         ) : tab === "cadastros" ? (
           <>
