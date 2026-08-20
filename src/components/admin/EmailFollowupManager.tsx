@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Mail, Eye, Clock, User, CheckCircle2 } from "lucide-react";
+import { Mail, Eye, Clock, User, CheckCircle2, Loader2 } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { adminListEmailLogs } from "@/lib/email-admin.functions";
@@ -64,7 +64,8 @@ export function EmailFollowupManager({ credentials }: EmailFollowupManagerProps)
       </div>
 
       {isLoading ? (
-        <div className="glass-panel p-8 text-center text-muted-foreground">
+        <div className="glass-panel p-8 text-center text-muted-foreground flex flex-col items-center gap-3">
+          <Loader2 className="size-5 animate-spin text-primary" />
           Carregando histórico de e-mails...
         </div>
       ) : customerList.length === 0 ? (
