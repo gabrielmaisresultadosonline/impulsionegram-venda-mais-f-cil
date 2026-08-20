@@ -96,6 +96,8 @@ function Index() {
         </div>
       </section>
 
+      <TestimonialsSection />
+
       <section className="px-4 py-20 bg-muted/30" id="planos">
         <div className="mx-auto max-w-6xl text-center">
           <h2 className="text-3xl font-extrabold md:text-4xl">
