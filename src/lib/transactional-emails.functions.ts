@@ -86,7 +86,7 @@ export const sendTransactionalEmail = createServerFn({ method: "POST" })
 
       console.log(`[sendTransactionalEmail] E-mail ${data.type} enviado com sucesso para ${data.email}`);
 
-      await saveEmailLog({
+      saveEmailLog({
         orderNsu: data.orderNsu || "transactional",
         customerEmail: data.email,
         customerName: data.name,

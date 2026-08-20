@@ -10,7 +10,7 @@ export const getAISettings = createServerFn({ method: "POST" })
   .validator((data: unknown) => z.object({ email: z.string(), password: z.string() }).parse(data))
   .handler(async ({ data }) => {
     if (!isAdminCredentials(data.email, data.password)) throw new Error("Não autorizado");
-    const settings = await getSettings();
+    const settings = getSettings();
     return {
       openaiKey: settings.openaiKey || "",
       aiPrompt: settings.aiPrompt || "",
@@ -49,17 +49,17 @@ export const sendMessageToAI = createServerFn({ method: "POST" })
     })
   }).parse(data))
   .handler(async ({ data }) => {
-    const settings = await getSettings();
+    const settings = getSettings();
     if (!settings.aiActive || !settings.openaiKey) {
       return { text: "Olá! Nosso agente I.A está descansando no momento. Como posso ajudar?" };
     }
 
     // 1. Persistir mensagem do usuário
-    const orders = await listOrders();
-    const customerOrder = orders.find((o: any) => o.customerEmail.toLowerCase() === data.visitor.email.toLowerCase());
+    const orders = listOrders();
+    const customerOrder = orders.find(o => o.customerEmail.toLowerCase() === data.visitor.email.toLowerCase());
     
     if (customerOrder) {
-      await addMessageToOrder(customerOrder.orderNsu, { 
+      addMessageToOrder(customerOrder.orderNsu, { 
         author: "customer", 
         text: data.message,
         id: crypto.randomUUID(),
@@ -67,9 +67,9 @@ export const sendMessageToAI = createServerFn({ method: "POST" })
         readByAdmin: false
       });
     } else {
-      const vChat = await getVisitorChat(data.visitor.email);
+      let vChat = getVisitorChat(data.visitor.email);
       if (!vChat) {
-        await saveVisitorChat({
+        vChat = {
           visitorId: crypto.randomUUID(),
           name: data.visitor.name,
           email: data.visitor.email,
@@ -77,18 +77,18 @@ export const sendMessageToAI = createServerFn({ method: "POST" })
           messages: [],
           lastMessageAt: new Date().toISOString(),
           source: "home"
-        });
+        };
+        saveVisitorChat(vChat);
       }
-      await addVisitorMessage(data.visitor.email, { author: "user", text: data.message });
+      addVisitorMessage(data.visitor.email, { author: "user", text: data.message });
     }
 
     // 2. Recuperar histórico da conversa para contexto
-    const visitorChat = !customerOrder ? await getVisitorChat(data.visitor.email) : null;
     const chatHistory = customerOrder 
-      ? (customerOrder.messages || []).slice(-10)
-      : (visitorChat?.messages || []).slice(-10);
+      ? (customerOrder.messages || []).slice(-10) // Últimas 10 mensagens
+      : (getVisitorChat(data.visitor.email)?.messages || []).slice(-10);
 
-    const formattedHistory = chatHistory.map((m: any) => ({
+    const formattedHistory = chatHistory.map(m => ({
       role: m.author === "user" || m.author === "customer" ? "user" : (m.author === "admin" ? "assistant" : "assistant"),
       content: m.text
     }));
@@ -125,7 +125,7 @@ export const sendMessageToAI = createServerFn({ method: "POST" })
 
       // 3. Persistir resposta da I.A
       if (customerOrder) {
-        await addMessageToOrder(customerOrder.orderNsu, { 
+        addMessageToOrder(customerOrder.orderNsu, { 
           author: "ai", 
           text: aiText,
           id: crypto.randomUUID(),
@@ -133,7 +133,7 @@ export const sendMessageToAI = createServerFn({ method: "POST" })
           readByAdmin: false
         });
       } else {
-        await addVisitorMessage(data.visitor.email, { author: "ai", text: aiText });
+        addVisitorMessage(data.visitor.email, { author: "ai", text: aiText });
       }
 
       return { text: aiText };
@@ -148,22 +148,12 @@ export const adminListAllChats = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     if (!isAdminCredentials(data.email, data.password)) throw new Error("Não autorizado");
     
-    const visitorsData = await listVisitorChats();
-    const visitors = (visitorsData || []).map((c: any) => ({
-      id: c.email,
-      name: c.name,
-      email: c.email,
-      phone: c.phone,
-      messages: c.messages,
-      lastMessageAt: c.lastMessageAt,
-      type: 'visitor' as const
-    }));
-    
-    const allOrders = await listOrders();
+    const visitors = listVisitorChats();
+    const allOrders = listOrders();
     
     const customers = allOrders
-      .filter((o: any) => o.messages && o.messages.length > 0)
-      .map((o: any) => ({
+      .filter(o => o.messages && o.messages.length > 0)
+      .map(o => ({
         id: o.orderNsu,
         name: o.customerName,
         email: o.customerEmail,
@@ -188,7 +178,7 @@ export const adminSendMessage = createServerFn({ method: "POST" })
     if (!isAdminCredentials(data.email, data.password)) throw new Error("Não autorizado");
 
     if (data.type === 'customer') {
-      await addMessageToOrder(data.chatId, {
+      addMessageToOrder(data.chatId, {
         author: "admin",
         text: data.text,
         id: crypto.randomUUID(),
@@ -196,7 +186,7 @@ export const adminSendMessage = createServerFn({ method: "POST" })
         readByAdmin: true
       });
     } else {
-      await addVisitorMessage(data.chatId, { author: "admin", text: data.text });
+      addVisitorMessage(data.chatId, { author: "admin", text: data.text });
     }
 
     return { success: true };

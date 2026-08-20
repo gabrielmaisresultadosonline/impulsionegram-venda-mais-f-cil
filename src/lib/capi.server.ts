@@ -65,7 +65,7 @@ export async function sendCapiEvent(input: CapiEventInput): Promise<{ ok: boolea
 
   if (!pixelId) {
     const { getSettings } = await import("./settings.server");
-    const settings = await getSettings();
+    const settings = getSettings();
     pixelId = settings.facebookPixelId;
   }
 

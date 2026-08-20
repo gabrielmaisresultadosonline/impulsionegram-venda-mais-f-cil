@@ -1,15 +1,21 @@
 import fs from "node:fs";
-import { supabaseAdmin } from "./supabase-admin.server";
 
 /**
  * Configurações operacionais do painel (lado servidor).
- * Migrado para Lovable Cloud (Supabase).
+ *
+ * ATENÇÃO (arquitetura): assim como o repositório de pedidos, o estado vive em
+ * memória do runtime. Ao ligar o banco de dados, reimplemente estas funções
+ * mantendo a mesma assinatura — nenhum chamador precisa mudar.
  */
 
 interface SiteSettings {
+  /** ID do Pixel do Facebook (público por natureza: roda no navegador). */
   facebookPixelId: string;
+  /** Contador de visitas na página inicial. */
   visits: number;
+  /** Contador de cadastros criados (lead). */
   signups: number;
+  // Evolution API
   evolutionApiUrl?: string;
   evolutionApiKey?: string;
   evolutionInstance?: string;
@@ -18,9 +24,15 @@ interface SiteSettings {
   aiActive?: boolean;
 }
 
+/** Pixel padrão do projeto — pode ser sobrescrito no /admin ou pelo .env. */
 const DEFAULT_PIXEL_ID = "1055141180794602";
+
+/** Credenciais padrão do admin (sobrescritas por ADMIN_EMAIL / ADMIN_LOGIN_PASSWORD). */
 const DEFAULT_ADMIN_EMAIL = "mro@gmail.com";
 const DEFAULT_ADMIN_PASSWORD = "Ga145523@";
+
+const DATA_DIR = process.env.ORDERS_DATA_DIR ?? ".data";
+const SETTINGS_FILE = `${DATA_DIR}/site_settings.json`;
 
 const settings: SiteSettings = {
   facebookPixelId: "",
@@ -33,88 +45,74 @@ const settings: SiteSettings = {
 
 let loaded = false;
 
-async function loadFromCloud(): Promise<void> {
+function load(): void {
   if (loaded) return;
+  loaded = true;
   try {
-    const { data, error } = await supabaseAdmin
-      .from('site_settings')
-      .select('*');
-    
-    if (error) throw error;
-    
-    if (data) {
-      for (const row of data) {
-        (settings as any)[row.key] = row.value;
-      }
-    }
-    loaded = true;
-  } catch (err) {
-    console.error("[Settings] Erro ao carregar do Cloud:", err);
-    // Fallback para arquivo local se o Cloud falhar (migração/cache)
-    try {
-      const DATA_DIR = ".data";
-      const SETTINGS_FILE = `${DATA_DIR}/site_settings.json`;
-      if (fs.existsSync(SETTINGS_FILE)) {
-        const raw = fs.readFileSync(SETTINGS_FILE, "utf8");
-        Object.assign(settings, JSON.parse(raw));
-      }
-    } catch {}
-  }
+    if (!fs.existsSync(SETTINGS_FILE)) return;
+    const raw = fs.readFileSync(SETTINGS_FILE, "utf8");
+    const parsed = JSON.parse(raw);
+    Object.assign(settings, parsed);
+  } catch {}
 }
 
-async function persistToCloud(key: string, value: any): Promise<void> {
+function persist(): void {
   try {
-    const { error } = await supabaseAdmin
-      .from('site_settings')
-      .upsert({ key, value, updated_at: new Date().toISOString() });
-    
-    if (error) throw error;
-  } catch (err) {
-    console.error(`[Settings] Erro ao salvar ${key} no Cloud:`, err);
-  }
+    fs.mkdirSync(DATA_DIR, { recursive: true });
+    fs.writeFileSync(SETTINGS_FILE, JSON.stringify(settings), "utf8");
+  } catch {}
 }
 
-export async function getSettings(): Promise<SiteSettings> {
-  await loadFromCloud();
-  const pixelId = settings.facebookPixelId || process.env.FACEBOOK_PIXEL_ID || DEFAULT_PIXEL_ID;
+export function getSettings(): SiteSettings {
+  load();
+  // O .env tem prioridade na primeira leitura; depois vale o que o admin salvar.
+  const pixelId =
+    settings.facebookPixelId || process.env.FACEBOOK_PIXEL_ID || DEFAULT_PIXEL_ID;
   return { ...settings, facebookPixelId: pixelId };
 }
 
-export async function setFacebookPixelId(pixelId: string): Promise<void> {
-  await loadFromCloud();
+
+/** Aceita apenas dígitos (formato do Pixel ID) ou string vazia para remover. */
+export function setFacebookPixelId(pixelId: string): void {
+  load();
   settings.facebookPixelId = pixelId;
-  await persistToCloud('facebookPixelId', pixelId);
+  persist();
 }
 
-export async function updateEvolutionSettings(data: Partial<SiteSettings>): Promise<void> {
-  await loadFromCloud();
+export function updateEvolutionSettings(data: Partial<SiteSettings>) {
+  load();
   Object.assign(settings, data);
-  
-  for (const [key, value] of Object.entries(data)) {
-    await persistToCloud(key, value);
-  }
-  
-  console.log(`[Settings] Configurações de IA atualizadas e persistidas.`);
+  // Garante persistência imediata em disco/nuvem local
+  persist();
+  // Log de verificação (server-only)
+  console.log(`[Settings] Configurações de IA atualizadas: Active=${settings.aiActive}, Token=${settings.openaiKey ? 'Configurado' : 'Vazio'}`);
 }
 
-export async function incrementVisits(): Promise<void> {
-  await loadFromCloud();
+export function incrementVisits(): void {
+  load();
   settings.visits += 1;
-  await persistToCloud('visits', settings.visits);
+  persist();
 }
 
-export async function incrementSignups(): Promise<void> {
-  await loadFromCloud();
+export function incrementSignups(): void {
+  load();
   settings.signups += 1;
-  await persistToCloud('signups', settings.signups);
+  persist();
 }
 
+/**
+ * Valida as credenciais do administrador contra os secrets do servidor.
+ * Deve ser chamada dentro de um handler (process.env só existe em runtime).
+ */
 export function isAdminCredentials(email: string, password: string): boolean {
+  // Fallback: credenciais padrão do projeto quando o .env ainda não define
+  // os secrets (preview / primeira instalação). Em produção, defina
+  // ADMIN_EMAIL e ADMIN_LOGIN_PASSWORD no .env para sobrescrever.
   const expectedEmail = process.env.ADMIN_EMAIL || DEFAULT_ADMIN_EMAIL;
-  const expectedPassword = process.env.ADMIN_LOGIN_PASSWORD || process.env.ADMIN_PASSWORD || DEFAULT_ADMIN_PASSWORD;
+  const expectedPassword =
+    process.env.ADMIN_LOGIN_PASSWORD || process.env.ADMIN_PASSWORD || DEFAULT_ADMIN_PASSWORD;
   return (
     email.trim().toLowerCase() === expectedEmail.trim().toLowerCase() &&
     password === expectedPassword
   );
 }
-
