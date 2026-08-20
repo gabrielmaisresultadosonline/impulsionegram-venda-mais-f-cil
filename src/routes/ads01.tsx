@@ -46,7 +46,14 @@ function AdsLandingPage() {
     void trackSiteEvent({ data: { type: "pageview", source: "ads01" } });
   }, []);
 
-  const openSignup = useCallback(() => setSignupOpen(true), []);
+  const openSignup = useCallback(() => {
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    if (isMobile) {
+      void navigate({ to: "/painel", search: { source: "ads01" } });
+    } else {
+      setSignupOpen(true);
+    }
+  }, [navigate]);
 
   return (
     <main className="min-h-screen">
