@@ -77,14 +77,23 @@ export function Hero({
           {descriptionText}
         </p>
 
-        <div className="mt-9 flex w-full flex-col justify-center gap-3 sm:w-auto sm:flex-row">
-          <Button size="lg" onClick={onCta} className="bg-gradient-brand shadow-glow h-12 px-7">
-            {primaryCta}
-            <ArrowRight className="size-4" aria-hidden="true" />
-          </Button>
-          <Button size="lg" variant="outline" onClick={onSecondary ?? onCta} className="h-12 px-7">
-            {secondaryCta}
-          </Button>
+        <div className="mt-9 flex w-full flex-col items-center justify-center gap-6">
+          <div className="flex flex-col items-center gap-3">
+            <img 
+              src={metaPartnerAsset.url} 
+              alt="Meta Business Partner" 
+              className="h-8 w-auto object-contain opacity-90"
+            />
+            <div className="flex w-full flex-col justify-center gap-3 sm:w-auto sm:flex-row">
+              <Button size="lg" onClick={onCta} className="bg-gradient-brand shadow-glow h-12 px-7">
+                {primaryCta}
+                <ArrowRight className="size-4" aria-hidden="true" />
+              </Button>
+              <Button size="lg" variant="outline" onClick={onSecondary ?? onCta} className="h-12 px-7">
+                {secondaryCta}
+              </Button>
+            </div>
+          </div>
         </div>
 
       </div>
