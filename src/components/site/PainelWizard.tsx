@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState, type ComponentProps } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
+import { sendWelcomeEmail } from "@/lib/email.functions";
+
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { createCheckoutLink } from "@/lib/checkout.functions";
