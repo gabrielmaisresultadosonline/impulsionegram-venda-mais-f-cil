@@ -18,8 +18,8 @@ export const adminResendWelcomeEmail = createServerFn({ method: "POST" })
       throw new Error("Não autorizado: credenciais de administrador inválidas.");
     }
 
-    const signups = listSignups();
-    const lead = signups.find(s => s.email.toLowerCase() === data.customerEmail.toLowerCase());
+    const signups = await listSignups();
+    const lead = signups.find((s: any) => s.email.toLowerCase() === data.customerEmail.toLowerCase());
 
     if (!lead) {
       return { success: false, error: "Cadastro não encontrado." };
