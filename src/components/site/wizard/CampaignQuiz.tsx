@@ -18,6 +18,8 @@ export interface CampaignQuizProps {
    * Só voltamos a perguntar em contas antigas que não guardaram o telefone.
    */
   askPhone?: boolean;
+  /** Volta para o passo anterior (seleção de plano). */
+  onBack?: () => void;
 }
 
 /**
@@ -26,7 +28,7 @@ export interface CampaignQuizProps {
  * Perfil → região (CEP ou cidade/estado, apenas Brasil) → concorrente →
  * (WhatsApp, só se faltar no cadastro) → confirmação.
  */
-export function CampaignQuiz({ data, onChange, onSubmit, pending, askPhone = false }: CampaignQuizProps) {
+export function CampaignQuiz({ data, onChange, onSubmit, pending, askPhone = false, onBack }: CampaignQuizProps) {
   const [index, setIndex] = useState(0);
 
   /** Ordem das perguntas exibidas — o WhatsApp entra apenas quando necessário. */
@@ -71,7 +73,13 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending, askPhone = fal
     setIndex((current) => Math.min(current + 1, totalQuestions));
   };
 
-  const back = () => setIndex((current) => Math.max(current - 1, 0));
+  const back = () => {
+    if (index === 0 && onBack) {
+      onBack();
+      return;
+    }
+    setIndex((current) => Math.max(current - 1, 0));
+  };
 
   const isSummary = index === totalQuestions;
 
@@ -214,7 +222,7 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending, askPhone = fal
       ) : null}
 
       <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,2fr)] items-stretch gap-3 sm:flex sm:flex-row">
-        {index > 0 ? (
+        {index > 0 || onBack ? (
           <Button
             type="button"
             variant="outline"

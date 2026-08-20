@@ -20,7 +20,7 @@ export function PlanStep({
   selectedPlanId,
   onSelect,
   onBack,
-  onNext,
+  onNext = () => {},
   plans = PLANS,
   pending = false,
   ctaLabel = "Continuar com",
