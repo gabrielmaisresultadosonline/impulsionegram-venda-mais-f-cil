@@ -84,9 +84,6 @@ export function Hero({
         </p>
 
         <div className="mt-9 flex w-full flex-col items-center justify-center gap-8">
-          <div className="bg-primary/5 border border-primary/20 rounded-2xl p-4 max-w-lg text-sm font-medium text-primary animate-pulse">
-            💡 Informativo: A verba de anúncios já está inclusa no valor do seu primeiro mês.
-          </div>
           
           <div className="flex flex-col items-center gap-3">
             <img 
