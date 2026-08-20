@@ -129,7 +129,8 @@ export function recordAttempt(
   });
   prune();
   persist();
-  if (record.status === "tentativa" || (existing?.status === "tentativa")) {
+  const currentStatus = existing?.status ?? "tentativa";
+  if (currentStatus === "tentativa") {
     addToFollowupQueue(record.orderNsu);
   }
 }
