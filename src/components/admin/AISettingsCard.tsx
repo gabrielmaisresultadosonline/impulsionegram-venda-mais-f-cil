@@ -13,7 +13,7 @@ import { saveAISettings } from "@/lib/ai-chat.functions";
 
 export function AISettingsCard({ credentials, className }: { credentials: any; className?: string }) {
   const getSettings = useServerFn(adminGetSettings);
-  const updateSettings = useServerFn(adminUpdateAISettings);
+  const updateSettings = useServerFn(saveAISettings);
 
   const [openaiKey, setOpenaiKey] = useState("");
   const [aiPrompt, setAiPrompt] = useState("");
