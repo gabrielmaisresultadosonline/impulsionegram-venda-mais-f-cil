@@ -371,8 +371,9 @@ function AdminDashboard({ credentials, onLogout }: AdminDashboardProps) {
                         </li>
                       ))}
                     </ul>
-                  </article>
-                ))
+                    </article>
+                  );
+                })
               )}
             </section>
           </>
