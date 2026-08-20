@@ -90,7 +90,7 @@ export function Hero({
           
           <div className="flex flex-col items-center gap-3">
             <img 
-              src={metaPartnerAsset.url} 
+              src="/meta-partner.png" 
               alt="Meta Business Partner" 
               className="h-8 w-auto object-contain opacity-90"
             />
