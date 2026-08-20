@@ -67,22 +67,6 @@ function Index() {
         secondaryLabel="Faça seu cadastro grátis"
       />
 
-      <section className="px-4 py-8">
-        <div className="mx-auto max-w-4xl grid gap-4 grid-cols-1 sm:grid-cols-3">
-          <div className="glass-panel p-4 rounded-xl flex items-center gap-3">
-            <Timer className="text-primary size-5 shrink-0" />
-            <span className="text-sm font-medium">Entrega em até 6h</span>
-          </div>
-          <div className="glass-panel p-4 rounded-xl flex items-center gap-3">
-            <ShieldCheck className="text-primary size-5 shrink-0" />
-            <span className="text-sm font-medium">Pagamento seguro</span>
-          </div>
-          <div className="glass-panel p-4 rounded-xl flex items-center gap-3">
-            <Instagram className="text-primary size-5 shrink-0" />
-            <span className="text-sm font-medium">Filtro por região</span>
-          </div>
-        </div>
-      </section>
 
       <section className="px-4 py-16">
         <div className="mx-auto max-w-4xl grid gap-8 md:grid-cols-3">
