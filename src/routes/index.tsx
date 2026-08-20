@@ -42,7 +42,7 @@ function Index() {
   const adsPlans = getAdsPlans();
 
   useEffect(() => {
-    void trackSiteEvent({ data: { type: "pageview", source: "ads01" } });
+    void trackSiteEvent({ data: { type: "pageview", source: "home" } });
   }, []);
 
   const openSignup = useCallback(() => setSignupOpen(true), []);
