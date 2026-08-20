@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { adminGetSettings } from "@/lib/admin.functions";
-import { adminUpdateAISettings } from "@/lib/ai-chat.functions";
+import { saveAISettings } from "@/lib/ai-chat.functions";
 
 export function AISettingsCard({ credentials, className }: { credentials: any; className?: string }) {
   const getSettings = useServerFn(adminGetSettings);
