@@ -309,6 +309,16 @@ export function listOrders(): OrderRecord[] {
 }
 
 
+export function addMessageToOrder(orderNsu: string, message: TicketMessage) {
+  loadFromDisk();
+  const order = registry.get(orderNsu);
+  if (!order) return false;
+  order.messages = order.messages || [];
+  order.messages.push(message);
+  persist();
+  return true;
+}
+
 /**
  * Valida a senha do administrador contra o secret ADMIN_PASSWORD.
  * Deve ser chamada dentro de um handler (process.env só existe em runtime).
