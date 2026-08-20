@@ -198,6 +198,18 @@ export const ORDER_BUMPS: readonly OrderBump[] = [
     description: "Visualizações divididas nos 3 reels mais recentes.",
     priceCents: 700,
   },
+  {
+    id: "bump-google-3k",
+    name: "Anunciar no Google (3 mil pessoas)",
+    description: "Expandimos sua campanha para o Google por 30 dias.",
+    priceCents: 4700,
+  },
+  {
+    id: "bump-google-5k",
+    name: "Anunciar no Google (5 mil pessoas)",
+    description: "Alcance máximo no Google com 5 mil pessoas impactadas.",
+    priceCents: 7700,
+  },
 ] as const;
 
 export function getOrderBumpById(id: string): OrderBump | undefined {
