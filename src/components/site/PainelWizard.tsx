@@ -169,11 +169,16 @@ export function PainelWizard({
               selectedPlanId={selectedPlanId}
               onSelect={(planId) => {
                 onSelectPlan(planId);
-                saveProfile.mutate();
+                // Se não for o plano de turbinar, já pode tentar avançar/salvar
+                if (planId !== "turbinar-10k") {
+                  saveProfile.mutate();
+                }
               }}
               pending={mutation.isPending || saveProfile.isPending}
-              ctaLabel="Selecionar e Continuar"
+              ctaLabel="Comprar agora"
               onBack={() => setStep(0)}
+              turbinarLink={campaign.turbinarLink}
+              onTurbinarLinkChange={(val) => patchCampaign({ turbinarLink: val })}
             />
           )}
         </div>

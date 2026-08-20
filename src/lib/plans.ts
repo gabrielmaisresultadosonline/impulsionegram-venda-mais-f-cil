@@ -113,6 +113,20 @@ export const PLANS: readonly Plan[] = [
     ],
     badge: "MAIS VENDIDO",
   },
+  {
+    id: "turbinar-10k",
+    slug: "reels10k",
+    name: "Turbinar 10.000",
+    tagline: "10 mil visualizações no Reels",
+    priceCents: 1000,
+    features: [
+      "10.000 visualizações reais",
+      "Resultados imediatos",
+      "Entrega automática",
+      "Link do post obrigatório",
+      "Suporte via ticket",
+    ],
+  },
 ] as const;
 
 
@@ -124,6 +138,7 @@ export const HOME_PLAN_IDS: readonly string[] = [
   "autoridade-5000",
   "marketing-completo",
   "marketing-completo-up",
+  "turbinar-10k",
 ] as const;
 
 export function getHomePlans(): readonly Plan[] {
