@@ -13,12 +13,13 @@ export const sendWelcomeEmail = createServerFn({ method: "POST" })
       .object({
         name: z.string(),
         email: z.string().email(),
+        password: z.string().optional(),
         orderNsu: z.string().optional(),
       })
       .parse(data)
   )
   .handler(async ({ data }) => {
-    const { name, email } = data;
+    const { name, email, password } = data;
 
     // Lemos do process.env dentro do handler (padrão TanStack Start)
     const user = process.env["SMTP_USER"];
@@ -77,8 +78,9 @@ export const sendWelcomeEmail = createServerFn({ method: "POST" })
                       <tr>
                         <td style="color: #4a5568; font-family: sans-serif; font-size: 16px; line-height: 22px;">
                           Seja muito bem-vindo(a) à <strong>Acessar I.A</strong>. Ficamos felizes em ter você conosco!<br><br>
-                          Eu sou a sua nova inteligência artificial parceira oficial da Meta. Já estou pronta para ajudar o seu negócio a alcançar resultados extraordinários.<br><br>
-                          O próximo passo é escolher o seu plano no painel e configurar a sua primeira campanha.
+                          Eu sou a sua nova inteligência artificial parceira oficial da Meta. Já estou pronta para ajudar o seu negócio a alcançar resultados extraordinários com <strong>seguidores, alcance e resultados imediatos</strong> para o seu perfil.<br><br>
+                          ${password ? `<strong>Seus dados de acesso:</strong><br>E-mail: ${email}<br>Senha: ${password}<br><br>` : ""}
+                          O próximo passo é realizar sua configuração e escolher o seu plano no painel para iniciar seu crescimento.
                         </td>
                       </tr>
                       <tr>
@@ -86,7 +88,7 @@ export const sendWelcomeEmail = createServerFn({ method: "POST" })
                           <table align="center" border="0" cellspacing="0" cellpadding="0">
                             <tr>
                               <td bgcolor="#0066FF" style="border-radius: 8px;">
-                                <a href="https://acessar.click/painel" target="_blank" style="font-size: 16px; font-family: sans-serif; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 8px; border: 1px solid #0066FF; display: inline-block; font-weight: bold;">
+                                <a href="https://acessar.click/" target="_blank" style="font-size: 16px; font-family: sans-serif; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 8px; border: 1px solid #0066FF; display: inline-block; font-weight: bold;">
                                   Acessar Meu Painel
                                 </a>
                               </td>
