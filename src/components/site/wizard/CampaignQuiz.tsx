@@ -18,6 +18,8 @@ export interface CampaignQuizProps {
    * Só voltamos a perguntar em contas antigas que não guardaram o telefone.
    */
   askPhone?: boolean;
+  /** Volta para o passo anterior (seleção de plano). */
+  onBack?: () => void;
 }
 
 /**
@@ -26,12 +28,12 @@ export interface CampaignQuizProps {
  * Perfil → região (CEP ou cidade/estado, apenas Brasil) → concorrente →
  * (WhatsApp, só se faltar no cadastro) → confirmação.
  */
-export function CampaignQuiz({ data, onChange, onSubmit, pending, askPhone = false }: CampaignQuizProps) {
+export function CampaignQuiz({ data, onChange, onSubmit, pending, askPhone = false, onBack }: CampaignQuizProps) {
   const [index, setIndex] = useState(0);
 
   /** Ordem das perguntas exibidas — o WhatsApp entra apenas quando necessário. */
   const questions = useMemo(
-    () => (["adLink", "region", "competitor"] as const),
+    () => (["profileUrl", "adLink", "region", "competitor"] as const),
     [],
   );
   const totalQuestions = questions.length;
@@ -44,6 +46,10 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending, askPhone = fal
 
   /** Valida a pergunta atual antes de liberar o avanço. */
   const validate = (): boolean => {
+    if (currentQuestion === "profileUrl" && data.profileUrl.trim().length < 3) {
+      toast.error("Informe seu perfil do Instagram.");
+      return false;
+    }
     if (currentQuestion === "adLink" && data.adLink.trim().length < 10) {
       toast.error("Informe o link da publicação (propaganda) que vamos anunciar.");
       return false;
@@ -71,7 +77,13 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending, askPhone = fal
     setIndex((current) => Math.min(current + 1, totalQuestions));
   };
 
-  const back = () => setIndex((current) => Math.max(current - 1, 0));
+  const back = () => {
+    if (index === 0 && onBack) {
+      onBack();
+      return;
+    }
+    setIndex((current) => Math.max(current - 1, 0));
+  };
 
   const isSummary = index === totalQuestions;
 
@@ -92,6 +104,28 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending, askPhone = fal
           />
         </div>
       </div>
+
+      {currentQuestion === "profileUrl" ? (
+        <Question
+          icon={<Instagram className="size-5" aria-hidden="true" />}
+          title="Qual o seu perfil do Instagram?"
+          description="Onde seus novos seguidores e clientes vão chegar."
+        >
+          <Label htmlFor="quiz-profile-url" className="sr-only">
+            Instagram
+          </Label>
+          <Input
+            id="quiz-profile-url"
+            autoFocus
+            value={data.profileUrl}
+            onChange={(event) => onChange({ profileUrl: event.target.value })}
+            onKeyDown={(event) => event.key === "Enter" && next()}
+            placeholder="@seuusuario"
+            maxLength={100}
+            className="h-12 text-base"
+          />
+        </Question>
+      ) : null}
 
       {currentQuestion === "adLink" ? (
         <Question
@@ -199,6 +233,9 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending, askPhone = fal
               Esta campanha vai gerar novos clientes, públicos quentes e conversões direto para seu WhatsApp.
             </p>
             <p className="text-base font-semibold text-balance mt-3">
+              Perfil <span className="text-gradient-brand">{data.profileUrl}</span>.
+            </p>
+            <p className="text-base font-semibold text-balance mt-1">
               Público <span className="text-gradient-brand">{regionSummary}</span> para o link{" "}
               <span className="text-gradient-brand break-all">{data.adLink.trim()}</span>.
             </p>
@@ -214,7 +251,7 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending, askPhone = fal
       ) : null}
 
       <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,2fr)] items-stretch gap-3 sm:flex sm:flex-row">
-        {index > 0 ? (
+        {index > 0 || onBack ? (
           <Button
             type="button"
             variant="outline"

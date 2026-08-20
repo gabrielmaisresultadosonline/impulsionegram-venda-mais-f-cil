@@ -5,7 +5,7 @@ import { Hero } from "@/components/site/Hero";
 import { SignupDialog } from "@/components/site/SignupDialog";
 import { PlanCard } from "@/components/site/PlanCard";
 import { Button } from "@/components/ui/button";
-import { getAdsPlans } from "@/lib/plans";
+import { getHomePlans } from "@/lib/plans";
 import { trackSiteEvent } from "@/lib/pixel.functions";
 
 import { TestimonialsSection } from "@/components/site/TestimonialsSection";
@@ -44,7 +44,7 @@ export const Route = createFileRoute("/")({
 function Index() {
   const navigate = useNavigate();
   const [signupOpen, setSignupOpen] = useState(false);
-  const adsPlans = getAdsPlans();
+  const plans = getHomePlans();
 
   useEffect(() => {
     void trackSiteEvent({ data: { type: "pageview", source: "home" } });
@@ -64,11 +64,11 @@ function Index() {
       <Hero
         onCta={openSignup}
         onSecondary={openSignup}
-        headline={["Trafego pago com", "Inteligência artificial", "Anuncie em 3 min."]}
-        highlight="Facebook, Instagram e WhatsApp no piloto automático."
-        description="Mande o link do seu post do instagram, selecione a região no mapa e deixe a gestão com a gente. Resultados reais para o seu negócio."
+        headline={["Nunca foi tão fácil vender mais", "sem precisar de muito esforço,", "ganhe popularidade do seu negocio"]}
+        highlight="Seguidores filtrados por região e concorrente no automático."
+        description="Ganhe popularidade do seu negocio com seguidores filtrados por regiao e filtrados do seu concorrente. Resultados reais e rápidos."
         ctaLabel="Cadastre-se grátis"
-        secondaryLabel="Cadastre-se grátis"
+        secondaryLabel="A partir de R$ 14 mensal"
       />
 
 
@@ -106,14 +106,14 @@ function Index() {
       <section className="px-4 py-20 bg-muted/30" id="planos">
         <div className="mx-auto max-w-6xl text-center">
           <h2 className="text-3xl font-extrabold md:text-4xl">
-            Planos de <span className="text-gradient-brand">Anúncios</span>
+            Nossos <span className="text-gradient-brand">Planos</span>
           </h2>
           <p className="mt-4 text-primary font-bold animate-pulse text-lg border-2 border-primary/20 bg-primary/5 inline-block px-6 py-2 rounded-full">
-            O valor já inclui a gestão e o crédito pago à Meta.
+            Selecione a melhor opção para o seu crescimento.
           </p>
 
           <div className="mt-12 flex flex-wrap justify-center gap-6">
-            {adsPlans.map((plan) => (
+            {plans.map((plan) => (
               <PlanCard
                 key={plan.id}
                 plan={plan}
@@ -145,7 +145,7 @@ function Index() {
             className="h-6 w-auto object-contain opacity-70 grayscale hover:grayscale-0 transition-all duration-300"
           />
           <p className="text-center text-xs text-muted-foreground">
-            O valor já inclui a gestão e o crédito pago à Meta. <br />
+            Impulsione seu negócio com seguidores reais e filtrados. <br />
             Pagamentos processados pela InfinitePay ·
             Resultados iniciam em até 6 horas após a aprovação.
           </p>
