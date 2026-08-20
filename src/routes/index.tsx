@@ -64,7 +64,7 @@ function Index() {
         highlight="Facebook, Instagram e WhatsApp no piloto automático."
         description="Mande o link do seu post do instagram, selecione a região no mapa e deixe a gestão com a gente. Resultados reais para o seu negócio."
         ctaLabel="A partir de R$97 mensal"
-        secondaryLabel="Começar agora"
+        secondaryLabel="Faça seu cadastro grátis"
       />
 
       <section className="px-4 py-8">
