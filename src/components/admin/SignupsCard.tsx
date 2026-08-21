@@ -5,7 +5,8 @@ import { Loader2, Mail, RefreshCw, UserRound } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { adminListSignups, type AdminSignup, adminResendWelcomeEmail } from "@/lib/admin.functions";
+import { adminListSignups, type AdminSignup } from "@/lib/admin.functions";
+import { adminResendWelcomeEmailFinal } from "@/lib/admin-emails.functions";
 import { sourceLabel } from "@/lib/traffic-source";
 import { toast } from "sonner";
 
@@ -16,7 +17,7 @@ export interface SignupsCardProps extends ComponentProps<"section"> {
 /** Lista de contas criadas na home, com data e hora do cadastro. */
 export function SignupsCard({ credentials, className, ...props }: SignupsCardProps) {
   const listSignups = useServerFn(adminListSignups);
-  const resendEmail = useServerFn(adminResendWelcomeEmail);
+  const resendEmail = useServerFn(adminResendWelcomeEmailFinal);
 
   const query = useQuery({
     queryKey: ["admin-signups"],
@@ -137,7 +138,8 @@ export function SignupsCard({ credentials, className, ...props }: SignupsCardPro
                     
                     toast.promise(promise, {
                       loading: 'Reenviando e-mail...',
-                      success: (res) => {
+                      success: (raw) => {
+                        const res = raw as { success?: boolean; error?: string };
                         console.log('[SignupsCard] Resposta do reenvio:', res);
                         if (res.success) return 'E-mail de boas-vindas reenviado!';
                         throw new Error(res.error || 'Erro desconhecido ao enviar');
