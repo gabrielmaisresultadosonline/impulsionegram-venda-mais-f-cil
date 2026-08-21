@@ -6,7 +6,7 @@ import type { OrderRecord } from "./orders-repo.server";
 export { adminListEmailLogs } from "./email-admin.functions";
 
 // Função movida para src/lib/admin-emails.functions.ts para resolver erros de cache do TanStack
-export { adminResendWelcomeEmailV3 as adminResendWelcomeEmail } from "./admin-emails.functions";
+export { adminResendWelcomeEmailFinal as adminResendWelcomeEmail } from "./admin-emails.functions";
 
 const credentialsSchema = z.object({
   email: z.string().trim().email(),
