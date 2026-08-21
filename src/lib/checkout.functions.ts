@@ -98,12 +98,9 @@ export const createCheckoutLink = createServerFn({ method: "POST" })
         })),
       ];
 
-      // A InfinitePay rejeita itens com price <= 0 (422 "must be greater than 0").
-      // Por isso o link informado pelo cliente vai na descrição do item principal,
-      // nunca como um item de valor zero.
-      if (data.turbinarLink && items[0]) {
-        items[0].description = `${items[0].description} | Link: ${data.turbinarLink}`.slice(0, 200);
-      }
+      // O link da publicação a turbinar NÃO vai para a InfinitePay: ele fica
+      // salvo apenas no banco (visível no /admin) para processar o pedido.
+
 
       const safeItems = items.filter((item) => Number(item.price) > 0);
 
