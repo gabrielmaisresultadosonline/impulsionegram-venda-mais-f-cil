@@ -1,21 +1,9 @@
-import fs from "node:fs";
+import { supabaseAdmin } from "./supabase.server";
 
-/**
- * Configurações operacionais do painel (lado servidor).
- *
- * ATENÇÃO (arquitetura): assim como o repositório de pedidos, o estado vive em
- * memória do runtime. Ao ligar o banco de dados, reimplemente estas funções
- * mantendo a mesma assinatura — nenhum chamador precisa mudar.
- */
-
-interface SiteSettings {
-  /** ID do Pixel do Facebook (público por natureza: roda no navegador). */
+export interface SiteSettings {
   facebookPixelId: string;
-  /** Contador de visitas na página inicial. */
   visits: number;
-  /** Contador de cadastros criados (lead). */
   signups: number;
-  // Evolution API
   evolutionApiUrl?: string;
   evolutionApiKey?: string;
   evolutionInstance?: string;
@@ -24,90 +12,69 @@ interface SiteSettings {
   aiActive?: boolean;
 }
 
-/** Pixel padrão do projeto — pode ser sobrescrito no /admin ou pelo .env. */
 const DEFAULT_PIXEL_ID = "1055141180794602";
-
-/** Credenciais padrão do admin (sobrescritas por ADMIN_EMAIL / ADMIN_LOGIN_PASSWORD). */
 const DEFAULT_ADMIN_EMAIL = "mro@gmail.com";
 const DEFAULT_ADMIN_PASSWORD = "Ga145523@";
 
-const DATA_DIR = process.env.NODE_ENV === "production" ? "/var/www/acessarclick/.data" : ".data";
-const SETTINGS_FILE = `${DATA_DIR}/site_settings.json`;
+export async function getSettings(): Promise<SiteSettings> {
+  const { data } = await supabaseAdmin
+    .from('settings')
+    .select('*')
+    .eq('id', 'global')
+    .single();
 
-const settings: SiteSettings = {
-  facebookPixelId: "",
-  visits: 0,
-  signups: 0,
-  openaiKey: "",
-  aiPrompt: "",
-  aiActive: false,
-};
+  const baseSettings: SiteSettings = {
+    facebookPixelId: data?.facebook_pixel_id || process.env.FACEBOOK_PIXEL_ID || DEFAULT_PIXEL_ID,
+    visits: data?.visits || 0,
+    signups: data?.signups || 0,
+    evolutionApiUrl: data?.evolution_api_url,
+    evolutionApiKey: data?.evolution_api_key,
+    evolutionInstance: data?.evolution_instance,
+    openaiKey: data?.openai_key,
+    aiPrompt: data?.ai_prompt,
+    aiActive: data?.ai_active ?? false,
+  };
 
-let loaded = false;
-
-function load(): void {
-  if (loaded) return;
-  loaded = true;
-  try {
-    if (!fs.existsSync(SETTINGS_FILE)) return;
-    const raw = fs.readFileSync(SETTINGS_FILE, "utf8");
-    const parsed = JSON.parse(raw);
-    Object.assign(settings, parsed);
-  } catch {}
+  return baseSettings;
 }
 
-function persist(): void {
-  try {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
-    fs.writeFileSync(SETTINGS_FILE, JSON.stringify(settings), "utf8");
-  } catch {}
+export async function setFacebookPixelId(pixelId: string): Promise<void> {
+  await supabaseAdmin.from('settings').upsert({
+    id: 'global',
+    facebook_pixel_id: pixelId
+  });
 }
 
-export function getSettings(): SiteSettings {
-  load();
-  // O .env tem prioridade na primeira leitura; depois vale o que o admin salvar.
-  const pixelId =
-    settings.facebookPixelId || process.env.FACEBOOK_PIXEL_ID || DEFAULT_PIXEL_ID;
-  return { ...settings, facebookPixelId: pixelId };
+export async function updateEvolutionSettings(data: Partial<SiteSettings>): Promise<void> {
+  const mapped: any = { id: 'global' };
+  if (data.facebookPixelId !== undefined) mapped.facebook_pixel_id = data.facebookPixelId;
+  if (data.evolutionApiUrl !== undefined) mapped.evolution_api_url = data.evolutionApiUrl;
+  if (data.evolutionApiKey !== undefined) mapped.evolution_api_key = data.evolutionApiKey;
+  if (data.evolutionInstance !== undefined) mapped.evolution_instance = data.evolutionInstance;
+  if (data.openaiKey !== undefined) mapped.openai_key = data.openaiKey;
+  if (data.aiPrompt !== undefined) mapped.ai_prompt = data.aiPrompt;
+  if (data.aiActive !== undefined) mapped.ai_active = data.aiActive;
+  
+  await supabaseAdmin.from('settings').upsert(mapped);
 }
 
-
-/** Aceita apenas dígitos (formato do Pixel ID) ou string vazia para remover. */
-export function setFacebookPixelId(pixelId: string): void {
-  load();
-  settings.facebookPixelId = pixelId;
-  persist();
+export async function incrementVisits(): Promise<void> {
+  const settings = await getSettings();
+  await supabaseAdmin.from('settings').upsert({
+    id: 'global',
+    visits: settings.visits + 1
+  });
 }
 
-export function updateEvolutionSettings(data: Partial<SiteSettings>) {
-  load();
-  Object.assign(settings, data);
-  // Garante persistência imediata em disco/nuvem local
-  persist();
-  // Log de verificação (server-only)
-  console.log(`[Settings] Configurações de IA atualizadas: Active=${settings.aiActive}, Token=${settings.openaiKey ? 'Configurado' : 'Vazio'}`);
+export async function incrementSignups(): Promise<void> {
+  const settings = await getSettings();
+  await supabaseAdmin.from('settings').upsert({
+    id: 'global',
+    signups: settings.signups + 1
+  });
 }
 
-export function incrementVisits(): void {
-  load();
-  settings.visits += 1;
-  persist();
-}
-
-export function incrementSignups(): void {
-  load();
-  settings.signups += 1;
-  persist();
-}
-
-/**
- * Valida as credenciais do administrador contra os secrets do servidor.
- * Deve ser chamada dentro de um handler (process.env só existe em runtime).
- */
 export function isAdminCredentials(email: string, password: string): boolean {
-  // Fallback: credenciais padrão do projeto quando o .env ainda não define
-  // os secrets (preview / primeira instalação). Em produção, defina
-  // ADMIN_EMAIL e ADMIN_LOGIN_PASSWORD no .env para sobrescrever.
   const expectedEmail = process.env.ADMIN_EMAIL || DEFAULT_ADMIN_EMAIL;
   const expectedPassword =
     process.env.ADMIN_LOGIN_PASSWORD || process.env.ADMIN_PASSWORD || DEFAULT_ADMIN_PASSWORD;
