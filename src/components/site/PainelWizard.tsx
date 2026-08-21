@@ -6,7 +6,7 @@ import { sendWelcomeEmail } from "@/lib/email.functions";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { createCheckoutLink } from "@/lib/checkout.functions";
-import { saveCampaignProfile } from "@/lib/profile.functions";
+import { saveCampaignProfile, saveCampaignProfileDraft } from "@/lib/profile.functions";
 import { getPlanById, sumOrderBumps, type Plan } from "@/lib/plans";
 import { saveOrder } from "@/lib/order-storage";
 import type { LocalAccount } from "@/lib/account-storage";
@@ -58,6 +58,45 @@ export function PainelWizard({
   const plan = getPlanById(selectedPlanId);
   const createLink = useServerFn(createCheckoutLink);
   const persistProfile = useServerFn(saveCampaignProfile);
+  const persistDraft = useServerFn(saveCampaignProfileDraft);
+
+  /**
+   * Auto-save progressivo: cada alteração no quiz (perfil, região, concorrente,
+   * link) é gravada no banco depois de 800ms de inatividade. Assim o /admin
+   * enxerga a configuração mesmo que o cliente nunca conclua o pagamento.
+   */
+  useEffect(() => {
+    const email = campaign.customerEmail.trim();
+    if (!email) return;
+
+    const hasContent =
+      campaign.profileUrl.trim() ||
+      campaign.regionValue.trim() ||
+      campaign.competitor.trim() ||
+      campaign.adLink.trim();
+    if (!hasContent) return;
+
+    const timer = window.setTimeout(() => {
+      void persistDraft({
+        data: {
+          name: campaign.customerName.trim(),
+          email,
+          phone: campaign.customerPhone.trim(),
+          profileUrl: campaign.profileUrl.trim(),
+          region: campaign.regionValue.trim() ? formatRegion(campaign) : "",
+          competitor: campaign.competitor.trim(),
+          adLink: campaign.adLink.trim(),
+          source,
+        },
+      }).catch((error: unknown) => {
+        // Auto-save é best-effort: nunca deve travar o funil do cliente.
+        console.error("[PainelWizard] Falha no auto-save do quiz:", error);
+      });
+    }, 800);
+
+    return () => window.clearTimeout(timer);
+  }, [campaign, persistDraft, source]);
+
 
   /**
    * Salva os dados do perfil/público no cadastro antes de mostrar os planos.
