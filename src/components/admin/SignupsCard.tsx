@@ -139,8 +139,11 @@ export function SignupsCard({ credentials, className, ...props }: SignupsCardPro
                     toast.promise(promise, {
                       loading: 'Reenviando e-mail...',
                       success: (raw) => {
-                        const res = raw as { success?: boolean; error?: string };
+                        const res = raw as { success?: boolean; error?: string; debug?: any };
                         console.log('[SignupsCard] Resposta do reenvio:', res);
+                        if (res.debug) {
+                          console.log("[SignupsCard] DEBUG REENVIO:", res.debug);
+                        }
                         if (res.success) return 'E-mail de boas-vindas reenviado!';
                         throw new Error(res.error || 'Erro desconhecido ao enviar');
                       },
