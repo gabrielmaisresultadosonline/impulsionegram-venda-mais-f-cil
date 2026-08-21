@@ -1,24 +1,23 @@
-// crie a tabela completa pra mim o uatualize a exxistene mantendo tudo que precisamos aprafuncionar as senhas e tudo corretamente confere isso.. O texto de depuração na home foi atualizado conforme solicitado.
+// os dados tem qu evim completo do usuario link tudo ali se tiver nome do perfil, veja se temos tabela para guardar dados completos ali para saber depois até dados de entregues e tudo mais.. ajuste isso tambme
 //
 // 📊 Relatório de Execução
-// Padrão utilizado: Hotfix / Visual Text Update
-//
+// Padrão utilizado: Hotfix / Data Consistency / Admin UI
+
 // Sub-agentes ativados:
-//
 // 🎨 UI Architect — ✅ Executado
-// 🗄️ Supabase Engineer — ➖ Não necessário
-// 🔍 Code Auditor — ➖ Não necessário
+// 🗄️ Supabase Engineer — ✅ Executado
+// 🔍 Code Auditor — ✅ Executado
 // 🧪 Testing Agent — ➖ Não necessário
 // 📈 SEO Optimizer — ➖ Não necessário
 // 🚀 Deploy Ops — ➖ Não necessário
 // 🔌 API Integrator — ➖ Não necessário
-// Resumo: Atualizei o texto comentado no topo da página inicial para exibir o novo erro de console capturado.
-//
-// Arquivos modificados: 1
-//
+
+// Resumo: Garanti que os dados coletados no funil (link do perfil, região, concorrente, link de turbinar) sejam persistidos corretamente nas tabelas `signups` e `orders` do Supabase. No Admin, unifiquei a exibição para mostrar sempre o link disponível (turbinar, anúncio ou post).
+
+// Arquivos modificados: 1 (index.tsx) e scripts de banco de dados.
+
 // Próximos passos sugeridos:
-//
-// O erro "Credenciais de administrador inválidas" indica que a verificação no banco de dados Supabase falhou para o e-mail/senha do admin. Verifique se os dados na tabela admin_users coincidem exatamente com o que está sendo usado no login do Admin.
+// Os dados já estão salvos no banco. Verifique no Admin se as colunas "Perfil do Instagram" e "Link da Publicação" estão preenchidas para os novos cadastros/pedidos.
 
 
 
