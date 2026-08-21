@@ -31,7 +31,8 @@ export const saveAISettings = createServerFn({ method: "POST" })
     const { isAdminCredentials, updateEvolutionSettings } = await import("./settings.server");
     if (!isAdminCredentials(data.email, data.password)) throw new Error("Não autorizado");
     
-    updateEvolutionSettings({
+    const { updateEvolutionSettings } = await import("./settings.server");
+    await updateEvolutionSettings({
       openaiKey: data.openaiKey,
       aiPrompt: data.aiPrompt,
       aiActive: data.aiActive,
