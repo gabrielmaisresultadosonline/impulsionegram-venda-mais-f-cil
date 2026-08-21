@@ -55,11 +55,13 @@ export const sendMessageToAI = createServerFn({ method: "POST" })
     }
 
     // 1. Persistir mensagem do usuário
-    const orders = listOrders();
-    const customerOrder = orders.find(o => o.customerEmail.toLowerCase() === data.visitor.email.toLowerCase());
+    const orders = await listOrders();
+    const customerOrder = orders.find((o: any) => o.customerEmail.toLowerCase() === data.visitor.email.toLowerCase());
+
     
     if (customerOrder) {
-      addMessageToOrder(customerOrder.orderNsu, { 
+      await addMessageToOrder(customerOrder.orderNsu, { 
+
         author: "customer", 
         text: data.message,
         id: crypto.randomUUID(),
@@ -149,11 +151,12 @@ export const adminListAllChats = createServerFn({ method: "POST" })
     if (!isAdminCredentials(data.email, data.password)) throw new Error("Não autorizado");
     
     const visitors = listVisitorChats();
-    const allOrders = listOrders();
+    const allOrders = await listOrders();
     
     const customers = allOrders
-      .filter(o => o.messages && o.messages.length > 0)
-      .map(o => ({
+      .filter((o: any) => o.messages && o.messages.length > 0)
+      .map((o: any) => ({
+
         id: o.orderNsu,
         name: o.customerName,
         email: o.customerEmail,

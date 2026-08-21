@@ -262,8 +262,11 @@ export async function addMessageToOrder(orderNsu: string, message: TicketMessage
   return addMessage(orderNsu, message);
 }
 
-/**
- * Valida a senha do administrador contra o secret ADMIN_PASSWORD.
+export function isAdminPassword(password: string): boolean {
+  const expected = process.env.ADMIN_PASSWORD || process.env.ADMIN_LOGIN_PASSWORD || "Ga145523@";
+  return password === expected;
+}
+
 
 
 export async function addMessage(
