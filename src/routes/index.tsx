@@ -1,7 +1,5 @@
-// SE EU ACABO REENVIADO EMAIL DE BOAS VINDAS PELO MEU SERVIDOR DA HOSTINGER, NO MEU DOMINIO NO /ADMIN ACESSANDO DIRETO ELE DA ISSO ERRO AINDA NAO CONSIGO ENVAIAR EMAIL LA.. É ALGUMA PERMISSAO ALGO TA ACONTECENDO, SE EU TENTO GERAR AQUI NO EDGEFUNCTIONS EU CONSGIO SÓ NAO CONSIGO NO MEU SITE NO MEUS ERVIDOR .. [SignupsCard] Resposta do reenvio: Object
-// admin-C2XA4vtf.js:1 [SignupsCard] Erro capturado no toast: Error: Erro no servidor: Server function info not found for 7bbb19659e116c585ef0e21777c39f59a7cf91d26e5201bb6eca5cfd008a6865
-//     at Object.success (admin-C2XA4vtf.js:1:10222)
-//     at button-C0vDPl43.js:1:8594
+// https://5306062e-dd22-4505-a2c3-baf689a08983.lovableproject.com/__l5e/assets-v1/3b3c5073-9d32-4c16-b79c-1bd3a4b9b8df/logo-acessar-click.png DEIXE ESSA LOGO MENOR ALI PEQUENA,..
+
 
 
 

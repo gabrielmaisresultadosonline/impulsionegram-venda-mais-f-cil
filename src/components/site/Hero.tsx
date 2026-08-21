@@ -66,7 +66,7 @@ export function Hero({
         <img 
           src={logoAsset.url} 
           alt="Acessar Click Logo" 
-          className="w-full max-w-[320px] md:max-w-[420px] h-auto object-contain mt-4 md:mt-6 animate-float"
+          className="w-full max-w-[220px] md:max-w-[280px] h-auto object-contain mt-4 md:mt-6 animate-float"
         />
 
         <h1 className="mt-3 text-[8.5vw] leading-[1.05] font-black tracking-tighter text-balance md:mt-8 md:text-5xl lg:text-6xl uppercase">
