@@ -13,7 +13,7 @@ import { z } from "zod";
 export const getPixelConfig = createServerFn({ method: "GET" }).handler(
   async (): Promise<{ pixelId: string }> => {
     const { getSettings } = await import("./settings.server");
-    return { pixelId: getSettings().facebookPixelId };
+    return { pixelId: (await getSettings()).facebookPixelId };
   },
 );
 
@@ -35,11 +35,12 @@ export const trackSiteEvent = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<{ ok: true }> => {
     const settings = await import("./settings.server");
     if (data.type === "pageview") {
-      settings.incrementVisits();
+      await settings.incrementVisits();
       return { ok: true };
     }
 
-    settings.incrementSignups();
+    await settings.incrementSignups();
+
     if (data.email) {
       const { recordSignup } = await import("./signups-repo.server");
       // O e-mail de boas-vindas agora é disparado dentro do recordSignup (servidor)

@@ -187,8 +187,8 @@ export const createCheckoutLink = createServerFn({ method: "POST" })
       productName,
       source: normalizeSource(data.source),
       paymentUrl,
-      messages: [],
     });
+
 
 
     return { orderNsu, paymentUrl, productName };
@@ -279,8 +279,9 @@ export const getOrderStatusByEmail = createServerFn({ method: "POST" })
   .validator((data: unknown) => emailSchema.parse(data))
   .handler(async ({ data }): Promise<OrderStatusByEmail> => {
     const { getLatestOrderByEmail } = await import("./orders-repo.server");
-    const order = getLatestOrderByEmail(data.customerEmail);
+    const order = await getLatestOrderByEmail(data.customerEmail);
     if (!order) return { found: false, paid: false };
+
     return {
       found: true,
       paid: order.status !== "tentativa",
