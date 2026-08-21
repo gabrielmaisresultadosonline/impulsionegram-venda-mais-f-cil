@@ -11,7 +11,7 @@ const resendSchema = z.object({
  * Nova localização da função de reenvio para forçar a atualização do manifest
  * e resolver o erro "Server function info not found".
  */
-export const adminResendWelcomeEmailV2 = createServerFn({ method: "POST" })
+export const adminResendWelcomeEmailV3 = createServerFn({ method: "POST" })
   .validator((data: any) => resendSchema.parse(data))
   .handler(async ({ data }) => {
     console.log(`[adminResendWelcomeEmail] Reenvio solicitado para: ${data.customerEmail}`);
