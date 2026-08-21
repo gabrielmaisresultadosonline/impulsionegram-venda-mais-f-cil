@@ -5,8 +5,9 @@ import type { OrderRecord } from "./orders-repo.server";
 // Exportamos as funções de log que já existem
 export { adminListEmailLogs } from "./email-admin.functions";
 
-// Função movida para src/lib/admin-emails.functions.ts para resolver erros de cache do TanStack
-export { adminResendWelcomeEmailFinal as adminResendWelcomeEmail } from "./admin-emails.functions";
+// Reenvio de boas-vindas vive em src/lib/admin-emails.functions.ts e deve ser
+// importado DIRETO de lá. Re-exportar uma server function quebra o manifest
+// (erro "Server function info not found").
 
 const credentialsSchema = z.object({
   email: z.string().trim().email(),
