@@ -89,8 +89,10 @@ export async function sendTransactionalEmailInternal(data: TransactionalEmailDat
       subject = `Serviço Entregue com Sucesso! ✅`;
       html = `<div style="padding: 20px; background: #000; color: #fff;"><h1>Concluído!</h1><p>Sua campanha foi finalizada.</p></div>`;
     } else if (data.type.startsWith("followup_")) {
-      const { FOLLOWUPS } = await import("./email-followup/engine.server");
-      const followup = FOLLOWUPS.find(f => f.type === data.type);
+      // Import dinâmico para evitar circular dependência
+      const engine = await import("./email-followup/engine.server");
+      const followup = (engine as any).FOLLOWUPS?.find((f: any) => f.type === data.type);
+      
       if (followup) {
         subject = followup.subject;
         html = `
