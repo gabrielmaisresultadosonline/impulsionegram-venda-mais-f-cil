@@ -1,17 +1,20 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import type { OrderRecord } from "./orders-repo.server";
+
 export { adminListEmailLogs } from "./email-admin.functions";
+
+/**
+ * Função de servidor para reenviar manualmente o e-mail de boas-vindas.
+ * É exportada aqui para garantir que o TanStack Start a inclua no manifesto do admin.
+ */
 export const adminResendWelcomeEmail = createServerFn({ method: "POST" })
   .validator((data: any) =>
-    (async () => {
-      const { z } = await import("zod");
-      return z.object({
-        adminEmail: z.string().email(),
-        adminPassword: z.string(),
-        customerEmail: z.string().email(),
-      }).parse(data);
-    })()
+    z.object({
+      adminEmail: z.string().email(),
+      adminPassword: z.string(),
+      customerEmail: z.string().email(),
+    }).parse(data)
   )
   .handler(async ({ data }) => {
     console.log(`[adminResendWelcomeEmail] Iniciando reenvio para ${data.customerEmail} solicitado por ${data.adminEmail}`);
@@ -34,6 +37,11 @@ export const adminResendWelcomeEmail = createServerFn({ method: "POST" })
       }
 
       console.log(`[adminResendWelcomeEmail] Lead encontrado: ${lead.name}. Chamando sendTransactionalEmail...`);
+      // Nota: sendTransactionalEmail é outra Server Function, mas como estamos no servidor,
+      // podemos chamá-la diretamente se ela exportar o handler ou usar o fetch interno.
+      // No TanStack Start, chamamos .handler() se disponível ou simplesmente re-implementamos a lógica de envio
+      // para evitar loops de rede. Aqui usamos a lógica simplificada ou importamos o helper.
+      
       const result = await sendTransactionalEmail({
         data: {
           type: "welcome",
@@ -50,6 +58,7 @@ export const adminResendWelcomeEmail = createServerFn({ method: "POST" })
       return { success: false, error: `Erro interno no servidor: ${err.message || String(err)}` };
     }
   });
+
 
 
 /**
