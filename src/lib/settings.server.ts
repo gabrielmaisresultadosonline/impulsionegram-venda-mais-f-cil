@@ -1,4 +1,4 @@
-import { supabaseAdmin } from "./supabase.server";
+import { createClient } from "@supabase/supabase-js";
 
 export interface SiteSettings {
   facebookPixelId: string;
@@ -16,12 +16,32 @@ const DEFAULT_PIXEL_ID = "1055141180794602";
 const DEFAULT_ADMIN_EMAIL = "mro@gmail.com";
 const DEFAULT_ADMIN_PASSWORD = "Ga145523@";
 
+function getSettingsClient() {
+  const supabaseUrl = process.env.VITE_SUPABASE_URL || "https://zxeofffktofjnkkxbwet.supabase.co";
+  const supabaseKey = process.env.DATABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!supabaseKey) {
+    throw new Error(
+      "A chave segura do banco não está configurada no servidor (DATABASE_SERVICE_ROLE_KEY).",
+    );
+  }
+
+  return createClient(supabaseUrl, supabaseKey, {
+    auth: { autoRefreshToken: false, persistSession: false },
+  });
+}
+
 export async function getSettings(): Promise<SiteSettings> {
-  const { data } = await supabaseAdmin
+  const { data, error } = await getSettingsClient()
     .from('settings')
     .select('*')
     .eq('id', 'global')
-    .single();
+    .maybeSingle();
+
+  if (error) {
+    console.error("[settings] Falha ao carregar configurações:", error.message);
+    throw new Error(`Não foi possível carregar as configurações: ${error.message}`);
+  }
 
   const baseSettings: SiteSettings = {
     facebookPixelId: data?.facebook_pixel_id || process.env.FACEBOOK_PIXEL_ID || DEFAULT_PIXEL_ID,
@@ -43,18 +63,42 @@ export async function getSettings(): Promise<SiteSettings> {
  * Usamos UPDATE (merge parcial) e só criamos a linha caso ela não exista.
  */
 async function writeSettings(patch: Record<string, unknown>): Promise<void> {
-  const { data: existing } = await supabaseAdmin
+  const client = getSettingsClient();
+  const { data: existing, error: lookupError } = await client
     .from('settings')
     .select('id')
     .eq('id', 'global')
     .maybeSingle();
 
+  if (lookupError) {
+    console.error("[settings] Falha ao localizar configurações:", lookupError.message);
+    throw new Error(`Não foi possível acessar as configurações: ${lookupError.message}`);
+  }
+
   if (existing) {
-    await supabaseAdmin.from('settings').update(patch).eq('id', 'global');
+    const { data: updated, error: updateError } = await client
+      .from('settings')
+      .update({ ...patch, updated_at: new Date().toISOString() })
+      .eq('id', 'global')
+      .select('id')
+      .maybeSingle();
+
+    if (updateError || !updated) {
+      const detail = updateError?.message || "nenhuma linha foi atualizada";
+      console.error("[settings] Falha ao salvar configurações:", detail);
+      throw new Error(`Não foi possível salvar as configurações: ${detail}`);
+    }
     return;
   }
 
-  await supabaseAdmin.from('settings').insert({ id: 'global', ...patch });
+  const { error: insertError } = await client
+    .from('settings')
+    .insert({ id: 'global', ...patch, updated_at: new Date().toISOString() });
+
+  if (insertError) {
+    console.error("[settings] Falha ao criar configurações:", insertError.message);
+    throw new Error(`Não foi possível criar as configurações: ${insertError.message}`);
+  }
 }
 
 export async function setFacebookPixelId(pixelId: string): Promise<void> {

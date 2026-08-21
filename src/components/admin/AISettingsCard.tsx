@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Bot, Loader2, Save, Power, PowerOff } from "lucide-react";
 import { toast } from "sonner";
@@ -11,9 +11,21 @@ import { Textarea } from "@/components/ui/textarea";
 import { adminGetSettings } from "@/lib/admin.functions";
 import { saveAISettings } from "@/lib/ai-chat.functions";
 
-export function AISettingsCard({ credentials, className }: { credentials: any; className?: string }) {
+interface AdminCredentials {
+  email: string;
+  password: string;
+}
+
+interface AISettingsValues {
+  openaiKey: string;
+  aiPrompt: string;
+  aiActive: boolean;
+}
+
+export function AISettingsCard({ credentials, className }: { credentials: AdminCredentials; className?: string }) {
   const getSettings = useServerFn(adminGetSettings);
   const updateSettings = useServerFn(saveAISettings);
+  const queryClient = useQueryClient();
 
   const [openaiKey, setOpenaiKey] = useState("");
   const [aiPrompt, setAiPrompt] = useState("");
@@ -33,10 +45,13 @@ export function AISettingsCard({ credentials, className }: { credentials: any; c
   }, [settingsQuery.data]);
 
   const mutation = useMutation({
-    mutationFn: (values: any) => updateSettings({ data: { ...credentials, ...values } }),
-    onSuccess: () => {
+    mutationFn: (values: AISettingsValues) => updateSettings({ data: { ...credentials, ...values } }),
+    onSuccess: (_result, values) => {
+      queryClient.setQueryData(["admin-settings"], (current: Record<string, unknown> | undefined) => ({
+        ...current,
+        ...values,
+      }));
       toast.success("Configurações da I.A salvas!");
-      void settingsQuery.refetch();
     },
     onError: (error: Error) => toast.error(error.message || "Erro ao salvar."),
   });
@@ -119,7 +134,13 @@ export function AISettingsCard({ credentials, className }: { credentials: any; c
   );
 }
 
-function Badge({ children, className, variant }: any) {
+interface BadgeProps {
+  children: React.ReactNode;
+  className?: string;
+  variant?: "outline";
+}
+
+function Badge({ children, className }: BadgeProps) {
   return (
     <span className={cn("px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase border", className)}>
       {children}
