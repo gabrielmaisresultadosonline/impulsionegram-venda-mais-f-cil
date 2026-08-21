@@ -88,8 +88,8 @@ export const createCheckoutLink = createServerFn({ method: "POST" })
       const items = [
         {
           quantity: 1,
-          price: plan.priceCents,
-          description: productName,
+          price: plan.priceCents || 0,
+          description: productName || "Plano",
         },
         ...bumps.map((bump) => ({
           quantity: 1,
