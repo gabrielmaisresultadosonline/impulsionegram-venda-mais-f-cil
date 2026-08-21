@@ -1,4 +1,4 @@
-// ta dizendo ali na hora de pagar no painel.. Não foi possível gerar o link de pagamento. Tente novamente. nao ta gerando link
+// botao de comprar agora, e o outro verde precisam funcionar igual dps de selecionado..
 
 
 

@@ -23,7 +23,7 @@ export function PlanStep({
   selectedPlanId,
   onSelect,
   onBack,
-  onNext = () => {},
+  onNext,
   plans = PLANS,
   pending = false,
   ctaLabel = "Comprar agora",
@@ -58,14 +58,19 @@ export function PlanStep({
             plan={item}
             enforceUnavailable
             selected={item.id === selectedPlanId && !item.unavailable}
-            onSelect={item.unavailable ? undefined : onSelect}
+            onSelect={item.unavailable ? undefined : (id) => {
+              onSelect(id);
+              if (onNext) onNext();
+            }}
             action={
               item.id === selectedPlanId && !item.unavailable ? (
                 <div className="space-y-4">
                   <Button
                     type="button"
                     size="lg"
-                    onClick={onNext}
+                    onClick={() => {
+                      if (onNext) onNext();
+                    }}
                     disabled={pending || !isLinkValid}
                     className="h-14 w-full min-w-0 gap-2 bg-[oklch(0.62_0.18_145)] px-3 text-sm leading-tight font-bold whitespace-normal text-white shadow-lg transition-all hover:bg-[oklch(0.67_0.18_145)] disabled:opacity-50 sm:text-base"
                   >
