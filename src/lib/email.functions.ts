@@ -43,12 +43,9 @@ export const sendPasswordRecoveryEmail = createServerFn({ method: "POST" })
 
     const { sendTransactionalEmailInternal } = await import("./transactional-emails.functions");
     
-    // O sistema usará o template base com o botão de recuperação
     return await sendTransactionalEmailInternal({
-      type: "followup_last_4h", // Reaproveita o estilo de followup para manter a logo e cores
+      type: "password_recovery",
       email: data.email,
       name: account.name,
-      // Sobrescrevemos o conteúdo no futuro se necessário, 
-      // mas por ora usamos a engine transacional estável
     });
   });
