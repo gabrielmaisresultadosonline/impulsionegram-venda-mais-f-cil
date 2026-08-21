@@ -1,44 +1,69 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { sendTransactionalEmail } from "./transactional-emails.functions";
+import { supabaseAdmin } from "./supabase.server";
 
-const resendSchema = z.object({
-  adminEmail: z.string().email(),
-  adminPassword: z.string(),
-  customerEmail: z.string().email(),
-});
-
-/**
- * Versão simplificada para garantir o registro no TanStack Start
- */
+// Função única e definitiva para reenvio de e-mail de boas-vindas pelo admin
 export const adminResendWelcomeEmailFinal = createServerFn({ method: "POST" })
-  .validator((data: any) => resendSchema.parse(data))
+  .inputValidator((data) =>
+    z
+      .object({
+        adminEmail: z.string(),
+        adminPassword: z.string(),
+        customerEmail: z.string(),
+      })
+      .parse(data)
+  )
   .handler(async ({ data }) => {
+    console.log("[SERVER] Iniciando reenvio de e-mail:", data.customerEmail);
+    
     try {
-      const { isAdminCredentials } = await import("./settings.server");
-      const { listSignups } = await import("./signups-repo.server");
-      const { sendTransactionalEmail } = await import("./transactional-emails.functions");
+      // 1. Validar admin
+      const { data: admin, error: authError } = await supabaseAdmin
+        .from("admin_users")
+        .select("id")
+        .eq("email", data.adminEmail)
+        .eq("password", data.adminPassword)
+        .single();
 
-      if (!isAdminCredentials(data.adminEmail, data.adminPassword)) {
-        throw new Error("Não autorizado.");
+      if (authError || !admin) {
+        console.error("[SERVER] Erro de autenticação admin:", data.adminEmail);
+        return { success: false, error: "Credenciais de administrador inválidas" };
       }
 
-      const signups = await listSignups();
-      const lead = signups.find((s: any) => s.email.toLowerCase() === data.customerEmail.toLowerCase());
+      // 2. Buscar dados do usuário
+      const { data: signup, error: signupError } = await supabaseAdmin
+        .from("signups")
+        .select("name, email, password")
+        .eq("email", data.customerEmail)
+        .single();
 
-      if (!lead) {
-        return { success: false, error: "Cadastro não encontrado." };
+      if (signupError || !signup) {
+        console.error("[SERVER] Usuário não encontrado:", data.customerEmail);
+        return { success: false, error: "Usuário não encontrado no banco de dados" };
       }
 
-      return await sendTransactionalEmail({
+      // 3. Enviar e-mail usando a função transacional
+      console.log("[SERVER] Chamando sendTransactionalEmail para:", signup.email);
+      
+      const result = await sendTransactionalEmail({
         data: {
           type: "welcome",
-          name: lead.name,
-          email: lead.email,
-          password: "",
-          orderNsu: `manual:${Date.now()}`
+          email: signup.email,
+          name: signup.name,
+          password: signup.password
         }
       });
+
+      if (!result.success) {
+        console.error("[SERVER] Falha no disparo do e-mail:", result.error);
+        return { success: false, error: result.error || "O servidor de e-mail recusou o envio" };
+      }
+
+      console.log("[SERVER] E-mail enviado com sucesso para:", signup.email);
+      return { success: true };
     } catch (err: any) {
-      return { success: false, error: err.message };
+      console.error("[SERVER] Erro crítico no handler de reenvio:", err);
+      return { success: false, error: err.message || "Erro interno no servidor" };
     }
   });
