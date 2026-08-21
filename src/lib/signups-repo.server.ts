@@ -1,4 +1,4 @@
-import { supabaseAdmin } from "./supabase/client.server";
+import { supabaseAdmin } from "./supabase.server";
 
 export interface SignupRecord {
   email: string;
