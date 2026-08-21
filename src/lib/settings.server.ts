@@ -1,4 +1,4 @@
-import { createClient } from "@supabase/supabase-js";
+import fs from "node:fs";
 
 export interface SiteSettings {
   facebookPixelId: string;
@@ -16,107 +16,71 @@ const DEFAULT_PIXEL_ID = "1055141180794602";
 const DEFAULT_ADMIN_EMAIL = "mro@gmail.com";
 const DEFAULT_ADMIN_PASSWORD = "Ga145523@";
 
-function getSettingsClient() {
-  const supabaseUrl = process.env.VITE_SUPABASE_URL || "https://zxeofffktofjnkkxbwet.supabase.co";
-  const supabaseKey = process.env.DATABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY;
+/**
+ * Persistência 100% em JSON no próprio servidor.
+ * A pasta .data é preservada entre updates (ver deploy/update.sh).
+ */
+const DATA_DIR = process.env.ORDERS_DATA_DIR ?? ".data";
+const DATA_FILE = `${DATA_DIR}/site_settings.json`;
 
-  if (!supabaseKey) {
-    throw new Error(
-      "A chave segura do banco não está configurada no servidor (DATABASE_SERVICE_ROLE_KEY).",
-    );
+function readFileSettings(): Partial<SiteSettings> {
+  try {
+    if (!fs.existsSync(DATA_FILE)) return {};
+    return JSON.parse(fs.readFileSync(DATA_FILE, "utf8")) as Partial<SiteSettings>;
+  } catch (err) {
+    console.error("[settings] Falha ao ler arquivo de configurações:", err);
+    return {};
   }
+}
 
-  return createClient(supabaseUrl, supabaseKey, {
-    auth: { autoRefreshToken: false, persistSession: false },
-  });
+function writeFileSettings(next: SiteSettings): void {
+  try {
+    fs.mkdirSync(DATA_DIR, { recursive: true });
+    fs.writeFileSync(DATA_FILE, JSON.stringify(next, null, 2), "utf8");
+  } catch (err) {
+    const detail = err instanceof Error ? err.message : String(err);
+    console.error("[settings] Falha ao salvar configurações:", detail);
+    throw new Error(`Não foi possível salvar as configurações: ${detail}`);
+  }
 }
 
 export async function getSettings(): Promise<SiteSettings> {
-  const { data, error } = await getSettingsClient()
-    .from('settings')
-    .select('*')
-    .eq('id', 'global')
-    .maybeSingle();
-
-  if (error) {
-    console.error("[settings] Falha ao carregar configurações:", error.message);
-    throw new Error(`Não foi possível carregar as configurações: ${error.message}`);
-  }
-
-  const baseSettings: SiteSettings = {
-    facebookPixelId: data?.facebook_pixel_id || process.env.FACEBOOK_PIXEL_ID || DEFAULT_PIXEL_ID,
-    visits: data?.visits || 0,
-    signups: data?.signups || 0,
-    evolutionApiUrl: data?.evolution_api_url,
-    evolutionApiKey: data?.evolution_api_key,
-    evolutionInstance: data?.evolution_instance,
-    openaiKey: data?.openai_key,
-    aiPrompt: data?.ai_prompt,
-    aiActive: data?.ai_active ?? false,
+  const data = readFileSettings();
+  return {
+    facebookPixelId: data.facebookPixelId || process.env.FACEBOOK_PIXEL_ID || DEFAULT_PIXEL_ID,
+    visits: data.visits ?? 0,
+    signups: data.signups ?? 0,
+    evolutionApiUrl: data.evolutionApiUrl,
+    evolutionApiKey: data.evolutionApiKey,
+    evolutionInstance: data.evolutionInstance,
+    openaiKey: data.openaiKey,
+    aiPrompt: data.aiPrompt,
+    aiActive: data.aiActive ?? false,
   };
-
-  return baseSettings;
 }
 
-/**
- * Escrita segura: nunca sobrescreve colunas que não foram informadas.
- * Usamos UPDATE (merge parcial) e só criamos a linha caso ela não exista.
- */
-async function writeSettings(patch: Record<string, unknown>): Promise<void> {
-  const client = getSettingsClient();
-  const { data: existing, error: lookupError } = await client
-    .from('settings')
-    .select('id')
-    .eq('id', 'global')
-    .maybeSingle();
-
-  if (lookupError) {
-    console.error("[settings] Falha ao localizar configurações:", lookupError.message);
-    throw new Error(`Não foi possível acessar as configurações: ${lookupError.message}`);
-  }
-
-  if (existing) {
-    const { data: updated, error: updateError } = await client
-      .from('settings')
-      .update({ ...patch, updated_at: new Date().toISOString() })
-      .eq('id', 'global')
-      .select('id')
-      .maybeSingle();
-
-    if (updateError || !updated) {
-      const detail = updateError?.message || "nenhuma linha foi atualizada";
-      console.error("[settings] Falha ao salvar configurações:", detail);
-      throw new Error(`Não foi possível salvar as configurações: ${detail}`);
-    }
-    return;
-  }
-
-  const { error: insertError } = await client
-    .from('settings')
-    .insert({ id: 'global', ...patch, updated_at: new Date().toISOString() });
-
-  if (insertError) {
-    console.error("[settings] Falha ao criar configurações:", insertError.message);
-    throw new Error(`Não foi possível criar as configurações: ${insertError.message}`);
-  }
+/** Merge parcial: nunca apaga campos que não foram informados. */
+async function writeSettings(patch: Partial<SiteSettings>): Promise<void> {
+  const current = await getSettings();
+  writeFileSettings({ ...current, ...patch });
 }
 
 export async function setFacebookPixelId(pixelId: string): Promise<void> {
-  await writeSettings({ facebook_pixel_id: pixelId });
+  await writeSettings({ facebookPixelId: pixelId });
 }
 
 export async function updateEvolutionSettings(data: Partial<SiteSettings>): Promise<void> {
-  const mapped: Record<string, unknown> = {};
-  if (data.facebookPixelId !== undefined) mapped.facebook_pixel_id = data.facebookPixelId;
-  if (data.evolutionApiUrl !== undefined) mapped.evolution_api_url = data.evolutionApiUrl;
-  if (data.evolutionApiKey !== undefined) mapped.evolution_api_key = data.evolutionApiKey;
-  if (data.evolutionInstance !== undefined) mapped.evolution_instance = data.evolutionInstance;
-  if (data.openaiKey !== undefined) mapped.openai_key = data.openaiKey;
-  if (data.aiPrompt !== undefined) mapped.ai_prompt = data.aiPrompt;
-  if (data.aiActive !== undefined) mapped.ai_active = data.aiActive;
+  const patch: Partial<SiteSettings> = {};
+  if (data.facebookPixelId !== undefined) patch.facebookPixelId = data.facebookPixelId;
+  if (data.evolutionApiUrl !== undefined) patch.evolutionApiUrl = data.evolutionApiUrl;
+  if (data.evolutionApiKey !== undefined) patch.evolutionApiKey = data.evolutionApiKey;
+  if (data.evolutionInstance !== undefined) patch.evolutionInstance = data.evolutionInstance;
+  if (data.openaiKey !== undefined) patch.openaiKey = data.openaiKey;
+  if (data.aiPrompt !== undefined) patch.aiPrompt = data.aiPrompt;
+  if (data.aiActive !== undefined) patch.aiActive = data.aiActive;
 
-  if (Object.keys(mapped).length === 0) return;
-  await writeSettings(mapped);
+  if (Object.keys(patch).length === 0) return;
+  await writeSettings(patch);
 }
 
 export async function incrementVisits(): Promise<void> {
