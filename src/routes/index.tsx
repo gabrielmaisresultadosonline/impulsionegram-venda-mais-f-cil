@@ -1,8 +1,27 @@
-// ajuste agora os emails ainda de boas vindas nao estao sendo enviados.. GET https://acessar.click/favicon.ico 404 (Not Found)
+// aqui eu coinsegui enviar o email.porem no serivdor em meu dominio da esse erro ali mais aqui no edgfuncionts eu consegui veja pq aqui eu consigo e no servidor da esse erro sera que alguma permissao? 
+// 
+// favicon.ico:1  GET https://acessar.click/favicon.ico 404 (Not Found)
 // admin-CHw1Tl4U.js:1 [SignupsCard] Resposta do reenvio: {success: false, error: 'Erro no servidor: Server function info not found f…85ef0e21777c39f59a7cf91d26e5201bb6eca5cfd008a6865'}
 // admin-CHw1Tl4U.js:1 [SignupsCard] Erro capturado no toast: Error: Erro no servidor: Server function info not found for 7bbb19659e116c585ef0e21777c39f59a7cf91d26e5201bb6eca5cfd008a6865
 //     at Object.success (admin-CHw1Tl4U.js:1:10222)
 //     at button-C0vDPl43.js:1:8594
+// error @ admin-CHw1Tl4U.js:1
+// (anonymous) @ button-C0vDPl43.js:1
+// Promise.catch
+// promise @ button-C0vDPl43.js:1
+// onClick @ admin-CHw1Tl4U.js:1
+// U @ index-BVCDLB-I.js:9
+// (anonymous) @ index-BVCDLB-I.js:9
+// bn @ index-BVCDLB-I.js:9
+// jd @ index-BVCDLB-I.js:9
+// dp @ index-BVCDLB-I.js:10
+// lp @ index-BVCDLB-I.js:10
+// admin-CHw1Tl4U.js:1 [SignupsCard] Resposta do reenvio: {success: false, error: 'Erro no servidor: Server function info not found f…85ef0e21777c39f59a7cf91d26e5201bb6eca5cfd008a6865'}
+// admin-CHw1Tl4U.js:1 [SignupsCard] Erro capturado no toast: Error: Erro no servidor: Server function info not found for 7bbb19659e116c585ef0e21777c39f59a7cf91d26e5201bb6eca5cfd008a6865
+//     at Object.success (admin-CHw1Tl4U.js:1:10222)
+//     at button-C0vDPl43.js:1:8594
+// 
+// no servidor ficaa asssim  mais aqui eu consigo enviar normal o email de boas vindas..
 
 
 
