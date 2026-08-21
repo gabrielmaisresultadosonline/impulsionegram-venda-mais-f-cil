@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { resendWelcomeEmail } from "./transactional-emails.functions";
+import { sendTransactionalEmail } from "./transactional-emails.functions";
 import { supabaseAdmin } from "./supabase.server";
 
 // Função única e definitiva para reenvio de e-mail de boas-vindas pelo admin
@@ -44,16 +44,20 @@ export const adminResendWelcomeEmailFinal = createServerFn({ method: "POST" })
       }
 
       // 3. Enviar e-mail usando a função transacional
-      console.log("[SERVER] Chamando resendWelcomeEmail para:", signup.email);
-      const emailSent = await resendWelcomeEmail(
-        signup.name,
-        signup.email,
-        signup.password
-      );
+      console.log("[SERVER] Chamando sendTransactionalEmail para:", signup.email);
+      
+      const result = await sendTransactionalEmail({
+        data: {
+          type: "welcome",
+          email: signup.email,
+          name: signup.name,
+          password: signup.password
+        }
+      });
 
-      if (!emailSent) {
-        console.error("[SERVER] Falha no disparo do e-mail via nodemailer");
-        return { success: false, error: "O servidor de e-mail (SMTP) recusou o envio" };
+      if (!result.success) {
+        console.error("[SERVER] Falha no disparo do e-mail:", result.error);
+        return { success: false, error: result.error || "O servidor de e-mail recusou o envio" };
       }
 
       console.log("[SERVER] E-mail enviado com sucesso para:", signup.email);
