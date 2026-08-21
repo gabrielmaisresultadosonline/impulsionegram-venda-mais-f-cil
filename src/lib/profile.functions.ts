@@ -14,7 +14,10 @@ const profileSchema = z.object({
   profileUrl: z.string().trim().min(3, "Informe o link do perfil").max(200),
   region: z.string().trim().min(2, "Informe a região ou CEP").max(160),
   competitor: z.string().trim().max(200).optional(),
-  adLink: z.string().trim().url("Link inválido").max(500).optional(),
+  // Aceita link completo ou @handle/identificador: o objetivo é registrar,
+  // não validar formato — o Admin precisa ver o que o cliente informou.
+  adLink: z.string().trim().max(500).optional(),
+
   source: z.string().trim().max(40).optional(),
 });
 
