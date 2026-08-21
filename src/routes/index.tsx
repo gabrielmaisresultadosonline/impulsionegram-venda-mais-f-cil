@@ -1,5 +1,7 @@
-// o link nao ta sendoi criado e nao to conseguindo pagar.. 
-// Não foi possível gerar o link de pagamento. Status: 422. Detalhes: {"success":false,"message":"Invalid checkout link params","errors":{"items":{"4":{"price":["must be"
+// agora ao tentar reenviar email, ele da isso.. 
+// Falha: Servidor SMTP não configurado (env).
+// veja configure isso certinho no env. ou manda o codigo completo para rodar no terminal dop vps para ele ja colocar tudo o cadastro do smtp ali para reenviar emaail e enviar tudo certinho..
+
 
 
 
