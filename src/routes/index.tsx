@@ -1,4 +1,20 @@
-// acadei de fazer um cadastroi ali e nao salvo no admin como precisa salvar tudo ali
+// deu verto? 918687888384858182
+// );
+// 
+// GRANT ALL ON public.followup_queue TO service_role;
+// ALTER TABLE public.followup_queue ENABLE ROW LEVEL SECURITY;
+// 
+// 
+// Results
+// 
+// Chart
+// 
+// 0 rows
+// 
+// 
+// Export
+// Error: Failed to run sql query: ERROR: 42P07: relation "signups" already exists
+
 
 
 
