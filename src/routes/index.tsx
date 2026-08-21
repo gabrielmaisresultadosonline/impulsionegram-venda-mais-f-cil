@@ -1,12 +1,70 @@
-// VOCE DEIXXOU O EMAIL PROCESSANDO DENTRO DO MEU SERVIDOR OU DENTRO DO EDGEFUNCIOTNS QUERO PARSSAR TUDO PARA MEU SERVIDOR PARA PROCESSAR TUDO POR LA AUTORIZACAO POR LA ACHO QUE É ISSO PROBLEM,A CONTINUA IGUAL MESMO ERRO..[SignupsCard] Resposta do reenvio: Object
+// [SignupsCard] Resposta do reenvio: 
+// {success: false, error: 'Erro no servidor: Server function info not found f…85ef0e21777c39f59a7cf91d26e5201bb6eca5cfd008a6865'}
+// error
+// : 
+// "Erro no servidor: Server function info not found for 7bbb19659e116c585ef0e21777c39f59a7cf91d26e5201bb6eca5cfd008a6865"
+// success
+// : 
+// false
+// [[Prototype]]
+// : 
+// Object
+// constructor
+// : 
+// ƒ Object()
+// hasOwnProperty
+// : 
+// ƒ hasOwnProperty()
+// isPrototypeOf
+// : 
+// ƒ isPrototypeOf()
+// propertyIsEnumerable
+// : 
+// ƒ propertyIsEnumerable()
+// toLocaleString
+// : 
+// ƒ toLocaleString()
+// toString
+// : 
+// ƒ toString()
+// valueOf
+// : 
+// ƒ valueOf()
+// __defineGetter__
+// : 
+// ƒ __defineGetter__()
+// __defineSetter__
+// : 
+// ƒ __defineSetter__()
+// __lookupGetter__
+// : 
+// ƒ __lookupGetter__()
+// __lookupSetter__
+// : 
+// ƒ __lookupSetter__()
+// __proto__
+// : 
+// (...)
+// get __proto__
+// : 
+// ƒ __proto__()
+// set __proto__
+// : 
+// ƒ __proto__()
 // admin-BLoiMOtc.js:1 [SignupsCard] Erro capturado no toast: Error: Erro no servidor: Server function info not found for 7bbb19659e116c585ef0e21777c39f59a7cf91d26e5201bb6eca5cfd008a6865
 //     at Object.success (admin-BLoiMOtc.js:1:10222)
 //     at button-C0vDPl43.js:1:8594
-// error @ admin-BLoiMOtc.js:1
-// admin-BLoiMOtc.js:1 [SignupsCard] Resposta do reenvio: Object
-// admin-BLoiMOtc.js:1 [SignupsCard] Erro capturado no toast: Error: Erro no servidor: Server function info not found for 7bbb19659e116c585ef0e21777c39f59a7cf91d26e5201bb6eca5cfd008a6865
-//     at Object.success (admin-BLoiMOtc.js:1:10222)
-//     at button-C0vDPl43.js:1:8594
+// error	@	admin-BLoiMOtc.js:1
+// (anonymous)	@	button-C0vDPl43.js:1
+// Promise.catch		
+// promise	@	button-C0vDPl43.js:1
+// onClick	@	admin-BLoiMOtc.js:1
+// U	@	index-D9dktnp5.js:9
+// (anonymous)	@	index-D9dktnp5.js:9
+// bn	@	index-D9dktnp5.js:9
+// jd	@	index-D9dktnp5.js:9
+// dp	@	index-D9dktnp5.js:10
+// lp	@	index-D9dktnp5.js:10
 
 
 
