@@ -141,7 +141,7 @@ export function SignupsCard({ credentials, className, ...props }: SignupsCardPro
                       success: (raw) => {
                         const res = raw as { success?: boolean; error?: string; debug?: any };
                         console.log('[SignupsCard] Resposta do reenvio:', res);
-                        if (res.debug) {
+                        if (res?.debug) {
                           console.log("[SignupsCard] DEBUG REENVIO:", res.debug);
                         }
                         if (res.success) return 'E-mail de boas-vindas reenviado!';
