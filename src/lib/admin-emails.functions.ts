@@ -15,12 +15,11 @@ export const adminResendWelcomeEmailFinal = createServerFn({ method: "POST" })
       .parse(data)
   )
   .handler(async ({ data }) => {
-    console.log("[SERVER] Iniciando reenvio de e-mail:", data.customerEmail);
-    console.log("[SERVER] Tentando validar admin:", data.adminEmail);
+    const customerEmail = data.customerEmail.trim().toLowerCase();
+    console.log(`[RESEND] customerEmail recebido: ${customerEmail}`);
     
     try {
       // 1. Validar admin
-      // Primeiro tentamos via email/senha direto na tabela
       const { data: admin, error: authError } = await supabaseAdmin
         .from("admin_users")
         .select("*")
@@ -29,86 +28,64 @@ export const adminResendWelcomeEmailFinal = createServerFn({ method: "POST" })
         .single();
 
       if (authError || !admin) {
-        console.error("[SERVER] Erro de autenticação admin (admin_users):", authError || "Admin não encontrado");
-        
-        // Fallback: se for as credenciais padrão mro@gmail.com / Ga145523@, permitir se o authError for 406/404
+        // Fallback para admin fixo mro@gmail.com
         if (data.adminEmail === 'mro@gmail.com' && data.adminPassword === 'Ga145523@') {
-          console.warn("[SERVER] Credenciais padrão detectadas. Bypassando erro da tabela admin_users para garantir funcionamento no servidor.");
-          // Se entramos no fallback, não temos o objeto admin da query
+          console.log("[RESEND] Admin validado via fallback");
         } else {
           return { success: false, error: "Credenciais de administrador inválidas" };
         }
       }
 
-      console.log("[SERVER] Admin validado com sucesso:", admin?.email || "mro@gmail.com (fallback)");
-
-      console.log("[SERVER] Tentando buscar usuário no Supabase:", data.customerEmail);
-      // 2. Buscar dados do usuário
-      // Normalizar email para evitar problemas de case/espaços
-      const normalizedEmail = data.customerEmail.trim().toLowerCase();
-      
+      // 2. Procurar primeiro em signups usando comparação case-insensitive
+      console.log("[RESEND] procurando em signups");
       const { data: signup, error: signupError } = await supabaseAdmin
         .from("signups")
         .select("name, email, password")
-        .eq("email", normalizedEmail)
-        .maybeSingle(); 
+        .ilike("email", customerEmail)
+        .maybeSingle();
 
-      if (signupError || !signup) {
-        // Fallback: busca em orders caso não esteja em signups (leads antigos ou importados)
-        console.warn("[SERVER] Não encontrado em signups, tentando em orders:", normalizedEmail);
-        const { data: orderSignup } = await supabaseAdmin
-          .from("orders")
-          .select("customer_name, customer_email")
-          .eq("customer_email", normalizedEmail)
-          .limit(1)
-          .maybeSingle();
-
-        if (orderSignup) {
-           return { 
-             success: false, 
-             error: "Usuário sem senha registrada (apenas pedido). Use a recuperação de senha." 
-           };
-        }
-
-        console.error("[SERVER] Usuário realmente não encontrado:", normalizedEmail);
+      if (signup && !signupError) {
+        console.log("[RESEND] encontrado em signups");
+        console.log("[RESEND] enviando e-mail welcome");
         
-        // Log extra para ver se o email existe com outra formatação (sem espaços e case-insensitive)
-        const { data: search } = await supabaseAdmin.from("signups").select("email").ilike("email", normalizedEmail).limit(1);
-        console.log("[SERVER] Tentativa com ilike direto:", search);
-        
-        if (search && search.length > 0) {
-           console.log("[SERVER] Usuário encontrado via ILIKE, tentando novamente com:", search[0].email);
-           const { data: retrySignup } = await supabaseAdmin.from("signups").select("name, email, password").eq("email", search[0].email).maybeSingle();
-           if (retrySignup) {
-              const res = await sendTransactionalEmail({ data: { type: "welcome", email: retrySignup.email, name: retrySignup.name, password: retrySignup.password } });
-              return res.success ? { success: true } : { success: false, error: res.error };
-           }
-        }
+        const result = await sendTransactionalEmail({
+          data: {
+            type: "welcome",
+            email: signup.email,
+            name: signup.name,
+            password: signup.password
+          }
+        });
 
-        return { success: false, error: "Usuário não encontrado no banco de dados" };
+        if (result.success) {
+          console.log("[RESEND] e-mail enviado com sucesso");
+          return { success: true };
+        } else {
+          return { success: false, error: result.error || "Falha no disparo do e-mail" };
+        }
       }
 
-      // 3. Enviar e-mail usando a função transacional
-      console.log("[SERVER] Chamando sendTransactionalEmail para:", signup.email);
-      
-      const result = await sendTransactionalEmail({
-        data: {
-          type: "welcome",
-          email: signup.email,
-          name: signup.name,
-          password: signup.password
-        }
-      });
+      // 3. Se não encontrar em signups, procurar o cliente em orders
+      console.log("[RESEND] não encontrado em signups; procurando em orders");
+      const { data: order, error: orderError } = await supabaseAdmin
+        .from("orders")
+        .select("customer_name, customer_email")
+        .ilike("customer_email", customerEmail)
+        .limit(1)
+        .maybeSingle();
 
-      if (!result.success) {
-        console.error("[SERVER] Falha no disparo do e-mail:", result.error);
-        return { success: false, error: result.error || "O servidor de e-mail recusou o envio" };
+      if (order && !orderError) {
+        console.log("[RESEND] encontrado apenas em orders");
+        return { 
+          success: false, 
+          error: "Este cliente existe apenas em pedidos e não possui senha registrada. Use a recuperação de senha ou peça um novo cadastro." 
+        };
       }
 
-      console.log("[SERVER] E-mail enviado com sucesso para:", signup.email);
-      return { success: true };
+      console.log("[RESEND] não encontrado em nenhuma tabela");
+      return { success: false, error: "Usuário não encontrado no banco de dados" };
     } catch (err: any) {
-      console.error("[SERVER] Erro crítico no handler de reenvio:", err);
+      console.error("[RESEND] Erro crítico:", err);
       return { success: false, error: err.message || "Erro interno no servidor" };
     }
   });
