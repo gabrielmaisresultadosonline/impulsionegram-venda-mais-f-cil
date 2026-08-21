@@ -18,11 +18,11 @@ const DEFAULT_ADMIN_PASSWORD = "Ga145523@";
 
 function getSettingsClient() {
   const supabaseUrl = process.env.VITE_SUPABASE_URL || "https://zxeofffktofjnkkxbwet.supabase.co";
-  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const supabaseKey = process.env.DATABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!supabaseKey) {
     throw new Error(
-      "A chave segura do banco não está configurada no servidor (SUPABASE_SERVICE_ROLE_KEY).",
+      "A chave segura do banco não está configurada no servidor (DATABASE_SERVICE_ROLE_KEY).",
     );
   }
 
