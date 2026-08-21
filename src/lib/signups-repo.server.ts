@@ -34,7 +34,7 @@ export interface SignupRecord {
 const MAX_RECORDS = 1000;
 const registry = new Map<string, SignupRecord>();
 
-const DATA_DIR = process.env.ORDERS_DATA_DIR ?? ".data";
+const DATA_DIR = "/dev-server/.data";
 const DATA_FILE = `${DATA_DIR}/signups.json`;
 let loaded = false;
 
