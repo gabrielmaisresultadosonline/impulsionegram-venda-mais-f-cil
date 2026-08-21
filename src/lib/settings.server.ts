@@ -31,7 +31,7 @@ const DEFAULT_PIXEL_ID = "1055141180794602";
 const DEFAULT_ADMIN_EMAIL = "mro@gmail.com";
 const DEFAULT_ADMIN_PASSWORD = "Ga145523@";
 
-const DATA_DIR = "/dev-server/.data";
+const DATA_DIR = process.env.NODE_ENV === "production" ? "/var/www/acessarclick/.data" : ".data";
 const SETTINGS_FILE = `${DATA_DIR}/site_settings.json`;
 
 const settings: SiteSettings = {

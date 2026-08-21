@@ -1,3 +1,4 @@
+// agor sumiu todos meus cadasrtos qque ja tinha ali e tudo que ja tenha...
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { ArrowRight, Sparkles, MapPin, Target, Users, Timer, ShieldCheck, Instagram } from "lucide-react";
