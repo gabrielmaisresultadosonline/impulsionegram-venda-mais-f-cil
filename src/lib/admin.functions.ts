@@ -233,3 +233,28 @@ export const adminQuickSendPurchase = createServerFn({ method: "POST" })
       orderId: order.orderNsu,
     });
   });
+
+export const adminSendPurchaseEvent = createServerFn({ method: "POST" })
+  .validator((data: any) =>
+    passwordSchema.extend({
+      buyerEmail: z.string().email(),
+      buyerPhone: z.string().optional(),
+      value: z.number(),
+      contentName: z.string().optional(),
+      orderId: z.string(),
+    }).parse(data)
+  )
+  .handler(async ({ data }) => {
+    await assertAdmin(data.email, data.password);
+    const { sendCapiEvent } = await import("./capi.server");
+    return sendCapiEvent({
+      eventName: "Purchase",
+      eventId: `manual-${data.orderId}`,
+      email: data.buyerEmail,
+      phone: data.buyerPhone,
+      value: data.value,
+      contentName: data.contentName,
+      orderId: data.orderId,
+    });
+  });
+

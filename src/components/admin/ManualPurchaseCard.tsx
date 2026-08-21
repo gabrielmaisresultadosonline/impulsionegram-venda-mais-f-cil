@@ -44,13 +44,14 @@ export function ManualPurchaseCard({
           orderId: orderId.trim(),
         },
       }),
-    onSuccess: (result) => {
-      if (result.ok) {
+    onSuccess: (result: any) => {
+      if (result && result.ok) {
         toast.success("Evento de compra enviado ao Facebook.");
       } else {
         toast.error("O Meta não confirmou o evento. Verifique o token/Pixel no servidor.");
       }
     },
+
     onError: (error: Error) => toast.error(error.message || "Falha ao enviar o evento."),
   });
 
