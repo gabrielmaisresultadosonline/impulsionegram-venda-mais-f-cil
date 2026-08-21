@@ -1,4 +1,4 @@
-// https://5306062e-dd22-4505-a2c3-baf689a08983.lovableproject.com/__l5e/assets-v1/3b3c5073-9d32-4c16-b79c-1bd3a4b9b8df/logo-acessar-click.png DEIXE ESSA LOGO MENOR ALI PEQUENA,..
+// ESSA LOGO https://5306062e-dd22-4505-a2c3-baf689a08983.lovableproject.com/__l5e/assets-v1/3b3c5073-9d32-4c16-b79c-1bd3a4b9b8df/logo-acessar-click.png NO SERVIDOR HOSPEDAGEM DIRETO NO DOMINO TA VINDO QUEBRADA NAO APARECE LA.. AJUSTE ISSO TAMBEM.
 
 
 

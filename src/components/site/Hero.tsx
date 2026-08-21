@@ -64,7 +64,7 @@ export function Hero({
           Sou Membro
         </button>
         <img 
-          src={logoAsset.url} 
+          src="https://5306062e-dd22-4505-a2c3-baf689a08983.lovableproject.com/__l5e/assets-v1/3b3c5073-9d32-4c16-b79c-1bd3a4b9b8df/logo-acessar-click.png" 
           alt="Acessar Click Logo" 
           className="w-full max-w-[220px] md:max-w-[280px] h-auto object-contain mt-4 md:mt-6 animate-float"
         />
