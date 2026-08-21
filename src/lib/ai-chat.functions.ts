@@ -10,12 +10,13 @@ export const getAISettings = createServerFn({ method: "POST" })
   .validator((data: unknown) => z.object({ email: z.string(), password: z.string() }).parse(data))
   .handler(async ({ data }) => {
     if (!isAdminCredentials(data.email, data.password)) throw new Error("Não autorizado");
-    const settings = getSettings();
+    const settings = await getSettings();
     return {
       openaiKey: settings.openaiKey || "",
       aiPrompt: settings.aiPrompt || "",
       aiActive: !!settings.aiActive,
     };
+
   });
 
 export const saveAISettings = createServerFn({ method: "POST" })
