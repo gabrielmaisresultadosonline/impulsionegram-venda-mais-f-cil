@@ -1,6 +1,8 @@
-// agora ao tentar reenviar email, ele da isso.. 
-// Falha: Servidor SMTP não configurado (env).
-// veja configure isso certinho no env. ou manda o codigo completo para rodar no terminal dop vps para ele ja colocar tudo o cadastro do smtp ali para reenviar emaail e enviar tudo certinho..
+// preciso do comando completo como esse.. sudo bash /var/www/acessarclick/deploy/update.sh
+// 
+// o email é suporte@acessar.click
+// senha 29041997Ga@
+
 
 
 
