@@ -34,12 +34,13 @@ export const adminResendWelcomeEmailFinal = createServerFn({ method: "POST" })
         // Fallback: se for as credenciais padrão mro@gmail.com / Ga145523@, permitir se o authError for 406/404
         if (data.adminEmail === 'mro@gmail.com' && data.adminPassword === 'Ga145523@') {
           console.warn("[SERVER] Credenciais padrão detectadas. Bypassando erro da tabela admin_users para garantir funcionamento no servidor.");
+          // Se entramos no fallback, não temos o objeto admin da query
         } else {
           return { success: false, error: "Credenciais de administrador inválidas" };
         }
       }
 
-      console.log("[SERVER] Admin validado com sucesso:", admin.email);
+      console.log("[SERVER] Admin validado com sucesso:", admin?.email || "mro@gmail.com (fallback)");
 
       console.log("[SERVER] Tentando buscar usuário no Supabase:", data.customerEmail);
       // 2. Buscar dados do usuário
