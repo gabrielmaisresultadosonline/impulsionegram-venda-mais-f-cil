@@ -15,8 +15,21 @@ export const adminResendWelcomeEmailFinal = createServerFn({ method: "POST" })
       .parse(data)
   )
   .handler(async ({ data }) => {
-    const customerEmail = data.customerEmail.trim().toLowerCase();
-    console.log(`[RESEND] customerEmail recebido: ${customerEmail}`);
+    const customerEmailReceived = data.customerEmail;
+    const normalizedEmail = customerEmailReceived.trim().toLowerCase();
+    
+    let debug: any = {
+      customerEmailReceived,
+      normalizedEmail,
+      signupFound: false,
+      signupCount: 0,
+      signupError: null,
+      orderFound: false,
+      orderCount: 0,
+      orderError: null
+    };
+
+    console.log(`[RESEND] customerEmail recebido: ${customerEmailReceived}`);
     
     try {
       // 1. Validar admin
@@ -28,25 +41,27 @@ export const adminResendWelcomeEmailFinal = createServerFn({ method: "POST" })
         .single();
 
       if (authError || !admin) {
-        // Fallback para admin fixo mro@gmail.com
         if (data.adminEmail === 'mro@gmail.com' && data.adminPassword === 'Ga145523@') {
           console.log("[RESEND] Admin validado via fallback");
         } else {
-          return { success: false, error: "Credenciais de administrador inválidas" };
+          return { success: false, error: "Credenciais de administrador inválidas", debug };
         }
       }
 
-      // 2. Procurar primeiro em signups usando comparação case-insensitive
+      // 2. Procurar em signups
       console.log("[RESEND] procurando em signups");
-      const { data: signup, error: signupError } = await supabaseAdmin
+      const { data: signups, error: signupError, count: signupCount } = await supabaseAdmin
         .from("signups")
-        .select("name, email, password")
-        .ilike("email", customerEmail)
-        .maybeSingle();
+        .select("name, email, password", { count: 'exact' })
+        .ilike("email", normalizedEmail);
 
-      if (signup && !signupError) {
+      debug.signupError = signupError ? JSON.stringify(signupError) : null;
+      debug.signupCount = signupCount || 0;
+
+      if (signups && signups.length > 0) {
+        const signup = signups[0];
+        debug.signupFound = true;
         console.log("[RESEND] encontrado em signups");
-        console.log("[RESEND] enviando e-mail welcome");
         
         const result = await sendTransactionalEmail({
           data: {
@@ -59,26 +74,32 @@ export const adminResendWelcomeEmailFinal = createServerFn({ method: "POST" })
 
         if (result.success) {
           console.log("[RESEND] e-mail enviado com sucesso");
-          return { success: true };
+          return { success: true, debug };
         } else {
-          return { success: false, error: result.error || "Falha no disparo do e-mail" };
+          return { success: false, error: result.error || "Falha no disparo do e-mail", debug };
         }
       }
 
-      // 3. Se não encontrar em signups, procurar o cliente em orders
+      // 3. Procurar em orders
       console.log("[RESEND] não encontrado em signups; procurando em orders");
-      const { data: order, error: orderError } = await supabaseAdmin
+      const { data: orders, error: orderError, count: orderCount } = await supabaseAdmin
         .from("orders")
-        .select("customer_name, customer_email")
-        .ilike("customer_email", customerEmail)
-        .limit(1)
-        .maybeSingle();
+        .select("customer_name, customer_email", { count: 'exact' })
+        .ilike("customer_email", normalizedEmail);
 
-      if (order && !orderError) {
+      debug.orderError = orderError ? JSON.stringify(orderError) : null;
+      debug.orderCount = orderCount || 0;
+
+      if (orders && orders.length > 0) {
+        const order = orders[0];
+        debug.orderFound = true;
+        debug.orderEmail = order.customer_email;
+        debug.orderName = order.customer_name;
         console.log("[RESEND] encontrado apenas em orders");
         return { 
           success: false, 
-          error: "Este cliente existe apenas em pedidos e não possui senha registrada. Use a recuperação de senha ou peça um novo cadastro." 
+          error: "Este cliente existe apenas em pedidos e não possui senha registrada. Use a recuperação de senha ou peça um novo cadastro.",
+          debug
         };
       }
 
