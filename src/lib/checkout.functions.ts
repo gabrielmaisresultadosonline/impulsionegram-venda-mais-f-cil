@@ -145,7 +145,7 @@ export const createCheckoutLink = createServerFn({ method: "POST" })
 
     if (!response.ok) {
       console.error(`InfinitePay /links falhou [${response.status}]: ${raw}`);
-      // Instrumentação de diagnóstico temporária para o erro "Não foi possível gerar o link"
+      // Instrumentação de diagnóstico temporária
       throw new Error(`Não foi possível gerar o link de pagamento. Status: ${response.status}. Detalhes: ${raw.slice(0, 500)}`);
     }
 
