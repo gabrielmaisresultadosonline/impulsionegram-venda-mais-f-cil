@@ -3,6 +3,7 @@
 // admin-DDS1UCw-.js:1 [SignupsCard] Erro capturado no toast: Error: Erro no servidor: Server function info not found for 7bbb19659e116c585ef0e21777c39f59a7cf91d26e5201bb6eca5cfd008a6865
 //     at Object.success (admin-DDS1UCw-.js:1:10222)
 //     at button-C0vDPl43.js:1:8594
+
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { ArrowRight, Sparkles, MapPin, Target, Users, Timer, ShieldCheck, Instagram } from "lucide-react";
