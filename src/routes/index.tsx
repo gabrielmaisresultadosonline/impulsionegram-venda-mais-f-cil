@@ -1,20 +1,14 @@
-// Corrija definitivamente o botão “Reenviar Boas-vindas” do painel Admin.
+// PRECISO DIAGNOSTICAR DEFINITIVAMENTE O ERRO DO REENVIO DE E-MAIL.
 //
-// O projeto usa TanStack Start + Supabase.
+// O deploy já foi executado com sucesso no servidor.
 //
-// ### Problema identificado
-// O componente src/components/admin/SignupsCard.tsx importa diretamente adminResendWelcomeEmailFinal.
-// A causa do erro "Usuário não encontrado" era uma inconsistência entre signups e orders.
-// 
-// ### Nova lógica do reenvio
-// 1. Validar admin.
-// 2. Normalizar customerEmail (trim/lowercase).
-// 3. Procurar em signups (ilike). Se encontrar, envia email.
-// 4. Se não encontrar em signups, procurar em orders. Se existir apenas lá, informa que não há senha.
-// 5. Logs detalhados sem expor senhas.
+// Instrumentação temporária de diagnóstico aplicada:
+// 1. A Server Function `adminResendWelcomeEmailFinal` agora retorna um objeto `debug`.
+// 2. O `SignupsCard` imprime `[SignupsCard] DEBUG REENVIO:` no console do navegador.
+// 3. Verificando normalização (trim/lowercase) e resultados em `signups` e `orders`.
 //
-// Mudanças aplicadas e verificadas via build de produção. 
-// O commit foi realizado via interface interna da plataforma.
+// Nota: Nenhum segredo ou senha é exposto no objeto debug.
+// Pressione "Reenviar Boas-vindas" e verifique o console para os dados de diagnóstico.
 //
 // 📊 Relatório de Execução
 // Padrão utilizado: Hotfix / Data Consistency / Admin UI
