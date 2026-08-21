@@ -6,7 +6,7 @@ import { sendWelcomeEmail } from "@/lib/email.functions";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { createCheckoutLink } from "@/lib/checkout.functions";
-import { saveCampaignProfile } from "@/lib/profile.functions";
+import { saveCampaignProfile, saveCampaignProfileDraft } from "@/lib/profile.functions";
 import { getPlanById, sumOrderBumps, type Plan } from "@/lib/plans";
 import { saveOrder } from "@/lib/order-storage";
 import type { LocalAccount } from "@/lib/account-storage";
