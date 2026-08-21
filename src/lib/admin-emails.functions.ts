@@ -104,9 +104,9 @@ export const adminResendWelcomeEmailFinal = createServerFn({ method: "POST" })
       }
 
       console.log("[RESEND] não encontrado em nenhuma tabela");
-      return { success: false, error: "Usuário não encontrado no banco de dados" };
+      return { success: false, error: "Usuário não encontrado no banco de dados", debug };
     } catch (err: any) {
       console.error("[RESEND] Erro crítico:", err);
-      return { success: false, error: err.message || "Erro interno no servidor" };
+      return { success: false, error: err.message || "Erro interno no servidor", debug };
     }
   });
