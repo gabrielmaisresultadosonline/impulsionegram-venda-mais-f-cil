@@ -4,7 +4,7 @@ import { sendTransactionalEmail } from "./transactional-emails.functions";
 import { supabaseAdmin } from "./supabase.server";
 
 // Função única e definitiva para reenvio de e-mail de boas-vindas pelo admin
-export const adminResendWelcomeEmailFinal = createServerFn({ method: "POST" })
+export const adminResendWelcomeEmailV3 = createServerFn({ method: "POST" })
   .inputValidator((data) =>
     z
       .object({
