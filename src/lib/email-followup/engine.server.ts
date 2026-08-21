@@ -130,7 +130,7 @@ export async function processFollowupQueue(): Promise<void> {
             .eq('customer_email', email)
             .neq('status', 'tentativa');
             
-        isPaidOrCancelled = (orders && orders.length > 0);
+        isPaidOrCancelled = (orders && orders.length > 0) || false;
       } else {
         const order = await getOrderByNsu(item.order_nsu);
         if (!order) {
