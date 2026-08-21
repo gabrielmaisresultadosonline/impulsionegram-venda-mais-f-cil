@@ -1,7 +1,8 @@
-// preciso do comando completo como esse.. sudo bash /var/www/acessarclick/deploy/update.sh
-// 
-// o email é suporte@acessar.click
-// senha 29041997Ga@
+// As cores principais da homepage são baseadas no tema Neon-Blue:
+// Primária: #00f2fe (Cyan Neon)
+// Fundo: #09090b (Zinc Dark)
+// Gradiente Brand: linear-gradient(to right, #00f2fe, #0066ff)
+
 
 
 
