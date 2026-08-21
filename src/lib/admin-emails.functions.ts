@@ -44,14 +44,38 @@ export const adminResendWelcomeEmailFinal = createServerFn({ method: "POST" })
 
       console.log("[SERVER] Tentando buscar usuário no Supabase:", data.customerEmail);
       // 2. Buscar dados do usuário
+      // Normalizar email para evitar problemas de case/espaços
+      const normalizedEmail = data.customerEmail.trim().toLowerCase();
+      
       const { data: signup, error: signupError } = await supabaseAdmin
         .from("signups")
         .select("name, email, password")
-        .eq("email", data.customerEmail)
-        .single();
+        .eq("email", normalizedEmail)
+        .maybeSingle(); 
 
       if (signupError || !signup) {
-        console.error("[SERVER] Usuário não encontrado:", data.customerEmail);
+        // Fallback: busca em orders caso não esteja em signups (leads antigos ou importados)
+        console.warn("[SERVER] Não encontrado em signups, tentando em orders:", normalizedEmail);
+        const { data: orderSignup } = await supabaseAdmin
+          .from("orders")
+          .select("customer_name, customer_email")
+          .eq("customer_email", normalizedEmail)
+          .limit(1)
+          .maybeSingle();
+
+        if (orderSignup) {
+           return { 
+             success: false, 
+             error: "Usuário sem senha registrada (apenas pedido). Use a recuperação de senha." 
+           };
+        }
+
+        console.error("[SERVER] Usuário realmente não encontrado:", normalizedEmail);
+        
+        // Log extra para ver se o email existe com outra formatação
+        const { data: search } = await supabaseAdmin.from("signups").select("email").ilike("email", `%${normalizedEmail}%`).limit(1);
+        console.log("[SERVER] Sugestão de busca aproximada:", search);
+
         return { success: false, error: "Usuário não encontrado no banco de dados" };
       }
 
