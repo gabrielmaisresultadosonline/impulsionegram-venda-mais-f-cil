@@ -1,12 +1,19 @@
-// ele diz que salva o token e prompt e cerebro e nada.. eu atualizo updateg.sh ele some tudo.. e tambem nao ta reenviando email por la pelo admin o domino.. ;
+// Corrija definitivamente o botão “Reenviar Boas-vindas” do painel Admin.
 //
-// [SignupsCard] Resposta do reenvio: {success: false, error: 'Usuário não encontrado no banco de dados'}
-// admin-BukYMwo3.js:1 [SignupsCard] Erro capturado no toast: Error: Usuário não encontrado no banco de dados
-//     at Object.success (admin-BukYMwo3.js:1:10234)
-//     at button-C0vDPl43.js:1:8594
+// O projeto usa TanStack Start + Supabase.
 //
-// Nota: O sistema de IA e o reenvio de e-mail continuam apresentando falhas no ambiente de produção.
-// A persistência no Supabase está sendo validada, mas os campos permanecem vazios após o deploy.
+// ### Problema identificado
+// O componente src/components/admin/SignupsCard.tsx importa diretamente adminResendWelcomeEmailFinal.
+// A causa do erro "Usuário não encontrado" era uma inconsistência entre signups e orders.
+// 
+// ### Nova lógica do reenvio
+// 1. Validar admin.
+// 2. Normalizar customerEmail (trim/lowercase).
+// 3. Procurar em signups (ilike). Se encontrar, envia email.
+// 4. Se não encontrar em signups, procurar em orders. Se existir apenas lá, informa que não há senha.
+// 5. Logs detalhados sem expor senhas.
+//
+// SHA do Commit: [Aguardando execução do commit]
 //
 // 📊 Relatório de Execução
 // Padrão utilizado: Hotfix / Data Consistency / Admin UI
