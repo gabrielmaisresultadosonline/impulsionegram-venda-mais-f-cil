@@ -5,56 +5,8 @@ import type { OrderRecord } from "./orders-repo.server";
 // Exportamos as funções de log que já existem
 export { adminListEmailLogs } from "./email-admin.functions";
 
-const resendSchema = z.object({
-  adminEmail: z.string().email(),
-  adminPassword: z.string(),
-  customerEmail: z.string().email(),
-});
-
-/**
- * Função centralizada para o reenvio de e-mail de boas-vindas pelo Admin.
- */
-export const adminResendWelcomeEmail = createServerFn({ method: "POST" })
-  .validator((data: any) => resendSchema.parse(data))
-  .handler(async ({ data }) => {
-    console.log(`[adminResendWelcomeEmail] Reenvio solicitado para: ${data.customerEmail}`);
-    
-    try {
-      const { isAdminCredentials } = await import("./settings.server");
-      const { listSignups } = await import("./signups-repo.server");
-      const { sendTransactionalEmail } = await import("./transactional-emails.functions");
-
-      // 1. Validação de segurança no servidor
-      if (!isAdminCredentials(data.adminEmail, data.adminPassword)) {
-        console.warn(`[adminResendWelcomeEmail] Não autorizado: ${data.adminEmail}`);
-        throw new Error("Não autorizado.");
-      }
-
-      // 2. Busca o cadastro
-      const signups = await listSignups();
-      const lead = signups.find((s: any) => s.email.toLowerCase() === data.customerEmail.toLowerCase());
-
-      if (!lead) {
-        return { success: false, error: "Cadastro não encontrado no servidor." };
-      }
-
-      // 3. Executa o envio transacional
-      const result = await sendTransactionalEmail({
-        data: {
-          type: "welcome",
-          name: lead.name,
-          email: lead.email,
-          orderNsu: `manual-welcome:${Date.now()}`
-        }
-      });
-
-      console.log(`[adminResendWelcomeEmail] Sucesso:`, result);
-      return { success: result.success, error: result.error };
-    } catch (err: any) {
-      console.error("[adminResendWelcomeEmail] Erro:", err);
-      return { success: false, error: `Erro no servidor: ${err.message}` };
-    }
-  });
+// Função movida para src/lib/admin-emails.functions.ts para resolver erros de cache do TanStack
+export { adminResendWelcomeEmail } from "./admin-emails.functions";
 
 const credentialsSchema = z.object({
   email: z.string().trim().email(),

@@ -2,8 +2,9 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { saveEmailLog } from "./email-followup/logs-repo.server";
 
+// Schema simplificado para evitar erros de serialização no TanStack Start
 const transactionalEmailSchema = z.object({
-  type: z.enum(["welcome", "payment_confirmed", "delivered"]),
+  type: z.string(), // "welcome", "payment_confirmed", "delivered"
   email: z.string().email(),
   name: z.string(),
   password: z.string().optional(),
@@ -14,11 +15,12 @@ const transactionalEmailSchema = z.object({
 
 /**
  * Função centralizada para envio de e-mails transacionais.
- * Inclui fallback para logs caso o SMTP falhe.
+ * Processada inteiramente no servidor.
  */
 export const sendTransactionalEmail = createServerFn({ method: "POST" })
   .validator((data: any) => transactionalEmailSchema.parse(data))
   .handler(async ({ data }) => {
+    // Leitura direta das envs dentro do handler
     const user = process.env["SMTP_USER"];
     const pass = process.env["SMTP_PASS"];
 
@@ -28,15 +30,16 @@ export const sendTransactionalEmail = createServerFn({ method: "POST" })
     }
 
     try {
+      // Import dinâmico para garantir execução no servidor (Edge/Worker)
       const nodemailer = await import("nodemailer");
       const transporter = nodemailer.createTransport({
         host: "smtp.hostinger.com",
         port: 465,
         secure: true,
         auth: { user, pass },
-        connectionTimeout: 10000,
-        greetingTimeout: 5000,
-        socketTimeout: 15000,
+        connectionTimeout: 15000,
+        greetingTimeout: 10000,
+        socketTimeout: 20000,
       });
 
       const firstName = data.name.split(" ")[0];
@@ -84,6 +87,7 @@ export const sendTransactionalEmail = createServerFn({ method: "POST" })
         html,
       });
 
+      // Salva log no Supabase
       await saveEmailLog({
         orderNsu: data.orderNsu || "transactional",
         customerEmail: data.email,
@@ -97,6 +101,7 @@ export const sendTransactionalEmail = createServerFn({ method: "POST" })
     } catch (error: any) {
       console.error("[SMTP ERROR]", error);
       
+      // Fallback de log de erro no Supabase
       await saveEmailLog({
         orderNsu: data.orderNsu || "failed",
         customerEmail: data.email,
