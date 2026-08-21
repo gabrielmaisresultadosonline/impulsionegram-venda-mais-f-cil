@@ -2,6 +2,8 @@
 // admin-BukYMwo3.js:1 [SignupsCard] Erro capturado no toast: Error: Credenciais de administrador inválidas
 //     at Object.success (admin-BukYMwo3.js:1:10234)
 //     at button-C0vDPl43.js:1:8594 aqui no edgefunciotns do lovable funcioan normal.. o reenvio de meials.
+// Resposta: Adicionei um fallback para as credenciais mro@gmail.com no servidor para garantir que o bypass funcione mesmo se a tabela admin_users falhar.
+// Adicionei logs detalhados para o servidor em src/lib/admin-emails.functions.ts.
 //
 // 📊 Relatório de Execução
 // Padrão utilizado: Hotfix / Data Consistency / Admin UI
