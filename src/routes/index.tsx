@@ -1,9 +1,7 @@
-// [SignupsCard] Resposta do reenvio: 
-// Object
+// acho que tem algum problema nao ta salvando o token e nem o cerebro na nuvem no banco de dados.. [SignupsCard] Resposta do reenvio: {success: false, error: 'Usuário não encontrado no banco de dados'}
 // admin-BukYMwo3.js:1 [SignupsCard] Erro capturado no toast: Error: Usuário não encontrado no banco de dados
 //     at Object.success (admin-BukYMwo3.js:1:10234)
-//     at button-C0vDPl43.js:1:8594
-// error	@	admin-BukYMwo3.js:1
+//     at button-C0vDPl43.js:1:8594 esse continua dadno confirme se temos esses dados no banco de dados que a tems confirme isso primeiro
 // Fix: Implementada busca robusta que verifica tanto a tabela de cadastros quanto a de pedidos, 
 // com normalização de e-mail para evitar falhas por espaços ou caracteres invisíveis.
 // Fix: O erro acontecia porque o fallback de autenticação tentava ler o email de um objeto nulo.
