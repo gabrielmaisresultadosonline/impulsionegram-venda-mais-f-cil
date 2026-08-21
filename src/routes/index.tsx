@@ -1,6 +1,4 @@
-// agora deu isso 
-//
-// [SignupsCard] Resposta do reenvio: Object
+// continuia .. [SignupsCard] Resposta do reenvio: {success: false, error: 'Usuário não encontrado no banco de dados'}
 // admin-BukYMwo3.js:1 [SignupsCard] Erro capturado no toast: Error: Usuário não encontrado no banco de dados
 //     at Object.success (admin-BukYMwo3.js:1:10234)
 //     at button-C0vDPl43.js:1:8594
