@@ -4,7 +4,7 @@ import { saveEmailLog } from "./email-followup/logs-repo.server";
 
 // Schema centralizado
 export const transactionalEmailSchema = z.object({
-  type: z.string(), // "welcome", "payment_confirmed", "delivered"
+  type: z.string(), // "welcome", "payment_confirmed", "delivered", "followup_*"
   email: z.string().email(),
   name: z.string(),
   password: z.string().optional(),
@@ -88,6 +88,23 @@ export async function sendTransactionalEmailInternal(data: TransactionalEmailDat
     } else if (data.type === "delivered") {
       subject = `Serviço Entregue com Sucesso! ✅`;
       html = `<div style="padding: 20px; background: #000; color: #fff;"><h1>Concluído!</h1><p>Sua campanha foi finalizada.</p></div>`;
+    } else if (data.type.startsWith("followup_")) {
+      const { FOLLOWUPS } = await import("./email-followup/engine.server");
+      const followup = FOLLOWUPS.find(f => f.type === data.type);
+      if (followup) {
+        subject = followup.subject;
+        html = `
+          <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333; line-height: 1.6;">
+            <h2 style="color: #00f2fe; background-color: #000; padding: 10px; text-align: center;">Olá, ${firstName}!</h2>
+            ${followup.template(data.name).replace(/\n/g, '<br>')}
+            <br><br>
+            <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee; font-size: 12px; color: #999; text-align: center;">
+              &copy; 2026 Acessar Click - Inteligência Artificial para Instagram<br>
+              Você recebeu este e-mail porque se cadastrou em acessar.click
+            </div>
+          </div>
+        `;
+      }
     }
 
     console.log("[EMAIL] enviando mensagem...");
@@ -125,23 +142,7 @@ export async function sendTransactionalEmailInternal(data: TransactionalEmailDat
     });
 
     return { success: false, error: error.message || "Erro no transporte SMTP" };
-    } else if (data.type.startsWith("followup_")) {
-      const followup = (await import("./email-followup/engine.server")).FOLLOWUPS.find(f => f.type === data.type);
-      if (followup) {
-        subject = followup.subject;
-        html = `
-          <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333; line-height: 1.6;">
-            <h2 style="color: #00f2fe; background-color: #000; padding: 10px; text-align: center;">Olá, ${firstName}!</h2>
-            ${followup.template(data.name).replace(/\n/g, '<br>')}
-            <br><br>
-            <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee; font-size: 12px; color: #999; text-align: center;">
-              &copy; 2026 Acessar Click - Inteligência Artificial para Instagram<br>
-              Você recebeu este e-mail porque se cadastrou em acessar.click
-            </div>
-          </div>
-        `;
-      }
-    }
+  }
 }
 
 /**
