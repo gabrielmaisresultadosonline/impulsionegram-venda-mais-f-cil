@@ -5,7 +5,8 @@ import { Loader2, Mail, RefreshCw, UserRound } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { adminListSignups, type AdminSignup, adminResendWelcomeEmail } from "@/lib/admin.functions";
+import { adminListSignups, type AdminSignup } from "@/lib/admin.functions";
+import { adminResendWelcomeEmailFinal } from "@/lib/admin-emails.functions";
 import { sourceLabel } from "@/lib/traffic-source";
 import { toast } from "sonner";
 
