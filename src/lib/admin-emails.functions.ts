@@ -44,14 +44,22 @@ export const adminResendWelcomeEmailFinal = createServerFn({ method: "POST" })
 
       console.log("[SERVER] Tentando buscar usuário no Supabase:", data.customerEmail);
       // 2. Buscar dados do usuário
+      // Normalizar email para evitar problemas de case/espaços
+      const normalizedEmail = data.customerEmail.trim().toLowerCase();
+      
       const { data: signup, error: signupError } = await supabaseAdmin
         .from("signups")
         .select("name, email, password")
-        .eq("email", data.customerEmail)
-        .single();
+        .ilike("email", normalizedEmail)
+        .maybeSingle(); // maybeSingle não joga erro se não encontrar, retorna data=null
 
       if (signupError || !signup) {
-        console.error("[SERVER] Usuário não encontrado:", data.customerEmail);
+        console.error("[SERVER] Usuário não encontrado ou erro:", normalizedEmail, signupError);
+        
+        // Log extra para ver se o email existe com outra formatação
+        const { data: search } = await supabaseAdmin.from("signups").select("email").ilike("email", `%${normalizedEmail}%`).limit(1);
+        console.log("[SERVER] Sugestão de busca aproximada:", search);
+
         return { success: false, error: "Usuário não encontrado no banco de dados" };
       }
 
