@@ -103,7 +103,6 @@ function Index() {
 
   return (
     <main className="min-h-screen">
-      <p>o agente ia nao ta salvando nada agora, eu atualizo a pagina ele nao salvou nada..  tookenm nem prompt</p>
       <Hero
         onCta={openSignup}
         onSecondary={openSignup}
