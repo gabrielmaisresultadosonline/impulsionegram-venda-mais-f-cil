@@ -16,20 +16,28 @@ export const adminResendWelcomeEmailFinal = createServerFn({ method: "POST" })
   )
   .handler(async ({ data }) => {
     console.log("[SERVER] Iniciando reenvio de e-mail:", data.customerEmail);
+    console.log("[SERVER] Tentando validar admin:", data.adminEmail);
     
     try {
       // 1. Validar admin
       const { data: admin, error: authError } = await supabaseAdmin
         .from("admin_users")
-        .select("id")
+        .select("*")
         .eq("email", data.adminEmail)
         .eq("password", data.adminPassword)
         .single();
 
       if (authError || !admin) {
-        console.error("[SERVER] Erro de autenticação admin:", data.adminEmail);
+        console.error("[SERVER] Erro de autenticação admin:", authError || "Admin não encontrado");
+        
+        // Log extra para depuração no servidor do cliente
+        const { data: countData } = await supabaseAdmin.from("admin_users").select("count", { count: 'exact' });
+        console.log("[SERVER] Total de admins na tabela:", countData);
+
         return { success: false, error: "Credenciais de administrador inválidas" };
       }
+
+      console.log("[SERVER] Admin validado com sucesso:", admin.email);
 
       // 2. Buscar dados do usuário
       const { data: signup, error: signupError } = await supabaseAdmin
