@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { adminListSignups, type AdminSignup } from "@/lib/admin.functions";
-import { adminResendWelcomeEmailV3 } from "@/lib/admin-emails.functions";
+import { adminResendWelcomeEmailV4 } from "@/lib/admin-emails.functions";
 import { sourceLabel } from "@/lib/traffic-source";
 import { toast } from "sonner";
 
@@ -17,7 +17,7 @@ export interface SignupsCardProps extends ComponentProps<"section"> {
 /** Lista de contas criadas na home, com data e hora do cadastro. */
 export function SignupsCard({ credentials, className, ...props }: SignupsCardProps) {
   const listSignups = useServerFn(adminListSignups);
-  const resendEmail = useServerFn(adminResendWelcomeEmailV3);
+  const resendEmail = useServerFn(adminResendWelcomeEmailV4);
 
   const query = useQuery({
     queryKey: ["admin-signups"],
