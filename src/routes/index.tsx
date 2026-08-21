@@ -1,4 +1,5 @@
-// mesmo erro.. [SignupsCard] Resposta do reenvio: 
+// corrija mesmo erro e voce nao resolve nunca.. 
+// [SignupsCard] Resposta do reenvio: 
 // {success: false, error: 'Server function info not found for 7bbb19659e116c585ef0e21777c39f59a7cf91d26e5201bb6eca5cfd008a6865'}
 // admin-BukYMwo3.js:1 [SignupsCard] Erro capturado no toast: Error: Server function info not found for 7bbb19659e116c585ef0e21777c39f59a7cf91d26e5201bb6eca5cfd008a6865
 //     at Object.success (admin-BukYMwo3.js:1:10234)
