@@ -17,6 +17,9 @@
 // supabase login
 // supabase init
 // supabase link --project-ref zxeofffktofjnkkxbwet
+// 
+// eu quero persistir os cadastros que tinha antes e impmenmtar isso para os novos dai, pq nao quero perder o que tinha antes ali
+
 
 
 
