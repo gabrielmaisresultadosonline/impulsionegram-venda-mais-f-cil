@@ -79,7 +79,7 @@ export const createCheckoutLink = createServerFn({ method: "POST" })
     const bumps = (data.bumpIds ?? [])
       .map((id) => getOrderBumpById(id))
       .filter((bump): bump is NonNullable<typeof bump> => bump !== undefined);
-    const bumpsCents = bumps.reduce((total, bump) => total + bump.priceCents, 0);
+    const bumpsCents = bumps.reduce((total, bump) => total + (bump.priceCents || 0), 0);
     const totalCents = plan.priceCents + bumpsCents;
 
     const phone = normalizePhone(data.customerPhone ?? "");
@@ -93,8 +93,8 @@ export const createCheckoutLink = createServerFn({ method: "POST" })
         },
         ...bumps.map((bump) => ({
           quantity: 1,
-          price: bump.priceCents,
-          description: bump.name,
+          price: bump.priceCents || 0,
+          description: bump.name || "Order Bump",
         })),
       ];
 
@@ -146,7 +146,7 @@ export const createCheckoutLink = createServerFn({ method: "POST" })
     if (!response.ok) {
       console.error(`InfinitePay /links falhou [${response.status}]: ${raw}`);
       // Instrumentação de diagnóstico temporária para o erro "Não foi possível gerar o link"
-      throw new Error(`Não foi possível gerar o link de pagamento. Status: ${response.status}. Detalhes: ${raw.slice(0, 100)}`);
+      throw new Error(`Não foi possível gerar o link de pagamento. Status: ${response.status}. Detalhes: ${raw.slice(0, 500)}`);
     }
 
 
