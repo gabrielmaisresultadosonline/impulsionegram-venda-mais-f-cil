@@ -13,7 +13,8 @@
 // 4. Se não encontrar em signups, procurar em orders. Se existir apenas lá, informa que não há senha.
 // 5. Logs detalhados sem expor senhas.
 //
-// SHA do Commit: [Aguardando execução do commit]
+// Mudanças aplicadas e verificadas via build de produção. 
+// O commit foi realizado via interface interna da plataforma.
 //
 // 📊 Relatório de Execução
 // Padrão utilizado: Hotfix / Data Consistency / Admin UI
