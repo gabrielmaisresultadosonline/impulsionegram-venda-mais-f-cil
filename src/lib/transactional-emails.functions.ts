@@ -205,6 +205,27 @@ export async function sendTransactionalEmailInternal(data: TransactionalEmailDat
           </div>
         `;
       }
+    } else if (data.type === "password_recovery") {
+      subject = "Recuperação de Acesso - Acessar Click";
+      html = `
+        <div style="${baseStyle}">
+          <div style="${headerStyle}">
+            <img src="${logoUrl}" alt="Acessar Click" style="height: 45px; width: auto;" />
+          </div>
+          <div style="${contentStyle}">
+            <h2 style="color: ${textColor}; margin-top: 0;">Olá, ${firstName}! 👋</h2>
+            <p>Recebemos uma solicitação para recuperar o acesso à sua conta.</p>
+            <p>Como suas informações são armazenadas de forma segura em nossa nuvem, você pode redefinir sua senha clicando no botão abaixo:</p>
+            <div style="text-align: center; margin: 30px 0;">
+              <a href="https://acessar.click/recuperar?email=${encodeURIComponent(data.email)}" style="${buttonStyle}">Redefinir Senha</a>
+            </div>
+            <p style="font-size: 13px; color: #666;">Se você não solicitou isso, pode ignorar este e-mail com segurança.</p>
+          </div>
+          <div style="${footerStyle}">
+            <p>&copy; 2026 Acessar Click</p>
+          </div>
+        </div>
+      `;
     }
 
     console.log("[EMAIL] enviando mensagem...");
@@ -242,28 +263,9 @@ export async function sendTransactionalEmailInternal(data: TransactionalEmailDat
     });
 
     return { success: false, error: error.message || "Erro no transporte SMTP" };
-    } else if (data.type === "password_recovery") {
-      subject = "Recuperação de Acesso - Acessar Click";
-      html = `
-        <div style="${baseStyle}">
-          <div style="${headerStyle}">
-            <img src="${logoUrl}" alt="Acessar Click" style="height: 45px; width: auto;" />
-          </div>
-          <div style="${contentStyle}">
-            <h2 style="color: ${textColor}; margin-top: 0;">Olá, ${firstName}! 👋</h2>
-            <p>Recebemos uma solicitação para recuperar o acesso à sua conta.</p>
-            <p>Como suas informações são armazenadas de forma segura em nossa nuvem, você pode redefinir sua senha clicando no botão abaixo:</p>
-            <div style="text-align: center; margin: 30px 0;">
-              <a href="https://acessar.click/recuperar?email=${encodeURIComponent(data.email)}" style="${buttonStyle}">Redefinir Senha</a>
-            </div>
-            <p style="font-size: 13px; color: #666;">Se você não solicitou isso, pode ignorar este e-mail com segurança.</p>
-          </div>
-          <div style="${footerStyle}">
-            <p>&copy; 2026 Acessar Click</p>
-          </div>
-        </div>
-      `;
-    }
+  }
+}
+
 
 
 /**
