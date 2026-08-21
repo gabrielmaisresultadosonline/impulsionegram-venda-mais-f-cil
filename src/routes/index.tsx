@@ -1,12 +1,7 @@
-// continua nisso.. [SignupsCard] Resposta do reenvio: Object
+// mesmo erro, lembrando que isso só acontece no meus ervidor [SignupsCard] Resposta do reenvio: {success: false, error: 'Credenciais de administrador inválidas'}
 // admin-BukYMwo3.js:1 [SignupsCard] Erro capturado no toast: Error: Credenciais de administrador inválidas
 //     at Object.success (admin-BukYMwo3.js:1:10234)
-//     at button-C0vDPl43.js:1:8594
-// error @ admin-BukYMwo3.js:1
-// admin-BukYMwo3.js:1 [SignupsCard] Resposta do reenvio: Object
-// admin-BukYMwo3.js:1 [SignupsCard] Erro capturado no toast: Error: Credenciais de administrador inválidas
-//     at Object.success (admin-BukYMwo3.js:1:10234)
-//     at button-C0vDPl43.js:1:8594
+//     at button-C0vDPl43.js:1:8594 aqui no edgefunciotns do lovable funcioan normal.. o reenvio de meials.
 //
 // 📊 Relatório de Execução
 // Padrão utilizado: Hotfix / Data Consistency / Admin UI
