@@ -1,19 +1,9 @@
-// deu verto? 918687888384858182
-// );
-// 
-// GRANT ALL ON public.followup_queue TO service_role;
-// ALTER TABLE public.followup_queue ENABLE ROW LEVEL SECURITY;
-// 
-// 
-// Results
-// 
-// Chart
-// 
-// 0 rows
-// 
-// 
-// Export
-// Error: Failed to run sql query: ERROR: 42P07: relation "signups" already exists
+// ajuste agora os emails ainda de boas vindas nao estao sendo enviados.. GET https://acessar.click/favicon.ico 404 (Not Found)
+// admin-CHw1Tl4U.js:1 [SignupsCard] Resposta do reenvio: {success: false, error: 'Erro no servidor: Server function info not found f…85ef0e21777c39f59a7cf91d26e5201bb6eca5cfd008a6865'}
+// admin-CHw1Tl4U.js:1 [SignupsCard] Erro capturado no toast: Error: Erro no servidor: Server function info not found for 7bbb19659e116c585ef0e21777c39f59a7cf91d26e5201bb6eca5cfd008a6865
+//     at Object.success (admin-CHw1Tl4U.js:1:10222)
+//     at button-C0vDPl43.js:1:8594
+
 
 
 
