@@ -41,6 +41,7 @@ export const adminResendWelcomeEmailFinal = createServerFn({ method: "POST" })
 
       console.log("[SERVER] Admin validado com sucesso:", admin.email);
 
+      console.log("[SERVER] Tentando buscar usuário no Supabase:", data.customerEmail);
       // 2. Buscar dados do usuário
       const { data: signup, error: signupError } = await supabaseAdmin
         .from("signups")
