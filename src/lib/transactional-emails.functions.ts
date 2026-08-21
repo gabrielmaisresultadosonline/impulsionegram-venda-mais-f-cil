@@ -2,24 +2,22 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { saveEmailLog } from "./email-followup/logs-repo.server";
 
+const transactionalEmailSchema = z.object({
+  type: z.enum(["welcome", "payment_confirmed", "delivered"]),
+  email: z.string().email(),
+  name: z.string(),
+  password: z.string().optional(),
+  orderNsu: z.string().optional(),
+  planName: z.string().optional(),
+  receiptUrl: z.string().optional(),
+});
+
 /**
  * Função centralizada para envio de e-mails transacionais.
  * Inclui fallback para logs caso o SMTP falhe.
  */
 export const sendTransactionalEmail = createServerFn({ method: "POST" })
-  .validator((data: any) =>
-    z
-      .object({
-        type: z.enum(["welcome", "payment_confirmed", "delivered"]),
-        email: z.string().email(),
-        name: z.string(),
-        password: z.string().optional(),
-        orderNsu: z.string().optional(),
-        planName: z.string().optional(),
-        receiptUrl: z.string().optional(),
-      })
-      .parse(data)
-  )
+  .validator((data: any) => transactionalEmailSchema.parse(data))
   .handler(async ({ data }) => {
     const user = process.env["SMTP_USER"];
     const pass = process.env["SMTP_PASS"];
@@ -36,7 +34,6 @@ export const sendTransactionalEmail = createServerFn({ method: "POST" })
         port: 465,
         secure: true,
         auth: { user, pass },
-        // Fallback e timeout para evitar travamento
         connectionTimeout: 10000,
         greetingTimeout: 5000,
         socketTimeout: 15000,
@@ -87,9 +84,8 @@ export const sendTransactionalEmail = createServerFn({ method: "POST" })
         html,
       });
 
-      // Logar sucesso
       await saveEmailLog({
-        orderNsu: data.orderNsu || "transational",
+        orderNsu: data.orderNsu || "transactional",
         customerEmail: data.email,
         customerName: data.name,
         type: data.type as any,
@@ -101,7 +97,6 @@ export const sendTransactionalEmail = createServerFn({ method: "POST" })
     } catch (error: any) {
       console.error("[SMTP ERROR]", error);
       
-      // LOG DE FALHA (Fallback para o admin ver que tentou enviar)
       await saveEmailLog({
         orderNsu: data.orderNsu || "failed",
         customerEmail: data.email,

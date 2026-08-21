@@ -5,18 +5,17 @@ import type { OrderRecord } from "./orders-repo.server";
 // Exportamos as funções de log que já existem
 export { adminListEmailLogs } from "./email-admin.functions";
 
+const resendSchema = z.object({
+  adminEmail: z.string().email(),
+  adminPassword: z.string(),
+  customerEmail: z.string().email(),
+});
+
 /**
  * Função centralizada para o reenvio de e-mail de boas-vindas pelo Admin.
- * Esta função é EXPORTADA NOMEADAMENTE e decorada com createServerFn para ser rastreada pelo TanStack Start.
  */
 export const adminResendWelcomeEmail = createServerFn({ method: "POST" })
-  .validator((data: any) =>
-    z.object({
-      adminEmail: z.string().email(),
-      adminPassword: z.string(),
-      customerEmail: z.string().email(),
-    }).parse(data)
-  )
+  .validator((data: any) => resendSchema.parse(data))
   .handler(async ({ data }) => {
     console.log(`[adminResendWelcomeEmail] Reenvio solicitado para: ${data.customerEmail}`);
     
@@ -34,7 +33,6 @@ export const adminResendWelcomeEmail = createServerFn({ method: "POST" })
       // 2. Busca o cadastro
       const signups = await listSignups();
       const lead = signups.find((s: any) => s.email.toLowerCase() === data.customerEmail.toLowerCase());
-
 
       if (!lead) {
         return { success: false, error: "Cadastro não encontrado no servidor." };
@@ -58,27 +56,22 @@ export const adminResendWelcomeEmail = createServerFn({ method: "POST" })
     }
   });
 
-/**
- * Padrão de tipos e schemas para o admin.
- */
 const credentialsSchema = z.object({
   email: z.string().trim().email(),
   password: z.string(),
 });
 
-const passwordSchema = credentialsSchema;
-
-const deliverSchema = passwordSchema.extend({
+const deliverSchema = credentialsSchema.extend({
   orderNsu: z.string().trim(),
   action: z.enum(["entregue", "reabrir"]),
 });
 
-const adminTicketSchema = passwordSchema.extend({
+const adminTicketSchema = credentialsSchema.extend({
   orderNsu: z.string().trim(),
   text: z.string().trim(),
 });
 
-const pixelSchema = passwordSchema.extend({
+const pixelSchema = credentialsSchema.extend({
   pixelId: z.string().trim(),
 });
 
@@ -101,7 +94,7 @@ async function assertAdmin(email: string, password: string): Promise<void> {
 }
 
 export const adminLogin = createServerFn({ method: "POST" })
-  .validator((data: unknown) => passwordSchema.parse(data))
+  .validator((data: unknown) => credentialsSchema.parse(data))
   .handler(async ({ data }) => {
     const { isAdminCredentials } = await import("./settings.server");
     if (!isAdminCredentials(data.email, data.password)) {
@@ -111,7 +104,7 @@ export const adminLogin = createServerFn({ method: "POST" })
   });
 
 export const adminListOrders = createServerFn({ method: "POST" })
-  .validator((data: unknown) => passwordSchema.parse(data))
+  .validator((data: unknown) => credentialsSchema.parse(data))
   .handler(async ({ data }) => {
     await assertAdmin(data.email, data.password);
     const repo = await import("./orders-repo.server");
@@ -130,7 +123,6 @@ export const adminUpdateOrder = createServerFn({ method: "POST" })
     if (!changed) throw new Error("Pedido não encontrado.");
     return repo.listOrders();
   });
-
 
 export const adminReplyTicket = createServerFn({ method: "POST" })
   .validator((data: unknown) => adminTicketSchema.parse(data))
@@ -162,7 +154,7 @@ export interface AdminSignup {
 }
 
 export const adminListSignups = createServerFn({ method: "POST" })
-  .validator((data: unknown) => passwordSchema.parse(data))
+  .validator((data: unknown) => credentialsSchema.parse(data))
   .handler(async ({ data }) => {
     await assertAdmin(data.email, data.password);
     const { listSignups } = await import("./signups-repo.server");
@@ -172,7 +164,6 @@ export const adminListSignups = createServerFn({ method: "POST" })
     for (const signup of await listSignups()) map.set(signup.email.toLowerCase(), signup as any);
 
     for (const order of await repo.listOrders()) {
-
       const email = (order.customerEmail ?? "").trim().toLowerCase();
       if (!email) continue;
       const existing = map.get(email);
@@ -201,7 +192,7 @@ export const adminListSignups = createServerFn({ method: "POST" })
   });
 
 export const adminGetSettings = createServerFn({ method: "POST" })
-  .validator((data: unknown) => passwordSchema.parse(data))
+  .validator((data: unknown) => credentialsSchema.parse(data))
   .handler(async ({ data }) => {
     await assertAdmin(data.email, data.password);
     const { getSettings } = await import("./settings.server");
@@ -218,7 +209,7 @@ export const adminSetPixel = createServerFn({ method: "POST" })
   });
 
 export const adminQuickSendPurchase = createServerFn({ method: "POST" })
-  .validator((data: any) => passwordSchema.extend({ orderNsu: z.string() }).parse(data))
+  .validator((data: any) => credentialsSchema.extend({ orderNsu: z.string() }).parse(data))
   .handler(async ({ data }) => {
     await assertAdmin(data.email, data.password);
     const repo = await import("./orders-repo.server");
@@ -235,12 +226,11 @@ export const adminQuickSendPurchase = createServerFn({ method: "POST" })
       contentName: order.planName,
       orderId: order.orderNsu,
     });
-
   });
 
 export const adminSendPurchaseEvent = createServerFn({ method: "POST" })
   .validator((data: any) =>
-    passwordSchema.extend({
+    credentialsSchema.extend({
       buyerEmail: z.string().email(),
       buyerPhone: z.string().optional(),
       value: z.number(),
@@ -261,4 +251,3 @@ export const adminSendPurchaseEvent = createServerFn({ method: "POST" })
       orderId: data.orderId,
     });
   });
-
