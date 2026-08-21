@@ -1,10 +1,11 @@
-// agora deu isso..     at Object.success (admin-BukYMwo3.js:1:10234)
-//     at button-C0vDPl43.js:1:8594
-// error @ admin-BukYMwo3.js:1
-// admin-BukYMwo3.js:1 [SignupsCard] Resposta do reenvio: Object
-// admin-BukYMwo3.js:1 [SignupsCard] Erro capturado no toast: Error: Cannot read properties of null (reading 'email')
+// agora deu isso 
+//
+// [SignupsCard] Resposta do reenvio: Object
+// admin-BukYMwo3.js:1 [SignupsCard] Erro capturado no toast: Error: Usuário não encontrado no banco de dados
 //     at Object.success (admin-BukYMwo3.js:1:10234)
 //     at button-C0vDPl43.js:1:8594
+// Fix: O erro "Usuário não encontrado" ocorria por sensibilidade a maiúsculas/minúsculas ou espaços no e-mail.
+// Corrigido para usar busca insensível (ilike) e normalização de e-mail no servidor.
 // Fix: O erro acontecia porque o fallback de autenticação tentava ler o email de um objeto nulo.
 // Corrigido para lidar corretamente com o bypass no servidor.
 //
