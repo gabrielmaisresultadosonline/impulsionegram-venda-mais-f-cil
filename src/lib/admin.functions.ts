@@ -32,8 +32,9 @@ export const adminResendWelcomeEmail = createServerFn({ method: "POST" })
       }
 
       // 2. Busca o cadastro
-      const signups = listSignups();
-      const lead = signups.find(s => s.email.toLowerCase() === data.customerEmail.toLowerCase());
+      const signups = await listSignups();
+      const lead = signups.find((s: any) => s.email.toLowerCase() === data.customerEmail.toLowerCase());
+
 
       if (!lead) {
         return { success: false, error: "Cadastro não encontrado no servidor." };
@@ -167,7 +168,7 @@ export const adminListSignups = createServerFn({ method: "POST" })
     const repo = await import("./orders-repo.server");
 
     const map = new Map<string, AdminSignup>();
-    for (const signup of listSignups()) map.set(signup.email.toLowerCase(), signup as any);
+    for (const signup of await listSignups()) map.set(signup.email.toLowerCase(), signup as any);
 
     for (const order of repo.listOrders()) {
       const email = (order.customerEmail ?? "").trim().toLowerCase();
