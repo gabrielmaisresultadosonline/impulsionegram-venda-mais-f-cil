@@ -1,14 +1,12 @@
-// PRECISO DIAGNOSTICAR DEFINITIVAMENTE O ERRO DO REENVIO DE E-MAIL.
+// CORREÇÃO CIRÚRGICA — DIAGNÓSTICO DO REENVIO DE E-MAIL
 //
-// O deploy já foi executado com sucesso no servidor.
-//
-// Instrumentação temporária de diagnóstico aplicada:
-// 1. A Server Function `adminResendWelcomeEmailFinal` agora retorna um objeto `debug`.
-// 2. O `SignupsCard` imprime `[SignupsCard] DEBUG REENVIO:` no console do navegador.
-// 3. Verificando normalização (trim/lowercase) e resultados em `signups` e `orders`.
+// Instrumentação de diagnóstico refinada:
+// 1. A Server Function `adminResendWelcomeEmailFinal` agora retorna o objeto `debug` em TODOS os caminhos de erro.
+// 2. O `SignupsCard` registra a resposta completa e o objeto debug no console.
+// 3. Verificando o motivo exato do erro "Usuário não encontrado no banco de dados".
 //
 // Nota: Nenhum segredo ou senha é exposto no objeto debug.
-// Pressione "Reenviar Boas-vindas" e verifique o console para os dados de diagnóstico.
+// Pressione "Reenviar Boas-vindas" e verifique o console para os dados de diagnóstico completos.
 //
 // 📊 Relatório de Execução
 // Padrão utilizado: Hotfix / Data Consistency / Admin UI
