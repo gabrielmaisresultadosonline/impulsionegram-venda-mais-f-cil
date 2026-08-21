@@ -1,7 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { listEmailLogs, getLogsByOrder } from "./email-followup/logs-repo.server";
-import { isAdminPassword } from "./orders-repo.server";
 
 export const adminListEmailLogs = createServerFn({ method: "POST" })
   .validator((data: any) =>
@@ -12,12 +11,13 @@ export const adminListEmailLogs = createServerFn({ method: "POST" })
     }).parse(data)
   )
   .handler(async ({ data }) => {
-    if (!isAdminPassword(data.password)) {
+    const { isAdminCredentials } = await import("./settings.server");
+    if (!isAdminCredentials(data.email, data.password)) {
       throw new Error("Unauthorized");
     }
 
     if (data.orderNsu) {
-      return getLogsByOrder(data.orderNsu);
+      return await getLogsByOrder(data.orderNsu);
     }
-    return listEmailLogs();
+    return await listEmailLogs();
   });

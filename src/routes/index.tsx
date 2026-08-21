@@ -1,4 +1,12 @@
-// MESMO ERRO NO REENVIAR EMAIL. ALI admin-BLoiMOtc.js:1 [SignupsCard] Erro capturado no toast: Error: Erro no servidor: Server function info not found for 7bbb19659e116c585ef0e21777c39f59a7cf91d26e5201bb6eca5cfd008a6865
+// VOCE DEIXXOU O EMAIL PROCESSANDO DENTRO DO MEU SERVIDOR OU DENTRO DO EDGEFUNCIOTNS QUERO PARSSAR TUDO PARA MEU SERVIDOR PARA PROCESSAR TUDO POR LA AUTORIZACAO POR LA ACHO QUE É ISSO PROBLEM,A CONTINUA IGUAL MESMO ERRO..[SignupsCard] Resposta do reenvio: Object
+// admin-BLoiMOtc.js:1 [SignupsCard] Erro capturado no toast: Error: Erro no servidor: Server function info not found for 7bbb19659e116c585ef0e21777c39f59a7cf91d26e5201bb6eca5cfd008a6865
+//     at Object.success (admin-BLoiMOtc.js:1:10222)
+//     at button-C0vDPl43.js:1:8594
+// error @ admin-BLoiMOtc.js:1
+// admin-BLoiMOtc.js:1 [SignupsCard] Resposta do reenvio: Object
+// admin-BLoiMOtc.js:1 [SignupsCard] Erro capturado no toast: Error: Erro no servidor: Server function info not found for 7bbb19659e116c585ef0e21777c39f59a7cf91d26e5201bb6eca5cfd008a6865
+//     at Object.success (admin-BLoiMOtc.js:1:10222)
+//     at button-C0vDPl43.js:1:8594
 
 
 
