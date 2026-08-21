@@ -1,13 +1,20 @@
-// CORREÇÃO CIRÚRGICA — DIAGNÓSTICO DO REENVIO DE E-MAIL
 //
-// Instrumentação de diagnóstico refinada:
-// 1. A Server Function `adminResendWelcomeEmailFinal` agora retorna o objeto `debug` em TODOS os caminhos de erro.
-// 2. O `SignupsCard` registra a resposta completa e o objeto debug no console.
-// 3. Verificando o motivo exato do erro "Usuário não encontrado no banco de dados".
+// DIAGNÓSTICO DO REENVIO DE E-MAIL — RESULTADO DO CONSOLE:
 //
-// Nota: Nenhum segredo ou senha é exposto no objeto debug.
-// Pressione "Reenviar Boas-vindas" e verifique o console para os dados de diagnóstico completos.
+// [SignupsCard] DEBUG REENVIO: {
+//   customerEmailReceived: 'gaahdesigner@gmail.com',
+//   normalizedEmail: 'gaahdesigner@gmail.com',
+//   signupFound: false,
+//   signupCount: 0,
+//   signupError: '{"code":"42703","message":"column signups.password does not exist"}'
+// }
 //
+// CAUSA: A coluna 'password' não existe na tabela 'signups' no Supabase.
+// SOLUÇÃO: A coluna 'password' foi removida da query de busca em 'admin-emails.functions.ts'.
+//          Como a senha não está armazenada de forma legível (ou não existe nesta tabela), 
+//          o e-mail de boas-vindas foi ajustado para informar que a senha é a mesma do cadastro.
+//
+
 // 📊 Relatório de Execução
 // Padrão utilizado: Hotfix / Data Consistency / Admin UI
 

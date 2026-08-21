@@ -52,8 +52,9 @@ export const adminResendWelcomeEmailFinal = createServerFn({ method: "POST" })
       console.log("[RESEND] procurando em signups");
       const { data: signups, error: signupError, count: signupCount } = await supabaseAdmin
         .from("signups")
-        .select("name, email, password", { count: 'exact' })
+        .select("name, email", { count: 'exact' })
         .ilike("email", normalizedEmail);
+
 
       debug.signupError = signupError ? JSON.stringify(signupError) : null;
       debug.signupCount = signupCount || 0;
@@ -68,7 +69,7 @@ export const adminResendWelcomeEmailFinal = createServerFn({ method: "POST" })
             type: "welcome",
             email: signup.email,
             name: signup.name,
-            password: signup.password
+            password: "Senha cadastrada no momento da criação da conta"
           }
         });
 
