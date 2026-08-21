@@ -1,24 +1,5 @@
-// mude tudo para subabse 
-// 
-// projetoc 
-// 
-// https://zxeofffktofjnkkxbwet.supabase.co
-// 
-// publishkey 
-// sb_publishable_TcpaCjriuj3DbS25UD1TCA_VQGU22P4
-// 
-// direct string 
-// postgresql://postgres:[YOUR-PASSWORD]@db.zxeofffktofjnkkxbwet.supabase.co:5432/postgres
-// 
-// 
-// CLI COMANDS
-// 
-// 
-// supabase login
-// supabase init
-// supabase link --project-ref zxeofffktofjnkkxbwet
-// 
-// eu quero persistir os cadastros que tinha antes e impmenmtar isso para os novos dai, pq nao quero perder o que tinha antes ali
+// acadei de fazer um cadastroi ali e nao salvo no admin como precisa salvar tudo ali
+
 
 
 
