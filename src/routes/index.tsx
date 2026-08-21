@@ -1,7 +1,19 @@
-// mesmo erro.. [SignupsCard] Resposta do reenvio: Object
-// admin-BTbvESjT.js:1 [SignupsCard] Erro capturado no toast: Error: Erro no servidor: Server function info not found for 7bbb19659e116c585ef0e21777c39f59a7cf91d26e5201bb6eca5cfd008a6865
-//     at Object.success (admin-BTbvESjT.js:1:10222)
+// mesmo erro.. [SignupsCard] Resposta do reenvio: 
+// {success: false, error: 'Server function info not found for 7bbb19659e116c585ef0e21777c39f59a7cf91d26e5201bb6eca5cfd008a6865'}
+// admin-BukYMwo3.js:1 [SignupsCard] Erro capturado no toast: Error: Server function info not found for 7bbb19659e116c585ef0e21777c39f59a7cf91d26e5201bb6eca5cfd008a6865
+//     at Object.success (admin-BukYMwo3.js:1:10234)
 //     at button-C0vDPl43.js:1:8594
+// error	@	admin-BukYMwo3.js:1
+// (anonymous)	@	button-C0vDPl43.js:1
+// Promise.catch		
+// promise	@	button-C0vDPl43.js:1
+// onClick	@	admin-BukYMwo3.js:1
+// U	@	index-DREJK-LX.js:9
+// (anonymous)	@	index-DREJK-LX.js:9
+// bn	@	index-DREJK-LX.js:9
+// jd	@	index-DREJK-LX.js:9
+// dp	@	index-DREJK-LX.js:10
+// lp	@	index-DREJK-LX.js:10
 
 
 
