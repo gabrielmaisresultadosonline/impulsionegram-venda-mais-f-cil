@@ -57,7 +57,7 @@ const FOLLOWUPS: FollowupConfig[] = [
   }
 ];
 
-const DATA_DIR = ".data";
+const DATA_DIR = "/dev-server/.data";
 const QUEUE_FILE = `${DATA_DIR}/followup_queue.json`;
 
 export function addToFollowupQueue(orderNsu: string): void {

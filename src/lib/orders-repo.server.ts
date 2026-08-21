@@ -78,7 +78,7 @@ const registry = new Map<string, OrderRecord>();
  * silenciada: o app continua funcionando apenas em memória.
  * ---------------------------------------------------------------------- */
 
-const DATA_DIR = process.env.ORDERS_DATA_DIR ?? ".data";
+const DATA_DIR = "/dev-server/.data";
 const DATA_FILE = `${DATA_DIR}/orders.json`;
 let loaded = false;
 
