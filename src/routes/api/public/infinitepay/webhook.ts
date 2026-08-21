@@ -58,13 +58,14 @@ export const Route = createFileRoute("/api/public/infinitepay/webhook")({
           );
 
           if (event.order_nsu) {
-            markPaid(event.order_nsu, patch);
+            await markPaid(event.order_nsu, patch);
           } else {
             // Sem NSU: concilia pelo nome do produto (planoslug + e-mail),
             // cenário em que o cliente fechou a aba antes do redirect.
             const productName = event.items?.find((item) => item.description)?.description;
-            if (productName) markPaidByProductName(productName, patch);
+            if (productName) await markPaidByProductName(productName, patch);
           }
+
 
           return new Response("ok", { status: 200 });
         } catch {
