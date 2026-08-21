@@ -1,10 +1,5 @@
-// erro... ainda :
-//
-// [SignupsCard] Resposta do reenvio: {success: false, error: 'Server function info not found for 7bbb19659e116c585ef0e21777c39f59a7cf91d26e5201bb6eca5cfd008a6865', debug: {…}}
-// admin-BZXQJ5a8.js:1 [SignupsCard] DEBUG REENVIO: {customerEmailReceived: 'gaahdesigner@gmail.com', normalizedEmail: 'gaahdesigner@gmail.com', signupFound: true, signupCount: 1, signupError: null, …}
-// admin-BZXQJ5a8.js:1 [SignupsCard] Erro capturado no toast: Error: Server function info not found for 7bbb19659e116c585ef0e21777c39f59a7cf91d26e5201bb6eca5cfd008a6865
-//     at Object.success (admin-BZXQJ5a8.js:1:10296)
-//     at button-C0vDPl43.js:1:8594
+// ta dizendo ali na hora de pagar no painel.. Não foi possível gerar o link de pagamento. Tente novamente. nao ta gerando link
+
 
 
 // 📊 Relatório de Execução
