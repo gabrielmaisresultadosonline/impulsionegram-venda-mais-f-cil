@@ -98,18 +98,19 @@ export const createCheckoutLink = createServerFn({ method: "POST" })
         })),
       ];
 
-      if (data.turbinarLink) {
-        items.push({
-          quantity: 1,
-          price: 0,
-          description: `Link Turbinar: ${data.turbinarLink}`
-        });
+      // A InfinitePay rejeita itens com price <= 0 (422 "must be greater than 0").
+      // Por isso o link informado pelo cliente vai na descrição do item principal,
+      // nunca como um item de valor zero.
+      if (data.turbinarLink && items[0]) {
+        items[0].description = `${items[0].description} | Link: ${data.turbinarLink}`.slice(0, 200);
       }
+
+      const safeItems = items.filter((item) => Number(item.price) > 0);
 
       const payload: Record<string, unknown> = {
         handle: HANDLE,
         order_nsu: orderNsu,
-        items,
+        items: safeItems,
         customer: {
           name: data.customerName,
           email: data.customerEmail,
