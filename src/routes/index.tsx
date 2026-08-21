@@ -1,7 +1,8 @@
-// As cores principais da homepage são baseadas no tema Neon-Blue:
-// Primária: #00f2fe (Cyan Neon)
-// Fundo: #09090b (Zinc Dark)
-// Gradiente Brand: linear-gradient(to right, #00f2fe, #0066ff)
+// Identidade Visual dos E-mails:
+// Logo: https://5306062e-dd22-4505-a2c3-baf689a08983.lovableproject.com/__l5e/assets-v1/3b3c5073-9d32-4c16-b79c-1bd3a4b9b8df/logo-acessar-click.png
+// Tema: Neon Social (Magenta Neon, Branco Aurora, Azul Profundo, Verde Esmeralda)
+// Todos os templates (boas-vindas, pagamento, entrega, followups) atualizados.
+
 
 
 
