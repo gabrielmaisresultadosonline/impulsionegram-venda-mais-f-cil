@@ -1,19 +1,13 @@
 //
-// DIAGNÓSTICO DO REENVIO DE E-MAIL — RESULTADO DO CONSOLE:
+// DIAGNÓSTICO DO REENVIO DE E-MAIL — RESULTADO DO CONSOLE (V3):
 //
-// [SignupsCard] DEBUG REENVIO: {
-//   customerEmailReceived: 'gaahdesigner@gmail.com',
-//   normalizedEmail: 'gaahdesigner@gmail.com',
-//   signupFound: false,
-//   signupCount: 0,
-//   signupError: '{"code":"42703","message":"column signups.password does not exist"}'
-// }
+// ERRO ANTERIOR: "Server function info not found for 7bbb..."
+// CAUSA: Dessincronização de cache do manifest de Server Functions após o deploy.
+// SOLUÇÃO: A Server Function foi renomeada para 'adminResendWelcomeEmailV3' 
+//          para forçar a invalidação do cache e garantir a conexão correta 
+//          entre o cliente e o servidor.
 //
-// CAUSA: A coluna 'password' não existe na tabela 'signups' no Supabase.
-// SOLUÇÃO: A coluna 'password' foi removida da query de busca em 'admin-emails.functions.ts'.
-//          Como a senha não está armazenada de forma legível (ou não existe nesta tabela), 
-//          o e-mail de boas-vindas foi ajustado para informar que a senha é a mesma do cadastro.
-//
+
 
 // 📊 Relatório de Execução
 // Padrão utilizado: Hotfix / Data Consistency / Admin UI
