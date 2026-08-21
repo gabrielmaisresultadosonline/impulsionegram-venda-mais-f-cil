@@ -140,15 +140,13 @@ export async function markPaid(orderNsu: string, patch: Partial<OrderRecord> = {
       }).catch(err => console.error("[OrderRepo] CAPI Error:", err));
     });
 
-    import("./transactional-emails.functions").then(({ sendTransactionalEmail }) => {
-      void sendTransactionalEmail({
-        data: {
-          type: "payment_confirmed",
-          email: updatedOrder.customer_email,
-          name: updatedOrder.customer_name,
-          orderNsu: updatedOrder.order_nsu,
-          planName: updatedOrder.plan_name,
-        }
+    import("./transactional-emails.functions").then(({ sendTransactionalEmailInternal }) => {
+      void sendTransactionalEmailInternal({
+        type: "payment_confirmed",
+        email: updatedOrder.customer_email,
+        name: updatedOrder.customer_name,
+        orderNsu: updatedOrder.order_nsu,
+        planName: updatedOrder.plan_name,
       }).catch(err => console.error("[OrderRepo] Email Error:", err));
     });
   }
@@ -168,15 +166,13 @@ export async function markDelivered(orderNsu: string): Promise<boolean> {
     delivered_at: new Date().toISOString()
   }).eq('order_nsu', orderNsu);
   
-  import("./transactional-emails.functions").then(({ sendTransactionalEmail }) => {
-    void sendTransactionalEmail({
-      data: {
-        type: "delivered",
-        email: existing.customer_email,
-        name: existing.customer_name,
-        orderNsu: existing.order_nsu,
-        planName: existing.plan_name,
-      }
+  import("./transactional-emails.functions").then(({ sendTransactionalEmailInternal }) => {
+    void sendTransactionalEmailInternal({
+      type: "delivered",
+      email: existing.customer_email,
+      name: existing.customer_name,
+      orderNsu: existing.order_nsu,
+      planName: existing.plan_name,
     }).catch(err => console.error("[OrderRepo] Email Error:", err));
   });
 

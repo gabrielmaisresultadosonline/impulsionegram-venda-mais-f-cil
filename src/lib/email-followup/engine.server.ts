@@ -156,22 +156,12 @@ export async function processFollowupQueue(): Promise<void> {
       const lastSent = new Date(item.last_sent_at).getTime();
       if (now - lastSent >= followup.delayMs) {
         try {
-          const firstName = customerName.split(" ")[0];
-          await transporter.sendMail({
-            from: `"Acessar Click Support" <${user}>`,
-            to: customerEmail,
-            subject: followup.subject,
-            html: `
-              <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333; line-height: 1.6;">
-                <h2 style="color: #00f2fe; background-color: #000; padding: 10px; text-align: center;">Olá, ${firstName}!</h2>
-                ${followup.template(customerName).replace(/\n/g, '<br>')}
-                <br><br>
-                <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee; font-size: 12px; color: #999; text-align: center;">
-                  &copy; 2026 Acessar Click - Inteligência Artificial para Instagram<br>
-                  Você recebeu este e-mail porque se cadastrou em acessar.click
-                </div>
-              </div>
-            `
+          const { sendTransactionalEmailInternal } = await import("../transactional-emails.functions");
+          await sendTransactionalEmailInternal({
+            type: followup.type as any,
+            email: customerEmail,
+            name: customerName,
+            orderNsu: item.order_nsu,
           });
 
           await saveEmailLog({
