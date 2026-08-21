@@ -1,4 +1,7 @@
-// mesmo erro, crie um log em tempor eal no termianl ou aonde achar melhro que dai eu clico em reenviar e quando der o erro ele mostra exxatamente compelto aonde e pq ...
+// [SignupsCard] Resposta do reenvio: Object
+// admin-BukYMwo3.js:1 [SignupsCard] Erro capturado no toast: Error: Credenciais de administrador inválidas
+//     at Object.success (admin-BukYMwo3.js:1:10234)
+//     at button-C0vDPl43.js:1:8594
 
 
 
