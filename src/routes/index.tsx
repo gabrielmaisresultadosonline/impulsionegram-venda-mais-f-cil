@@ -1,4 +1,6 @@
-// E-mail system architecture updated. Internal SMTP separated from Server Functions to avoid RPC/manifest issues. Fluxos de cadastro e admin validados com logs seguros.
+// o link nao ta sendoi criado e nao to conseguindo pagar.. 
+// Não foi possível gerar o link de pagamento. Status: 422. Detalhes: {"success":false,"message":"Invalid checkout link params","errors":{"items":{"4":{"price":["must be"
+
 
 
 

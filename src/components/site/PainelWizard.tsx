@@ -78,7 +78,7 @@ export function PainelWizard({
           source,
         },
       }),
-    onSettled: () => setBumpOpen(true),
+    onSuccess: () => setBumpOpen(true),
   });
 
   useEffect(() => {
