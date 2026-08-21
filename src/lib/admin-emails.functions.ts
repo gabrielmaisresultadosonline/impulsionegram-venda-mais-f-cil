@@ -72,9 +72,18 @@ export const adminResendWelcomeEmailFinal = createServerFn({ method: "POST" })
 
         console.error("[SERVER] Usuário realmente não encontrado:", normalizedEmail);
         
-        // Log extra para ver se o email existe com outra formatação
-        const { data: search } = await supabaseAdmin.from("signups").select("email").ilike("email", `%${normalizedEmail}%`).limit(1);
-        console.log("[SERVER] Sugestão de busca aproximada:", search);
+        // Log extra para ver se o email existe com outra formatação (sem espaços e case-insensitive)
+        const { data: search } = await supabaseAdmin.from("signups").select("email").ilike("email", normalizedEmail).limit(1);
+        console.log("[SERVER] Tentativa com ilike direto:", search);
+        
+        if (search && search.length > 0) {
+           console.log("[SERVER] Usuário encontrado via ILIKE, tentando novamente com:", search[0].email);
+           const { data: retrySignup } = await supabaseAdmin.from("signups").select("name, email, password").eq("email", search[0].email).maybeSingle();
+           if (retrySignup) {
+              const res = await sendTransactionalEmail({ data: { type: "welcome", email: retrySignup.email, name: retrySignup.name, password: retrySignup.password } });
+              return res.success ? { success: true } : { success: false, error: res.error };
+           }
+        }
 
         return { success: false, error: "Usuário não encontrado no banco de dados" };
       }
