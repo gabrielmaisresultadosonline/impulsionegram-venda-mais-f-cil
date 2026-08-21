@@ -38,15 +38,31 @@ export async function getSettings(): Promise<SiteSettings> {
   return baseSettings;
 }
 
+/**
+ * Escrita segura: nunca sobrescreve colunas que não foram informadas.
+ * Usamos UPDATE (merge parcial) e só criamos a linha caso ela não exista.
+ */
+async function writeSettings(patch: Record<string, unknown>): Promise<void> {
+  const { data: existing } = await supabaseAdmin
+    .from('settings')
+    .select('id')
+    .eq('id', 'global')
+    .maybeSingle();
+
+  if (existing) {
+    await supabaseAdmin.from('settings').update(patch).eq('id', 'global');
+    return;
+  }
+
+  await supabaseAdmin.from('settings').insert({ id: 'global', ...patch });
+}
+
 export async function setFacebookPixelId(pixelId: string): Promise<void> {
-  await supabaseAdmin.from('settings').upsert({
-    id: 'global',
-    facebook_pixel_id: pixelId
-  });
+  await writeSettings({ facebook_pixel_id: pixelId });
 }
 
 export async function updateEvolutionSettings(data: Partial<SiteSettings>): Promise<void> {
-  const mapped: any = { id: 'global' };
+  const mapped: Record<string, unknown> = {};
   if (data.facebookPixelId !== undefined) mapped.facebook_pixel_id = data.facebookPixelId;
   if (data.evolutionApiUrl !== undefined) mapped.evolution_api_url = data.evolutionApiUrl;
   if (data.evolutionApiKey !== undefined) mapped.evolution_api_key = data.evolutionApiKey;
@@ -54,24 +70,19 @@ export async function updateEvolutionSettings(data: Partial<SiteSettings>): Prom
   if (data.openaiKey !== undefined) mapped.openai_key = data.openaiKey;
   if (data.aiPrompt !== undefined) mapped.ai_prompt = data.aiPrompt;
   if (data.aiActive !== undefined) mapped.ai_active = data.aiActive;
-  
-  await supabaseAdmin.from('settings').upsert(mapped);
+
+  if (Object.keys(mapped).length === 0) return;
+  await writeSettings(mapped);
 }
 
 export async function incrementVisits(): Promise<void> {
   const settings = await getSettings();
-  await supabaseAdmin.from('settings').upsert({
-    id: 'global',
-    visits: settings.visits + 1
-  });
+  await writeSettings({ visits: settings.visits + 1 });
 }
 
 export async function incrementSignups(): Promise<void> {
   const settings = await getSettings();
-  await supabaseAdmin.from('settings').upsert({
-    id: 'global',
-    signups: settings.signups + 1
-  });
+  await writeSettings({ signups: settings.signups + 1 });
 }
 
 export function isAdminCredentials(email: string, password: string): boolean {
