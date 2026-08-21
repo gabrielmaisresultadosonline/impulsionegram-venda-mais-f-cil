@@ -69,11 +69,15 @@ export function PainelWizard({
     const email = campaign.customerEmail.trim();
     if (!email) return;
 
+    // O link da publicação a turbinar (order bump) também é registrado no
+    // cadastro, para o Admin conseguir processar o pedido mesmo sem pagamento.
+    const publicationLink = campaign.adLink.trim() || campaign.turbinarLink?.trim() || "";
+
     const hasContent =
       campaign.profileUrl.trim() ||
       campaign.regionValue.trim() ||
       campaign.competitor.trim() ||
-      campaign.adLink.trim();
+      publicationLink;
     if (!hasContent) return;
 
     const timer = window.setTimeout(() => {
@@ -85,10 +89,11 @@ export function PainelWizard({
           profileUrl: campaign.profileUrl.trim(),
           region: campaign.regionValue.trim() ? formatRegion(campaign) : "",
           competitor: campaign.competitor.trim(),
-          adLink: campaign.adLink.trim(),
+          adLink: publicationLink,
           source,
         },
       }).catch((error: unknown) => {
+
         // Auto-save é best-effort: nunca deve travar o funil do cliente.
         console.error("[PainelWizard] Falha no auto-save do quiz:", error);
       });
@@ -113,7 +118,8 @@ export function PainelWizard({
           profileUrl: campaign.profileUrl.trim(),
           region: formatRegion(campaign),
           competitor: campaign.competitor.trim(),
-          adLink: campaign.adLink.trim(),
+          adLink: campaign.adLink.trim() || campaign.turbinarLink?.trim() || "",
+
           source,
         },
       }),
