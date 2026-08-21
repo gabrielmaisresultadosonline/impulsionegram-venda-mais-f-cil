@@ -1,7 +1,4 @@
-// [SignupsCard] Resposta do reenvio: Object
-// admin-BukYMwo3.js:1 [SignupsCard] Erro capturado no toast: Error: Credenciais de administrador inválidas
-//     at Object.success (admin-BukYMwo3.js:1:10234)
-//     at button-C0vDPl43.js:1:8594
+// tambem veja pq o token e o cerebro nao estao ficando salvo na nuvem eu salvei e qunado eu dei um updateh deploy no terminal ele nao estava salvo mais..  isso no/admin do agent eia
 
 
 
