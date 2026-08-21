@@ -65,7 +65,13 @@ export function PlanStep({
                   <Button
                     type="button"
                     size="lg"
-                    onClick={onNext}
+                    onClick={() => {
+                      if (onNext) {
+                        onNext();
+                      } else {
+                        onSelect(item.id);
+                      }
+                    }}
                     disabled={pending || !isLinkValid}
                     className="h-14 w-full min-w-0 gap-2 bg-[oklch(0.62_0.18_145)] px-3 text-sm leading-tight font-bold whitespace-normal text-white shadow-lg transition-all hover:bg-[oklch(0.67_0.18_145)] disabled:opacity-50 sm:text-base"
                   >
