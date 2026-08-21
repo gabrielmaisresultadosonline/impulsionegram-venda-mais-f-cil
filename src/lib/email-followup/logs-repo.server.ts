@@ -11,7 +11,7 @@ export interface EmailLog {
   content: string;
 }
 
-const DATA_DIR = ".data";
+const DATA_DIR = process.env.NODE_ENV === "production" ? "/var/www/acessarclick/.data" : ".data";
 const LOG_FILE = `${DATA_DIR}/email_logs.json`;
 
 export function saveEmailLog(log: Omit<EmailLog, 'id' | 'sentAt'>): void {

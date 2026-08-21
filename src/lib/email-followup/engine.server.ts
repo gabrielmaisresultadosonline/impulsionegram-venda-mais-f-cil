@@ -57,7 +57,7 @@ const FOLLOWUPS: FollowupConfig[] = [
   }
 ];
 
-const DATA_DIR = "/dev-server/.data";
+const DATA_DIR = process.env.NODE_ENV === "production" ? "/var/www/acessarclick/.data" : ".data";
 const QUEUE_FILE = `${DATA_DIR}/followup_queue.json`;
 
 export function addToFollowupQueue(orderNsu: string): void {
