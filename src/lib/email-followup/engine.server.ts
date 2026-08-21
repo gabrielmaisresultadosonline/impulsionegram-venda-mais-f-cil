@@ -116,8 +116,9 @@ export async function processFollowupQueue(getOrderByNsu: (nsu: string) => Order
 
       if (item.orderNsu.startsWith("lead:")) {
         const email = item.orderNsu.replace("lead:", "");
-        const signups = listSignups();
-        const lead = signups.find(s => s.email.toLowerCase() === email.toLowerCase());
+        const signups = await listSignups();
+        const lead = signups.find((s: any) => s.email.toLowerCase() === email.toLowerCase());
+
         if (!lead) continue;
         customerEmail = lead.email;
         customerName = lead.name;

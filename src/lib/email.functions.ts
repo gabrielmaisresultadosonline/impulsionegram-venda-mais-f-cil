@@ -155,8 +155,9 @@ export const sendPasswordRecoveryEmail = createServerFn({ method: "POST" })
     try {
       // Importações para verificar se o cadastro existe no servidor
       const { listSignups } = await import("./signups-repo.server");
-      const signups = listSignups();
-      const account = signups.find(s => s.email.toLowerCase() === email.toLowerCase());
+      const signups = await listSignups();
+      const account = signups.find((s: any) => s.email.toLowerCase() === email.toLowerCase());
+
 
       if (!account) {
         return { success: false, error: "NOT_FOUND" };
