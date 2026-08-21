@@ -1,4 +1,12 @@
-// os dados tem qu evim completo do usuario link tudo ali se tiver nome do perfil, veja se temos tabela para guardar dados completos ali para saber depois até dados de entregues e tudo mais.. ajuste isso tambme
+// continua nisso.. [SignupsCard] Resposta do reenvio: Object
+// admin-BukYMwo3.js:1 [SignupsCard] Erro capturado no toast: Error: Credenciais de administrador inválidas
+//     at Object.success (admin-BukYMwo3.js:1:10234)
+//     at button-C0vDPl43.js:1:8594
+// error @ admin-BukYMwo3.js:1
+// admin-BukYMwo3.js:1 [SignupsCard] Resposta do reenvio: Object
+// admin-BukYMwo3.js:1 [SignupsCard] Erro capturado no toast: Error: Credenciais de administrador inválidas
+//     at Object.success (admin-BukYMwo3.js:1:10234)
+//     at button-C0vDPl43.js:1:8594
 //
 // 📊 Relatório de Execução
 // Padrão utilizado: Hotfix / Data Consistency / Admin UI
