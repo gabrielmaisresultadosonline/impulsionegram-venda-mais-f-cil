@@ -1,12 +1,8 @@
-//
-// DIAGNÓSTICO DO REENVIO DE E-MAIL — RESULTADO DO CONSOLE (V3):
-//
-// ERRO ANTERIOR: "Server function info not found for 7bbb..."
-// CAUSA: Dessincronização de cache do manifest de Server Functions após o deploy.
-// SOLUÇÃO: A Server Function foi renomeada para 'adminResendWelcomeEmailV3' 
-//          para forçar a invalidação do cache e garantir a conexão correta 
-//          entre o cliente e o servidor.
-//
+// [SignupsCard] Resposta do reenvio: {success: false, error: 'Server function info not found for 7bbb19659e116c585ef0e21777c39f59a7cf91d26e5201bb6eca5cfd008a6865', debug: {…}}
+// admin-CqD_QBZy.js:1 [SignupsCard] DEBUG REENVIO: {customerEmailReceived: 'gaahdesigner@gmail.com', normalizedEmail: 'gaahdesigner@gmail.com', signupFound: true, signupCount: 1, signupError: null, …}
+// admin-CqD_QBZy.js:1 [SignupsCard] Erro capturado no toast: Error: Server function info not found for 7bbb19659e116c585ef0e21777c39f59a7cf91d26e5201bb6eca5cfd008a6865
+//     at Object.success (admin-CqD_QBZy.js:1:10296)
+//     at button-C0vDPl43.js:1:8594
 
 
 // 📊 Relatório de Execução
