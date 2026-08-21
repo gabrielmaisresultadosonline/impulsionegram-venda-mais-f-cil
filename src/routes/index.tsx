@@ -1,4 +1,4 @@
-// o email de boas vindas ja vai com acesso junto dee usuario email e senha, completo desejando boas vindas e falando qual e o cadastro dele usuario e senha email e senha.. mostra no email dele.. e vai com as cores que ta no site.. nao azul.. tambem o nome do email é ACESSAR CLICK e dai o nome do assunto, do email.. voltado para seguidores parceiro da meta. e tudo mais. email compelto bonito sem erro sem quebra para pode ser acessado em um aparelho antigo sem problema nenhnum..
+// INGLUA ESSA LOGOMARCA ALI.. APRA FUNCIONAR SEM QUEBRAR NO SERVIDOR ELA PRECISA SUBIR JUNTO, COLOQUE ELA DE LOGO ALI ACIMA DO TITULO NO LUGAR DIS UCIBS QYE FUCAN SE NEXEBDI,,,
 
 
 

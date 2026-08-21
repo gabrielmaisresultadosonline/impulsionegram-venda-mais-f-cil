@@ -2,7 +2,8 @@ import { ArrowRight, Instagram, ShieldCheck, Timer } from "lucide-react";
 import type { ComponentProps } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Social3DIcons } from "@/components/site/Social3DIcons";
+import logoAsset from "@/assets/logo.png.asset.json";
+
 
 
 export interface HeroProps extends ComponentProps<"section"> {
@@ -62,7 +63,11 @@ export function Hero({
         >
           Sou Membro
         </button>
-        <Social3DIcons className="mt-4 md:mt-6" />
+        <img 
+          src={logoAsset.url} 
+          alt="Acessar Click Logo" 
+          className="w-full max-w-[320px] md:max-w-[420px] h-auto object-contain mt-4 md:mt-6 animate-float"
+        />
 
         <h1 className="mt-3 text-[8.5vw] leading-[1.05] font-black tracking-tighter text-balance md:mt-8 md:text-5xl lg:text-6xl uppercase">
           {titleLines.map((line) => (
