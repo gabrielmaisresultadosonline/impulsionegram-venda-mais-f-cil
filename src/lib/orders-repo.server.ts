@@ -283,6 +283,68 @@ export async function addMessage(
   return true;
 }
 
+export async function markReopened(orderNsu: string): Promise<boolean> {
+  const order = await getOrderByNsu(orderNsu);
+  if (!order) return false;
+  
+  await supabaseAdmin.from('orders').update({
+    status: order.paidAt ? "pago" : "tentativa",
+    delivered_at: null
+  }).eq('order_nsu', orderNsu);
+  
+  return true;
+}
+
+export async function deleteUnpaidOrder(orderNsu: string, customerEmail: string): Promise<boolean> {
+  const order = await getOrderByNsu(orderNsu);
+  if (!order) return false;
+  if (order.customerEmail.trim().toLowerCase() !== customerEmail.trim().toLowerCase()) {
+    return false;
+  }
+  if (order.status !== "tentativa") return false;
+  
+  await supabaseAdmin.from('orders').update({
+    cancelled_at: new Date().toISOString()
+  }).eq('order_nsu', orderNsu);
+  
+  return true;
+}
+
+export async function getLatestOrderByEmail(email: string): Promise<OrderRecord | undefined> {
+  const { data } = await supabaseAdmin
+    .from('orders')
+    .select('*')
+    .eq('customer_email', email)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .single();
+    
+  if (!data) return undefined;
+  return getOrderByNsu(data.order_nsu);
+}
+
+export async function markPaidByProductName(
+  productName: string,
+  patch: Partial<OrderRecord> = {},
+): Promise<string | undefined> {
+  const target = productName.trim().toLowerCase();
+  if (!target) return undefined;
+
+  const orders = await listOrders();
+  const match = orders
+    .filter((order) => order.productName?.toLowerCase() === target)
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+    .find((order) => order.status === "tentativa") ??
+    orders
+      .filter((order) => order.productName?.toLowerCase() === target)
+      .sort((a, b) => b.createdAt.localeCompare(a.createdAt))[0];
+
+  if (!match) return undefined;
+  await markPaid(match.orderNsu, patch);
+  return match.orderNsu;
+}
+
+
 export async function markMessagesRead(
   orderNsu: string,
   by: "customer" | "admin",

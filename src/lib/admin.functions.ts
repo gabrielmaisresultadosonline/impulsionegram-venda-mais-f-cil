@@ -125,11 +125,12 @@ export const adminUpdateOrder = createServerFn({ method: "POST" })
     const repo = await import("./orders-repo.server");
     const changed =
       data.action === "entregue"
-        ? repo.markDelivered(data.orderNsu)
-        : repo.markReopened(data.orderNsu);
+        ? await repo.markDelivered(data.orderNsu)
+        : await repo.markReopened(data.orderNsu);
     if (!changed) throw new Error("Pedido não encontrado.");
     return repo.listOrders();
   });
+
 
 export const adminReplyTicket = createServerFn({ method: "POST" })
   .validator((data: unknown) => adminTicketSchema.parse(data))
@@ -170,7 +171,8 @@ export const adminListSignups = createServerFn({ method: "POST" })
     const map = new Map<string, AdminSignup>();
     for (const signup of await listSignups()) map.set(signup.email.toLowerCase(), signup as any);
 
-    for (const order of repo.listOrders()) {
+    for (const order of await repo.listOrders()) {
+
       const email = (order.customerEmail ?? "").trim().toLowerCase();
       if (!email) continue;
       const existing = map.get(email);
@@ -221,7 +223,7 @@ export const adminQuickSendPurchase = createServerFn({ method: "POST" })
     await assertAdmin(data.email, data.password);
     const repo = await import("./orders-repo.server");
     const { sendCapiEvent } = await import("./capi.server");
-    const order = repo.getOrderByNsu(data.orderNsu);
+    const order = await repo.getOrderByNsu(data.orderNsu);
     if (!order) throw new Error("Pedido não encontrado.");
 
     return sendCapiEvent({
@@ -233,6 +235,7 @@ export const adminQuickSendPurchase = createServerFn({ method: "POST" })
       contentName: order.planName,
       orderId: order.orderNsu,
     });
+
   });
 
 export const adminSendPurchaseEvent = createServerFn({ method: "POST" })
