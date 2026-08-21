@@ -124,9 +124,7 @@ export function PlanCard({
             "mt-7 h-11 w-full font-semibold",
             isSelected
               ? "border-primary-foreground/50 bg-primary-foreground/10 text-primary-foreground hover:bg-primary-foreground hover:text-primary"
-              : ctaLabel
-                ? "bg-gradient-brand text-primary-foreground"
-                : "",
+              : "bg-gradient-brand text-primary-foreground",
           )}
         >
           {ctaLabel ?? (isSelected ? "Comprar agora" : "Escolher este plano")}

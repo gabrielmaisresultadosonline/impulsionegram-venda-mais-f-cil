@@ -170,6 +170,7 @@ export function PainelWizard({
               }}
               pending={mutation.isPending || saveProfile.isPending}
               ctaLabel="Comprar agora"
+              onNext={() => setBumpOpen(true)}
               onBack={() => setStep(0)}
               turbinarLink={campaign.turbinarLink}
               onTurbinarLinkChange={(val) => patchCampaign({ turbinarLink: val })}
