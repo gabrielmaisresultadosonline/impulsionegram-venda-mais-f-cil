@@ -50,15 +50,13 @@ export async function recordSignup(input: {
   addToFollowupQueue(`lead:${email}`);
 
   try {
-    const { sendTransactionalEmail } = await import("./transactional-emails.functions");
-    await sendTransactionalEmail({ 
-      data: { 
-        type: "welcome",
-        name: record.name, 
-        email, 
-        password: input.password,
-        orderNsu: `lead:${email}` 
-      } 
+    const { sendTransactionalEmailInternal } = await import("./transactional-emails.functions");
+    await sendTransactionalEmailInternal({ 
+      type: "welcome",
+      name: record.name, 
+      email, 
+      password: input.password,
+      orderNsu: `lead:${email}` 
     });
   } catch (err) {
     console.error(`[recordSignup] Erro e-mail:`, err);

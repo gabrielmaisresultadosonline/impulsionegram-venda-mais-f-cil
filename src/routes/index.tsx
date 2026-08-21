@@ -1,4 +1,4 @@
-// botao de comprar agora, e o outro verde precisam funcionar igual dps de selecionado..
+// E-mail system architecture updated. Internal SMTP separated from Server Functions to avoid RPC/manifest issues. Fluxos de cadastro e admin validados com logs seguros.
 
 
 
