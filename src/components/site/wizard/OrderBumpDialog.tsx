@@ -39,7 +39,7 @@ export function OrderBumpDialog({
   const bumpsTotal = sumOrderBumps(selectedBumps);
   const total = plan.priceCents + bumpsTotal;
 
-  const requiresLink = selectedBumps.includes("bump-views-10k");
+  const requiresLink = selectedBumps.includes("bump-views-10k-new");
   const isLinkValid = !requiresLink || (turbinarLink && turbinarLink.trim().length > 5);
 
   return (
