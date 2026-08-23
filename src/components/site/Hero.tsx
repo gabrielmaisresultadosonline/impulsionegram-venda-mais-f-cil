@@ -29,7 +29,7 @@ const TRUST_ITEMS = [
   { icon: Instagram, label: "Filtro por região" },
 ] as const;
 
-const DEFAULT_TITLE = ["SEGUIDORES, ENGAJAMENTO,", "PÚBLICO DE CONCORRENTES", "NO AUTOMÁTICO"] as const;
+const DEFAULT_TITLE = ["MAIS VENDAS,", "MAIS CLIENTES, MAIS", "ENGAJAMENTO NO AUTOMÁTICO !"] as const;
 const DEFAULT_HIGHLIGHT = "Seguidores, alcance e visualizações: resultados automáticos.";
 const DEFAULT_DESCRIPTION =
   "Basta uma configuração e nossa I.A faz tudo para você. Ganhe seguidores filtrados por cidade, região e pelo perfil do seu concorrente no Instagram.";
