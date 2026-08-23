@@ -110,7 +110,7 @@ function Index() {
         highlight="Engajamento completo: curtidas, comentários e visualizações no automático."
         description="Domine o Instagram com público filtrado do seu concorrente. Focado exclusivamente em alcance real e autoridade."
         ctaLabel="Cadastre-se grátis"
-        secondaryLabel="A partir de R$ 33 mensal"
+        secondaryLabel="A partir de R$ 33"
       />
 
 
