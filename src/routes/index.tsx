@@ -63,7 +63,7 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       {
-        title: "Seguidores e Engajamento no Automático — Público de Concorrentes",
+        title: "Engajamento Completo no Instagram — Público de Concorrentes",
       },
       {
         name: "description",
