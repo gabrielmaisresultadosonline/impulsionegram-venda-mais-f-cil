@@ -124,21 +124,21 @@ export interface OrderBump {
 
 export const ORDER_BUMPS: readonly OrderBump[] = [
   {
-    id: "bump-views-1k",
-    name: "+ 1000 visualização",
-    description: "Resultados imediatos no seu Reels.",
-    priceCents: 700,
+    id: "bump-suporte-prioritario",
+    name: "Suporte Prioritário",
+    description: "Atendimento preferencial no seu pedido.",
+    priceCents: 1000,
   },
   {
-    id: "bump-likes-300",
-    name: "+ 300 curtidas",
-    description: "Dividido em 10 Posts mais recentes.",
-    priceCents: 700,
-  },
-  {
-    id: "bump-views-10k",
-    name: "+ Turbinar Publicação 10 mil visualização",
+    id: "bump-views-10k-new",
+    name: "Turbinar uma publicação com 10 mil visualização",
     description: "Turbine seu reels vamos mostrar para mais pessoas.",
+    priceCents: 1400,
+  },
+  {
+    id: "bump-whatsapp-conversas",
+    name: "Ativar campanha de conversas Whatsapp",
+    description: "Alcance pessoas interessadas no seu WhatsApp.",
     priceCents: 1000,
   },
 ] as const;
