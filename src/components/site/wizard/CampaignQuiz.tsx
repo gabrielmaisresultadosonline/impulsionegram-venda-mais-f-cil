@@ -105,7 +105,7 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending, askPhone = fal
         <Question
           icon={<Instagram className="size-5" aria-hidden="true" />}
           title="Qual o seu perfil do Instagram?"
-          description="Onde seus novos seguidores e clientes vão chegar. MANDA LINK OU @NOMEDOPERFIL"
+          description="Onde seu novo alcance e clientes vão chegar. MANDA LINK OU @NOMEDOPERFIL"
         >
           <Label htmlFor="quiz-profile-url" className="sr-only">
             Instagram
@@ -128,8 +128,8 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending, askPhone = fal
       {currentQuestion === "region" ? (
         <Question
           icon={<MapPin className="size-5" aria-hidden="true" />}
-          title="Qual localização dos seus seguidores?"
-          description="Aonde quer que seus novos seguidores venham. Vamos colocar um raio de km em volta da sua localização de no mínimo 40km, podendo ser mais, mas nunca menos."
+          title="Qual região do seu público?"
+          description="Aonde quer seu alcance e seu público. Vamos colocar um raio de km em volta da sua localização de no mínimo 40km, podendo ser mais, mas nunca menos."
         >
           <div className="grid gap-2 sm:grid-cols-2">
             {(
@@ -197,7 +197,7 @@ export function CampaignQuiz({ data, onChange, onSubmit, pending, askPhone = fal
         >
           <div className="border-primary/30 bg-primary/5 space-y-3 rounded-2xl border p-5">
             <p className="text-base font-semibold text-balance">
-              Esta campanha vai gerar novos seguidores, engajamento e popularidade direto para seu Perfil do Instagram.
+              Esta campanha vai gerar novo alcance, engajamento e popularidade direto para seu Perfil do Instagram.
             </p>
             <p className="text-base font-semibold text-balance mt-3">
               Perfil <span className="text-gradient-brand">{data.profileUrl}</span>.
