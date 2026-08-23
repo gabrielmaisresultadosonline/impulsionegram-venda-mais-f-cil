@@ -113,7 +113,7 @@ export async function sendTransactionalEmailInternal(data: TransactionalEmailDat
           <div style="${contentStyle}">
             <h2 style="color: ${textColor}; margin-top: 0; font-size: 24px;">Olá, ${firstName}! 👋</h2>
             <p>Sua conta foi criada com sucesso na <strong>Acessar Click</strong>.</p>
-            <p>Eu sou sua nova inteligência artificial. Já estou pronta para ajudar o seu perfil a alcançar resultados extraordinários.</p>
+            <p>Eu sou sua nova inteligência artificial. Já estou pronta para ajudar o seu perfil a alcançar resultados extraordinários com alcance real, público de concorrentes e engajamento filtrado.</p>
             
             <div style="background-color: #fdf2f8; border-radius: 12px; padding: 25px; margin: 30px 0; border-left: 5px solid ${primaryColor};">
               <p style="margin: 0 0 15px 0; font-weight: bold; color: ${textColor}; font-size: 16px;">Seus Dados de Acesso:</p>
@@ -151,7 +151,7 @@ export async function sendTransactionalEmailInternal(data: TransactionalEmailDat
             <div style="font-size: 50px; margin-bottom: 20px;">✅</div>
             <h1 style="color: ${successColor}; margin: 0; font-size: 26px;">Pagamento Aprovado!</h1>
             <p style="font-size: 16px; margin-top: 15px;">Seu plano <strong>${data.planName || "Selecionado"}</strong> já está ativo.</p>
-            <p>Nossa equipe e a I.A já iniciaram os processos de engajamento para o seu perfil.</p>
+            <p>Nossa equipe e a I.A já iniciaram os processos de alcance e engajamento filtrado para o seu perfil, focando no público real dos seus concorrentes.</p>
             <a href="https://acessar.click/painel" style="${buttonStyle}">Ver Acompanhamento</a>
           </div>
           <div style="${footerStyle}">
@@ -169,7 +169,7 @@ export async function sendTransactionalEmailInternal(data: TransactionalEmailDat
           <div style="${contentStyle}; text-align: center;">
             <div style="font-size: 50px; margin-bottom: 20px;">🏆</div>
             <h1 style="color: ${textColor}; margin: 0; font-size: 26px;">Resultados Entregues!</h1>
-            <p style="font-size: 16px; margin-top: 15px;">Concluímos com sucesso a entrega do seu pedido.</p>
+            <p style="font-size: 16px; margin-top: 15px;">Concluímos com sucesso a entrega do seu pedido de alcance e engajamento filtrado.</p>
             <p>Esperamos que os resultados tragam muito crescimento para o seu negócio.</p>
             <a href="https://acessar.click/painel" style="${buttonStyle}">Ver Relatório Final</a>
           </div>
