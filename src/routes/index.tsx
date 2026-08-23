@@ -68,7 +68,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Resultados automáticos com seguidores, engajamento e público de concorrentes no automático. Ganhe popularidade real.",
+          "Engajamento completo no Instagram com público de concorrentes no automático. Ganhe autoridade e presença real.",
       },
       {
         property: "og:title",
