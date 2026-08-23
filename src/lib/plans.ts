@@ -33,7 +33,7 @@ export const PLANS: readonly Plan[] = [
     tagline: "Popularidade acelerada",
     priceCents: 3300,
     features: [
-      "2.000 seguidores + curtidas",
+      "2.000 interações (curtidas + comentários)",
       "Seguidores filtrados por região",
       "Filtrados do seu concorrente",
       "Entrega natural",
