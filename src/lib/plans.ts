@@ -27,49 +27,6 @@ export interface Plan {
 
 export const PLANS: readonly Plan[] = [
   {
-    id: "starter-500",
-    slug: "intro",
-    name: "Iniciante 500",
-    tagline: "Seguidores filtrados",
-    priceCents: 1000,
-    features: [
-      "500 seguidores filtrados",
-      "Seguidores filtrados por região",
-      "Filtrados do seu concorrente",
-      "Início imediato",
-      "Suporte via ticket dentro do /painel",
-    ],
-  },
-  {
-    id: "turbinar-10k",
-    slug: "reels10k",
-    name: "Turbinar 10.000",
-    tagline: "10 mil visualizações no Reels",
-    priceCents: 1000,
-    features: [
-      "10.000 visualizações reais",
-      "Resultados imediatos",
-      "Entrega automática",
-      "Link do post obrigatório",
-      "Suporte via ticket dentro do /painel",
-    ],
-  },
-  {
-    id: "basic-1000",
-    slug: "start",
-    name: "Básico 1.000",
-    tagline: "Seguidores filtrados",
-    priceCents: 1900,
-    features: [
-      "1.000 seguidores filtrados",
-      "Seguidores filtrados por região",
-      "Filtrados do seu concorrente",
-      "Início imediato",
-      "Suporte via ticket dentro do /painel",
-    ],
-    badge: "MAIS VENDIDO",
-  },
-  {
     id: "impulso-2000",
     slug: "boost",
     name: "Impulso 2.000",
@@ -134,9 +91,6 @@ export const PLANS: readonly Plan[] = [
 
 /** Planos padrão da homepage (Seguidores + ADS). */
 export const HOME_PLAN_IDS: readonly string[] = [
-  "starter-500",
-  "turbinar-10k",
-  "basic-1000",
   "impulso-2000",
   "autoridade-5000",
   "marketing-completo",
