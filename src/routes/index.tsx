@@ -76,7 +76,7 @@ export const Route = createFileRoute("/")({
       },
       {
         property: "og:description",
-        content: "Resultados automáticos: Seguidores, Engajamento e Público de Concorrentes.",
+        content: "Engajamento completo: Curtidas, Comentários e Público de Concorrentes.",
       },
     ],
   }),
