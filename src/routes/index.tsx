@@ -72,7 +72,7 @@ export const Route = createFileRoute("/")({
       },
       {
         property: "og:title",
-        content: "Seguidores e Engajamento no Automático — POPULAR",
+        content: "Engajamento Completo no Instagram — POPULAR",
       },
       {
         property: "og:description",
