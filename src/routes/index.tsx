@@ -187,7 +187,7 @@ function Index() {
             className="h-6 w-auto object-contain opacity-70 grayscale hover:grayscale-0 transition-all duration-300"
           />
           <p className="text-center text-xs text-muted-foreground">
-            Impulsione seu negócio com seguidores reais e filtrados. <br />
+            Impulsione seu negócio com engajamento real e público qualificado. <br />
             Pagamentos processados pela InfinitePay ·
             Resultados iniciam em até 6 horas após a aprovação.
           </p>
