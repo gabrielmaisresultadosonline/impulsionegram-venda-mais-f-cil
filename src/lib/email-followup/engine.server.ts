@@ -17,7 +17,7 @@ const FOLLOWUPS: FollowupConfig[] = [
     subject: 'Nossa I.A já está pronta para você! 🚀',
     template: (name) => `
       Olá ${name.split(' ')[0]}, vi que você iniciou seu cadastro mas ainda não ativou sua I.A.
-      Nossa tecnologia parceira da Meta trabalha 24h por dia para trazer clientes qualificados para o seu negócio no automático.
+      Nossa tecnologia parceira da Meta trabalha 24h por dia para trazer alcance real e público filtrado dos seus concorrentes no automático.
       Não perca a oportunidade de escalar suas vendas ainda hoje.
       Acesse agora: https://acessar.click/painel
     `
@@ -29,7 +29,7 @@ const FOLLOWUPS: FollowupConfig[] = [
     template: (name) => `
       ${name.split(' ')[0]}, a velocidade é a alma do negócio no digital.
       Enquanto você aguarda, centenas de potenciais clientes estão vendo anúncios de outras empresas.
-      Com a Acessar I.A, você retoma o controle e aparece para quem realmente quer comprar de você.
+      Com a Acessar I.A, você retoma o controle e aparece com alcance real para quem realmente quer comprar de você, filtrando seguidores do seu concorrente.
       Clique aqui e ative: https://acessar.click/painel
     `
   },
