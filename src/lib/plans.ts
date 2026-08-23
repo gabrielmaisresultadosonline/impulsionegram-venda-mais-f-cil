@@ -49,7 +49,7 @@ export const PLANS: readonly Plan[] = [
     tagline: "Domine seu mercado",
     priceCents: 6700,
     features: [
-      "5.000 seguidores + curtidas",
+      "5.000 interações (curtidas + comentários)",
       "Seguidores filtrados por região",
       "Filtrados do seu concorrente",
       "Reposicionamento de marca",
@@ -63,7 +63,7 @@ export const PLANS: readonly Plan[] = [
     tagline: "Combo de crescimento 30 dias",
     priceCents: 14700,
     features: [
-      "+2.000 seguidores reais",
+      "+2.000 interações reais",
       "Curtidas e comentários diários",
       "+3 MIL visualizações reels",
       "Gestão por 30 dias",
@@ -78,7 +78,7 @@ export const PLANS: readonly Plan[] = [
     tagline: "Combo de crescimento up 30 dias",
     priceCents: 19700,
     features: [
-      "+5.000 seguidores reais",
+      "+5.000 interações reais",
       "Curtidas e comentários diários",
       "+5 MIL visualizações reels",
       "Gestão por 30 dias",
