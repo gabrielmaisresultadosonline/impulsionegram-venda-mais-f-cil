@@ -108,9 +108,9 @@ function Index() {
         onSecondary={openSignup}
         headline={["MAIS VENDAS,", "MAIS CLIENTES, MAIS", "ENGAJAMENTO NO AUTOMÁTICO !"]}
         highlight="Engajamento completo: curtidas, comentários e visualizações no automático."
-        description="Domine o Instagram com público filtrado do seu concorrente. Focado exclusivamente em engajamento real e autoridade."
+        description="Domine o Instagram com público filtrado do seu concorrente. Focado exclusivamente em alcance real e autoridade."
         ctaLabel="Cadastre-se grátis"
-        secondaryLabel="A partir de R$ 10 mensal"
+        secondaryLabel="A partir de R$ 33 mensal"
       />
 
 

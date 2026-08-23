@@ -30,7 +30,7 @@ const TRUST_ITEMS = [
 ] as const;
 
 const DEFAULT_TITLE = ["MAIS VENDAS,", "MAIS CLIENTES, MAIS", "ENGAJAMENTO NO AUTOMÁTICO !"] as const;
-const DEFAULT_HIGHLIGHT = "Engajamento completo: curtidas, comentários e visualizações no automático.";
+const DEFAULT_HIGHLIGHT = "Alcance completo: 2000, 5000 e até 20.000 pessoas no automático.";
 const DEFAULT_DESCRIPTION =
   "Basta uma configuração e nossa I.A traz o público do seu concorrente para interagir com você. Engajamento real e orgânico no Instagram.";
 
