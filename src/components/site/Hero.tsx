@@ -66,7 +66,7 @@ export function Hero({
         <img 
           src="https://5306062e-dd22-4505-a2c3-baf689a08983.lovableproject.com/__l5e/assets-v1/3b3c5073-9d32-4c16-b79c-1bd3a4b9b8df/logo-acessar-click.png" 
           alt="Acessar Click Logo" 
-          className="w-full max-w-[120px] md:max-w-[160px] h-auto object-contain mt-4 md:mt-6 animate-float"
+          className="w-full max-w-[80px] md:max-w-[100px] h-auto object-contain mt-2 md:mt-4 animate-float"
         />
 
         <h1 className="mt-3 text-[8.5vw] leading-[1.05] font-black tracking-tighter text-balance md:mt-8 md:text-5xl lg:text-6xl uppercase">
