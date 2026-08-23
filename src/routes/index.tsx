@@ -63,20 +63,20 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       {
-        title: "Seguidores e Engajamento no Automático — Público de Concorrentes",
+        title: "Engajamento Completo no Instagram — Público de Concorrentes",
       },
       {
         name: "description",
         content:
-          "Resultados automáticos com seguidores, engajamento e público de concorrentes no automático. Ganhe popularidade real.",
+          "Engajamento completo no Instagram com público de concorrentes no automático. Ganhe autoridade e presença real.",
       },
       {
         property: "og:title",
-        content: "Seguidores e Engajamento no Automático — POPULAR",
+        content: "Engajamento Completo no Instagram — POPULAR",
       },
       {
         property: "og:description",
-        content: "Resultados automáticos: Seguidores, Engajamento e Público de Concorrentes.",
+        content: "Engajamento completo: Curtidas, Comentários e Público de Concorrentes.",
       },
     ],
   }),
@@ -107,8 +107,8 @@ function Index() {
         onCta={openSignup}
         onSecondary={openSignup}
         headline={["MAIS VENDAS,", "MAIS CLIENTES, MAIS", "ENGAJAMENTO NO AUTOMÁTICO !"]}
-        highlight="Seguidores, alcance e visualizações: resultados automáticos para o seu negócio."
-        description="Ganhe popularidade com seguidores filtrados por região e concorrente. Focado exclusivamente em resultados reais no Instagram."
+        highlight="Engajamento completo: curtidas, comentários e visualizações no automático."
+        description="Domine o Instagram com público filtrado do seu concorrente. Focado exclusivamente em engajamento real e autoridade."
         ctaLabel="Cadastre-se grátis"
         secondaryLabel="A partir de R$ 10 mensal"
       />
@@ -187,7 +187,7 @@ function Index() {
             className="h-6 w-auto object-contain opacity-70 grayscale hover:grayscale-0 transition-all duration-300"
           />
           <p className="text-center text-xs text-muted-foreground">
-            Impulsione seu negócio com seguidores reais e filtrados. <br />
+            Impulsione seu negócio com engajamento real e público qualificado. <br />
             Pagamentos processados pela InfinitePay ·
             Resultados iniciam em até 6 horas após a aprovação.
           </p>
