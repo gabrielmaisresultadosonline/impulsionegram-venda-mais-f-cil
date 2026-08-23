@@ -107,8 +107,8 @@ function Index() {
         onCta={openSignup}
         onSecondary={openSignup}
         headline={["MAIS VENDAS,", "MAIS CLIENTES, MAIS", "ENGAJAMENTO NO AUTOMÁTICO !"]}
-        highlight="Seguidores, alcance e visualizações: resultados automáticos para o seu negócio."
-        description="Ganhe popularidade com seguidores filtrados por região e concorrente. Focado exclusivamente em resultados reais no Instagram."
+        highlight="Engajamento completo: curtidas, comentários e visualizações no automático."
+        description="Domine o Instagram com público filtrado do seu concorrente. Focado exclusivamente em engajamento real e autoridade."
         ctaLabel="Cadastre-se grátis"
         secondaryLabel="A partir de R$ 10 mensal"
       />
