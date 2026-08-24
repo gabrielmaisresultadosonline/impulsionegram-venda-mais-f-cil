@@ -68,7 +68,7 @@ export function AISettingsCard({ credentials, className }: { credentials: AdminC
           <Bot className="text-primary size-5" />
         </div>
         <div>
-          <h2 className="text-lg font-bold">mais vendas e mais engajamento✓✓</h2>
+          <h2 className="text-lg font-bold">mais vendas e mais engajamento</h2>
           <p className="text-muted-foreground text-sm">Configure o cérebro da assistente virtual.</p>
         </div>
       </header>
