@@ -68,7 +68,6 @@
   --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
 }
 
-
 /*
  * POPULAR — tema claro "neon social".
  * Base branca viva + gradiente magenta → coral → âmbar (linguagem
@@ -114,17 +113,9 @@
   --sidebar-border: oklch(0.22 0.02 300 / 10%);
   --sidebar-ring: oklch(0.6 0.24 350);
 
-  --gradient-brand: linear-gradient(
-    100deg,
-    oklch(0.6 0.24 350) 0%,
-    oklch(0.63 0.21 25) 55%,
-    oklch(0.75 0.16 75) 100%
-  );
-  --gradient-surface: radial-gradient(
-      120% 90% at 12% -10%,
-      oklch(0.6 0.24 350 / 12%) 0%,
-      transparent 60%
-    ),
+  --gradient-brand: linear-gradient(100deg, oklch(0.6 0.24 350) 0%, oklch(0.63 0.21 25) 55%, oklch(0.75 0.16 75) 100%);
+  --gradient-surface:
+    radial-gradient(120% 90% at 12% -10%, oklch(0.6 0.24 350 / 12%) 0%, transparent 60%),
     radial-gradient(100% 80% at 95% 0%, oklch(0.75 0.16 75 / 10%) 0%, transparent 55%);
   --shadow-glow: 0 24px 60px -28px oklch(0.6 0.24 350 / 35%);
   --shadow-card: 0 18px 45px -30px oklch(0.22 0.02 300 / 35%);
@@ -330,4 +321,3 @@
 @utility animate-whatsapp-float {
   animation: whatsapp-float 3s ease-in-out infinite;
 }
-
