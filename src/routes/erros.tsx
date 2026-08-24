@@ -38,7 +38,6 @@ export const Route = createFileRoute("/erros")({
       </a>
     </div>
   ),
-});
 
 function ErrosPage() {
   return (
