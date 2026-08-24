@@ -1,4 +1,5 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from "@tanstack/react-router";
+
 export const Route = createFileRoute("/erros")({
   head: () => ({
     meta: [
@@ -7,14 +8,16 @@ export const Route = createFileRoute("/erros")({
         name: "description",
         content: "Página de erro. Algo deu errado ao processar sua solicitação.",
       },
-      { prop
-        href="/"
-        className="rounded-lg bg-primary px-6 py-3 font-semibold text-primary-foreground transition hover:opacity-90"
-      >
-        Voltar ao início
-      </a>
-    </div>
-  ),
+      { property: "og:title", content: "Erro — Acessar I.A" },
+      {
+        property: "og:description",
+        content: "Página de erro. Algo deu errado ao processar sua solicitação.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
+  component: ErrosPage,
 });
 
 function ErrosPage() {
