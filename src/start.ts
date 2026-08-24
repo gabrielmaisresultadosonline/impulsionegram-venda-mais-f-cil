@@ -2,7 +2,13 @@ import { createStart, createCsrfMiddleware, createMiddleware } from "@tanstack/r
 
 import { describeError } from "./lib/error-capture";
 
-const csrfMiddleware = createCsrfMiddleware();
+// Só validamos CSRF em requisições mutantes (POST/PUT/PATCH/DELETE).
+// Navegações normais (GET) chegam com Sec-Fetch-Site: none e seriam bloqueadas.
+const csrfMiddleware = createCsrfMiddleware({
+  filter: ({ request }) => !["GET", "HEAD", "OPTIONS"].includes(request.method.toUpperCase()),
+  secFetchSite: ["same-origin", "same-site", "none"],
+  allowRequestsWithoutOriginCheck: true,
+});
 
 const errorMiddleware = createMiddleware({ type: "request" }).server(async ({ next }) => {
   try {
