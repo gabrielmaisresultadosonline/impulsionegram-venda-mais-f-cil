@@ -11,9 +11,15 @@ let serverEntryPromise: Promise<ServerEntry> | undefined;
 
 async function getServerEntry(): Promise<ServerEntry> {
   if (!serverEntryPromise) {
-    serverEntryPromise = import("@tanstack/react-start/server-entry").then(
-      (mod) => (mod as unknown as { default?: ServerEntry }).default ?? (mod as unknown as ServerEntry),
-    );
+    serverEntryPromise = import("@tanstack/react-start/server-entry").then((mod) => {
+      const candidates = [mod, (mod as { default?: unknown }).default];
+      for (const candidate of candidates) {
+        if (candidate && typeof (candidate as ServerEntry).fetch === "function") {
+          return candidate as ServerEntry;
+        }
+      }
+      throw new Error("Server entry does not expose a fetch handler");
+    });
   }
   return serverEntryPromise;
 }
