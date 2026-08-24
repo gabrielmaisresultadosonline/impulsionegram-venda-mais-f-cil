@@ -7,7 +7,22 @@ type ServerEntry = {
   fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response> | Response;
 };
 
-let serve
+let serverEntryPromise: Promise<ServerEntry> | undefined;
+
+async function getServerEntry(): Promise<ServerEntry> {
+  if (!serverEntryPromise) {
+    serverEntryPromise = import("@tanstack/react-start/server-entry") as Promise<ServerEntry>;
+  }
+  return serverEntryPromise;
+}
+
+async function normalizeCatastrophicSsrResponse(response: Response): Promise<Response> {
+  if (response.status !== 500) return response;
+
+  const contentType = response.headers.get("content-type") ?? "";
+  if (!contentType.includes("application/json")) return response;
+
+  const body = await response.clone().text();
   if (!isH3SwallowedErrorBody(body)) return response;
 
   console.error(consumeLastCapturedError() ?? new Error(`h3 swallowed SSR error: ${body}`));
