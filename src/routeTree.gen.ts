@@ -14,6 +14,7 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as Ads01RouteImport } from './routes/ads01'
 import { Route as BarbeaRouteImport } from './routes/barbea'
 import { Route as DeliveryRouteImport } from './routes/delivery'
+import { Route as ErrosRouteImport } from './routes/erros'
 import { Route as PainelRouteImport } from './routes/painel'
 import { Route as PedidoRouteImport } from './routes/pedido'
 import { Route as RecuperarRouteImport } from './routes/recuperar'
@@ -45,6 +46,11 @@ const BarbeaRoute = BarbeaRouteImport.update({
 const DeliveryRoute = DeliveryRouteImport.update({
   id: '/delivery',
   path: '/delivery',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ErrosRoute = ErrosRouteImport.update({
+  id: '/erros',
+  path: '/erros',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PainelRoute = PainelRouteImport.update({
@@ -90,6 +96,7 @@ export interface FileRoutesByFullPath {
   '/ads01': typeof Ads01Route
   '/barbea': typeof BarbeaRoute
   '/delivery': typeof DeliveryRoute
+  '/erros': typeof ErrosRoute
   '/painel': typeof PainelRoute
   '/pedido': typeof PedidoRoute
   '/recuperar': typeof RecuperarRoute
@@ -104,6 +111,7 @@ export interface FileRoutesByTo {
   '/ads01': typeof Ads01Route
   '/barbea': typeof BarbeaRoute
   '/delivery': typeof DeliveryRoute
+  '/erros': typeof ErrosRoute
   '/painel': typeof PainelRoute
   '/pedido': typeof PedidoRoute
   '/recuperar': typeof RecuperarRoute
@@ -119,6 +127,7 @@ export interface FileRoutesById {
   '/ads01': typeof Ads01Route
   '/barbea': typeof BarbeaRoute
   '/delivery': typeof DeliveryRoute
+  '/erros': typeof ErrosRoute
   '/painel': typeof PainelRoute
   '/pedido': typeof PedidoRoute
   '/recuperar': typeof RecuperarRoute
@@ -135,6 +144,7 @@ export interface FileRouteTypes {
     | '/ads01'
     | '/barbea'
     | '/delivery'
+    | '/erros'
     | '/painel'
     | '/pedido'
     | '/recuperar'
@@ -149,6 +159,7 @@ export interface FileRouteTypes {
     | '/ads01'
     | '/barbea'
     | '/delivery'
+    | '/erros'
     | '/painel'
     | '/pedido'
     | '/recuperar'
@@ -163,6 +174,7 @@ export interface FileRouteTypes {
     | '/ads01'
     | '/barbea'
     | '/delivery'
+    | '/erros'
     | '/painel'
     | '/pedido'
     | '/recuperar'
@@ -178,6 +190,7 @@ export interface RootRouteChildren {
   Ads01Route: typeof Ads01Route
   BarbeaRoute: typeof BarbeaRoute
   DeliveryRoute: typeof DeliveryRoute
+  ErrosRoute: typeof ErrosRoute
   PainelRoute: typeof PainelRoute
   PedidoRoute: typeof PedidoRoute
   RecuperarRoute: typeof RecuperarRoute
@@ -222,6 +235,13 @@ declare module '@tanstack/react-router' {
       path: '/delivery'
       fullPath: '/delivery'
       preLoaderRoute: typeof DeliveryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/erros': {
+      id: '/erros'
+      path: '/erros'
+      fullPath: '/erros'
+      preLoaderRoute: typeof ErrosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/painel': {
@@ -282,6 +302,7 @@ const rootRouteChildren: RootRouteChildren = {
   Ads01Route: Ads01Route,
   BarbeaRoute: BarbeaRoute,
   DeliveryRoute: DeliveryRoute,
+  ErrosRoute: ErrosRoute,
   PainelRoute: PainelRoute,
   PedidoRoute: PedidoRoute,
   RecuperarRoute: RecuperarRoute,
