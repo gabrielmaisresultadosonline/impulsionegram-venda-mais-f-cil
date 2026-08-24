@@ -1,5 +1,27 @@
 import { useQuery } from "@tanstack/react-query";
-ap(v => ({ ...v, type: 'visitor' })), ...customers];
+import { useServerFn } from "@tanstack/react-start";
+import { Bot, Loader2, MessageSquare, User } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { adminListAllChats } from "@/lib/ai-chat.functions";
+
+interface ChatHistoryProps {
+  credentials: { email: string; password: string };
+}
+
+export function ChatHistory({ credentials }: ChatHistoryProps) {
+  const listChats = useServerFn(adminListAllChats);
+
+  const query = useQuery({
+    queryKey: ["admin-chats"],
+    queryFn: () => listChats({ data: credentials }),
+    refetchInterval: 15000,
+  });
+
+  const visitors = query.data?.visitors ?? [];
+  const customers = query.data?.customers ?? [];
+  const allChats = [...visitors.map((v: any) => ({ ...v, type: 'visitor' })), ...customers];
 
   if (query.isLoading) {
     return (

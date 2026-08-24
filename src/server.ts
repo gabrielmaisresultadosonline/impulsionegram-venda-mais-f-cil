@@ -7,7 +7,30 @@ type ServerEntry = {
   fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response> | Response;
 };
 
-let serve
+let serverEntryPromise: Promise<ServerEntry> | undefined;
+
+async function getServerEntry(): Promise<ServerEntry> {
+  if (!serverEntryPromise) {
+    serverEntryPromise = import("@tanstack/react-start/server-entry").then((mod) => {
+      const candidates = [mod, (mod as { default?: unknown }).default];
+      for (const candidate of candidates) {
+        if (candidate && typeof (candidate as ServerEntry).fetch === "function") {
+          return candidate as ServerEntry;
+        }
+      }
+      throw new Error("Server entry does not expose a fetch handler");
+    });
+  }
+  return serverEntryPromise;
+}
+
+async function normalizeCatastrophicSsrResponse(response: Response): Promise<Response> {
+  if (response.status !== 500) return response;
+
+  const contentType = response.headers.get("content-type") ?? "";
+  if (!contentType.includes("application/json")) return response;
+
+  const body = await response.clone().text();
   if (!isH3SwallowedErrorBody(body)) return response;
 
   console.error(consumeLastCapturedError() ?? new Error(`h3 swallowed SSR error: ${body}`));
