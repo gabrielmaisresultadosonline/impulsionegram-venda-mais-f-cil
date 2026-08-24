@@ -20,5 +20,5 @@ const errorMiddleware = createMiddleware({ type: "request" }).server(async ({ ne
 });
 
 export const startInstance = createStart(() => ({
-  requestMiddleware: [errorMiddleware, csrfMiddleware],
+  requestMiddleware: [errorMiddleware],
 }));
