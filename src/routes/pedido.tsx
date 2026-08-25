@@ -22,8 +22,7 @@ export const Route = createFileRoute("/pedido")({
   validateSearch: (search: Record<string, unknown>): PedidoSearch => ({
     order_nsu: typeof search.order_nsu === "string" ? search.order_nsu : undefined,
     slug: typeof search.slug === "string" ? search.slug : undefined,
-    transaction_nsu:
-      typeof search.transaction_nsu === "string" ? search.transaction_nsu : undefined,
+    transaction_nsu: typeof search.transaction_nsu === "string" ? search.transaction_nsu : undefined,
     receipt_url: typeof search.receipt_url === "string" ? search.receipt_url : undefined,
     capture_method: typeof search.capture_method === "string" ? search.capture_method : undefined,
   }),
@@ -32,8 +31,7 @@ export const Route = createFileRoute("/pedido")({
       { title: "Meu pedido — POPULAR" },
       {
         name: "description",
-        content:
-          "Acompanhe em tempo real a confirmação do pagamento e a entrega do seu impulsionamento no POPULAR.",
+        content: "Acompanhe em tempo real a confirmação do pagamento e a entrega do seu impulsionamento no POPULAR.",
       },
       { property: "og:title", content: "Meu pedido — POPULAR" },
       {
@@ -105,9 +103,7 @@ function PedidoPage() {
       email: order.customerEmail,
       phone: order.customerPhone,
     });
-
   }, [paid, order]);
-
 
   return (
     <main className="bg-aurora min-h-screen px-4 py-16">
@@ -133,15 +129,10 @@ function PedidoPage() {
                 {paid ? (
                   <CheckCircle2 className="text-success mt-0.5 size-6 shrink-0" aria-hidden="true" />
                 ) : (
-                  <Loader2
-                    className="text-primary mt-0.5 size-6 shrink-0 animate-spin"
-                    aria-hidden="true"
-                  />
+                  <Loader2 className="text-primary mt-0.5 size-6 shrink-0 animate-spin" aria-hidden="true" />
                 )}
                 <div>
-                  <p className="font-bold">
-                    {paid ? "Pagamento aprovado!" : "Aguardando confirmação do pagamento"}
-                  </p>
+                  <p className="font-bold">{paid ? "Pagamento aprovado!" : "Aguardando confirmação do pagamento"}</p>
                   <p className="mt-1 text-sm text-muted-foreground">
                     {paid
                       ? "Seu pedido entrou na fila de entrega. O resultado começa a aparecer no perfil em até 6 horas."
@@ -156,10 +147,7 @@ function PedidoPage() {
                   <Info label="Valor" value={formatBRL(order.priceCents)} />
                   <Info label="Anúncios Meta" value="Ativado" />
                   <Info label="Região" value={order.region} />
-                  <Info
-                    label="Prazo de entrega"
-                    value="Até 6 horas após a aprovação"
-                  />
+                  <Info label="Prazo de entrega" value="Até 6 horas após a aprovação" />
                 </dl>
               ) : null}
 
@@ -172,11 +160,7 @@ function PedidoPage() {
                 <Step
                   done={paid}
                   title="Pagamento confirmado"
-                  description={
-                    paid
-                      ? "InfinitePay aprovou o pagamento."
-                      : "Aguardando aprovação da InfinitePay."
-                  }
+                  description={paid ? "InfinitePay aprovou o pagamento." : "Aguardando aprovação da InfinitePay."}
                 />
                 <Step
                   done={false}
