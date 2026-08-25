@@ -63,7 +63,7 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       {
-        title: "VENDA COM I.A",
+        title: "VENDAS COM I.A NO AUTOMÁTICO",
       },
       {
         name: "description",
