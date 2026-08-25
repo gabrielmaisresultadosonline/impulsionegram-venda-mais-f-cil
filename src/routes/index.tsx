@@ -106,7 +106,7 @@ function Index() {
       <Hero
         onCta={openSignup}
         onSecondary={openSignup}
-        headline={["MAIS VENDAS,", "MAIS CLIENTES, MAIS", "ENGAJAMENTO NO AUTOMÁTICO !"]}
+        headline={["VENDA MAIS COM I.A", "NO AUTOMÁTICO"]}
         highlight="Engajamento completo: curtidas, comentários e visualizações no automático."
         description="Domine o Instagram com público filtrado do seu concorrente. Focado exclusivamente em alcance real e autoridade."
         ctaLabel="Cadastre-se grátis"
