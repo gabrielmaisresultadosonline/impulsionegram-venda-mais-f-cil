@@ -58,11 +58,7 @@ function BarberPage() {
           <p className="text-sm font-semibold text-muted-foreground md:text-base">
             Crie sua conta em menos de 1 minuto — sem cartão, sem compromisso.
           </p>
-          <Button
-            size="lg"
-            onClick={openSignup}
-            className="bg-gradient-brand shadow-glow h-12 w-full px-7 md:w-auto"
-          >
+          <Button size="lg" onClick={openSignup} className="bg-gradient-brand shadow-glow h-12 w-full px-7 md:w-auto">
             <Sparkles className="size-4" aria-hidden="true" />
             Cadastre-se grátis
           </Button>
@@ -90,11 +86,7 @@ function BarberPage() {
           </div>
 
           <div className="mt-10 flex justify-center">
-            <Button
-              size="lg"
-              onClick={openSignup}
-              className="bg-gradient-brand shadow-glow h-12 px-8"
-            >
+            <Button size="lg" onClick={openSignup} className="bg-gradient-brand shadow-glow h-12 px-8">
               Cadastre-se grátis
               <ArrowRight className="size-4" aria-hidden="true" />
             </Button>
@@ -128,8 +120,7 @@ function BarberPage() {
       <footer className="border-t border-border px-4 py-8">
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-3">
           <p className="text-center text-xs text-muted-foreground">
-            Pagamentos processados pela InfinitePay ·
-            Resultados iniciam em até 6 horas após a aprovação.
+            Pagamentos processados pela InfinitePay · Resultados iniciam em até 6 horas após a aprovação.
           </p>
           <div className="flex items-center gap-4 text-xs">
             <Link to="/painel" className="text-muted-foreground hover:text-foreground">
